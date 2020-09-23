@@ -1,21 +1,22 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import * as eva from '@eva-design/eva'; 
-import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
-import { AppNavigator } from './navigation';
-import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import * as eva from '@eva-design/eva';
+import {ApplicationProvider, IconRegistry} from '@ui-kitten/components';
+import {AppNavigator} from './navigation';
+import {EvaIconsPack} from '@ui-kitten/eva-icons';
 
-
-const strictTheme = { ['text-font-family']: 'Karla-Regular' }; // default font
-const customMapping = { strict: strictTheme };
+const strictTheme = {['text-font-family']: 'Karla-Regular'}; // default font
+const customMapping = {strict: strictTheme};
 
 class App extends React.Component {
-  
   render() {
     return (
       <React.Fragment>
         <IconRegistry icons={EvaIconsPack} />
-        <ApplicationProvider {...eva} theme={eva.light} customMapping={customMapping}>
+        <ApplicationProvider
+          {...eva}
+          theme={eva.light}
+          customMapping={customMapping}>
           <AppNavigator />
         </ApplicationProvider>
       </React.Fragment>
