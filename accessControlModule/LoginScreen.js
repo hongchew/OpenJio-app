@@ -1,17 +1,20 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
   StatusBar,
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
 } from 'react-native';
-import {Button, Icon, Input, Text, Layout} from '@ui-kitten/components';
-import axios from 'axios';
-import { login } from '../redux/actions/AccessActions';
-import { bindActionCreators } from 'redux';
-
-const apiUrl = "http://10.0.2.2:3000/users/";
+import {
+  Button,
+  Icon,
+  Input,
+  Text,
+  Layout,
+  Spinner,
+} from '@ui-kitten/components';
+import {login} from '../redux/actions';
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -20,7 +23,7 @@ class LoginScreen extends React.Component {
       secureTextEntry: true,
       email: '',
       password: '',
-      user: null
+      errorMessage: '',
     };
   }
 
@@ -43,21 +46,28 @@ class LoginScreen extends React.Component {
   );
 
   handleLogin = () => {
-    // axios.post(apiUrl + 'login', {
-    //   email: this.state.email,
-    //   password: this.state.password
-    // })
-    // .then(function (response) {
-    //   this.setState({
-    //     user: response 
-    //   })
-    //   console.log('Login successfully: ' + response); 
-    // })
-    // .catch(function (error) {
-    //   console.log('Failed to login: ' + error);
-    // });
-    this.props.login(this.state.email, this.state.password);
-  }
+    var loginDetails = {
+      email: this.state.email,
+      password: this.state.password,
+    };
+    this.props.login(loginDetails);
+
+    //after calling login from redux action, should return a user
+    //have to delay and wait for the redux props to be updated
+    setTimeout(() => {
+      if (this.props.user != null) {
+        this.props.navigation.navigate('Home');
+      } else {
+        this.setState({
+          email: '',
+          password: '',
+          errorMessage: 'Login failed, incorrect email/password',
+        });
+      }
+    }, 800);
+
+    //console.log(this.props);
+  };
 
   render() {
     return (
@@ -70,31 +80,37 @@ class LoginScreen extends React.Component {
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
+            {this.props.isLoading && <Spinner />}
             <Text style={styles.header} category="h1">
               OpenJio
             </Text>
-            <Input label="Email" 
+            <Input
+              label="Email"
               value={this.state.email}
-              onChangeText={(text) => this.setState({ email: text })}
+              onChangeText={(text) => this.setState({email: text})}
             />
             <Input
               label="Password"
               accessoryRight={this.renderIcon}
               secureTextEntry={this.state.secureTextEntry}
               value={this.state.password}
-              onChangeText={(text) => this.setState({ password: text })}
+              onChangeText={(text) => this.setState({password: text})}
             />
-            <Button style={styles.login} onPress={() => this.handleLogin()}>LOGIN</Button>
+            <Button style={styles.login} onPress={() => this.handleLogin()}>
+              LOGIN
+            </Button>
             <Button style={styles.login} status="warning">
               SIGN UP
             </Button>
+            <Text style={styles.errorMessage} status="danger">
+              {this.state.errorMessage}
+            </Text>
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   layout: {
@@ -113,18 +129,27 @@ const styles = StyleSheet.create({
   login: {
     marginTop: 20,
   },
+  errorMessage: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
 });
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return {
-    isLoggedIn: state.accessReducer.isLoggedIn
+    user: state.user,
+    error: state.error,
+    isLoading: state.loading,
   };
-}
+};
 
-const mapDispatchToProps = dispatch => (
-  bindActionCreators({
-    login,
-  }, dispatch)
-);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (loginDetails) => {
+      dispatch(login(loginDetails));
+    },
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
