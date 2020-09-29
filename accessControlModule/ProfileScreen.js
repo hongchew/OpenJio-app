@@ -4,7 +4,7 @@ import {StatusBar, StyleSheet} from 'react-native';
 import {Text, Layout, Menu, MenuItem} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
 
-class HomeScreen extends React.Component {
+class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -37,10 +37,8 @@ class HomeScreen extends React.Component {
           </Text>
           <Menu style={styles.menu}>
             <MenuItem
-              title={<Text style={styles.menuItem}>Personal Details</Text>}
-            />
-            <MenuItem
               title={<Text style={styles.menuItem}>Change Password</Text>}
+              onPress={() => this.props.navigation.navigate('ChangePassword')}
             />
             <MenuItem
               title={<Text style={styles.menuItem}>Logout</Text>}
@@ -81,4 +79,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {logout})(HomeScreen);
+export default connect(mapStateToProps, {logout})(ProfileScreen);

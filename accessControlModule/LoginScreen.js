@@ -2,8 +2,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {
   StatusBar,
+  View,
   StyleSheet,
   TouchableWithoutFeedback,
+  TouchableOpacity,
   Keyboard,
 } from 'react-native';
 import {
@@ -13,8 +15,10 @@ import {
   Text,
   Layout,
   Spinner,
+  Divider,
 } from '@ui-kitten/components';
 import {login} from '../redux/actions';
+import loginStyle from '../styles/loginStyle';
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -25,6 +29,17 @@ class LoginScreen extends React.Component {
       password: '',
       errorMessage: '',
     };
+  }
+
+  componentDidMount() {
+    if (this.props.user != null) {
+      this.props.navigation.navigate('Profile');
+    } else {
+      this.setState({
+        email: '',
+        password: '',
+      });
+    }
   }
 
   toggleSecureEntry = () => {
@@ -56,7 +71,7 @@ class LoginScreen extends React.Component {
     //have to delay and wait for the redux props to be updated
     setTimeout(() => {
       if (this.props.user != null) {
-        this.props.navigation.navigate('Home');
+        this.props.navigation.navigate('Profile');
       } else {
         this.setState({
           email: '',
@@ -71,7 +86,7 @@ class LoginScreen extends React.Component {
 
   render() {
     return (
-      <Layout style={styles.layout}>
+      <Layout style={loginStyle.layout}>
         <StatusBar
           barStyle="dark-content"
           hidden={false}
@@ -79,9 +94,9 @@ class LoginScreen extends React.Component {
           translucent={true}
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <Layout style={styles.container}>
+          <Layout style={loginStyle.container}>
             {this.props.isLoading && <Spinner />}
-            <Text style={styles.header} category="h1">
+            <Text style={loginStyle.header} category="h1">
               OpenJio
             </Text>
             <Input
@@ -96,15 +111,28 @@ class LoginScreen extends React.Component {
               value={this.state.password}
               onChangeText={(text) => this.setState({password: text})}
             />
-            <Button style={styles.login} onPress={() => this.handleLogin()}>
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgotPassword')}>
+              <Text style={loginStyle.link} status="primary">
+                Forgot Password?
+              </Text>
+            </TouchableOpacity>
+            <Button style={loginStyle.login} onPress={() => this.handleLogin()}>
               LOGIN
             </Button>
-            <Button style={styles.login} status="warning">
-              SIGN UP
-            </Button>
-            <Text style={styles.errorMessage} status="danger">
+
+            {/* <Divider style={loginStyle.divider}/> */}
+
+            <Text style={loginStyle.message} status="danger">
               {this.state.errorMessage}
             </Text>
+            <TouchableOpacity
+              style={loginStyle.touchableLink}
+              onPress={() => this.props.navigation.navigate('Signup')}>
+              <Text style={loginStyle.signupLink}>
+                <Text>Don't have an account? </Text>
+                <Text status="primary">Sign up here.</Text>
+              </Text>
+            </TouchableOpacity>
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
@@ -113,26 +141,7 @@ class LoginScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  layout: {
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    marginLeft: 20,
-    marginRight: 20,
-    justifyContent: 'center',
-  },
-  header: {
-    marginBottom: 20,
-    fontFamily: 'Karla-Bold',
-  },
-  login: {
-    marginTop: 20,
-  },
-  errorMessage: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
+  //define styles that is only specific to this page
 });
 
 const mapStateToProps = (state) => {
