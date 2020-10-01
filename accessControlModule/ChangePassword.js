@@ -38,9 +38,9 @@ class ChangePassword extends React.Component {
 
   handleChangePassword = () => {
     if (
-      this.state.email == null ||
-      this.state.currPassword == null ||
-      this.state.newPassword == null
+      this.state.email == '' ||
+      this.state.currPassword == '' ||
+      this.state.newPassword == ''
     ) {
       this.setState({
         email: '',
@@ -51,7 +51,7 @@ class ChangePassword extends React.Component {
       });
     } else {
       axios
-        .post(globalVariable.apiUrl + 'change-user-password', {
+        .put(globalVariable.apiUrl + 'change-user-password', {
           email: this.state.email,
           currPassword: this.state.currPassword,
           newPassword: this.state.newPassword,

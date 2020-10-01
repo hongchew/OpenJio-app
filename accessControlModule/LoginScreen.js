@@ -29,18 +29,20 @@ class LoginScreen extends React.Component {
       password: '',
       errorMessage: '',
     };
+    console.log(this.props);
   }
 
-  componentDidMount() {
-    if (this.props.user != null) {
-      this.props.navigation.navigate('Profile');
-    } else {
-      this.setState({
-        email: '',
-        password: '',
-      });
-    }
-  }
+  // componentDidMount() {
+  //   if (this.props.user != null) {
+  //     console.log('coming here');
+  //     this.props.navigation.navigate('Tabs');
+  //   } else {
+  //     this.setState({
+  //       email: '',
+  //       password: '',
+  //     });
+  //   }
+  // }
 
   toggleSecureEntry = () => {
     if (this.state.secureTextEntry) {
@@ -61,30 +63,39 @@ class LoginScreen extends React.Component {
   );
 
   handleLogin = () => {
-    var loginDetails = {
-      email: this.state.email,
-      password: this.state.password,
-    };
-    this.props.login(loginDetails);
+    if (this.state.email != '' && this.state.password != '') {
+      var loginDetails = {
+        email: this.state.email,
+        password: this.state.password,
+      };
+      this.props.login(loginDetails);
 
-    //after calling login from redux action, should return a user
-    //have to delay and wait for the redux props to be updated
-    setTimeout(() => {
-      if (this.props.user != null) {
-        this.props.navigation.navigate('Profile');
-      } else {
-        this.setState({
-          email: '',
-          password: '',
-          errorMessage: 'Login failed, incorrect email/password',
-        });
-      }
-    }, 800);
+      //after calling login from redux action, should return a user
+      //have to delay and wait for the redux props to be updated
+      setTimeout(() => {
+        if (this.props.user != null) {
+          this.props.navigation.navigate('Tabs');
+        } else {
+          this.setState({
+            email: '',
+            password: '',
+            errorMessage: 'Login failed, incorrect email/password',
+          });
+        }
+      }, 800);
+    } else {
+      this.setState({
+        email: '',
+        password: '',
+        errorMessage: 'Login failed, empty fields.',
+      });
+    }
 
     //console.log(this.props);
   };
 
   render() {
+    
     return (
       <Layout style={loginStyle.layout}>
         <StatusBar
@@ -111,7 +122,8 @@ class LoginScreen extends React.Component {
               value={this.state.password}
               onChangeText={(text) => this.setState({password: text})}
             />
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgotPassword')}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('ForgotPassword')}>
               <Text style={loginStyle.link} status="primary">
                 Forgot Password?
               </Text>
@@ -145,7 +157,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     user: state.user,
     error: state.error,
