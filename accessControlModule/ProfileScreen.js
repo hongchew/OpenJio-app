@@ -6,25 +6,24 @@ import {logout} from '../redux/actions';
 import {DefaultAvatar} from '../GLOBAL_VARIABLE';
 
 const PasswordIcon = (props) => (
-  <Icon {...props} name='shield-outline' width='25' height='25' />
+  <Icon {...props} name="shield-outline" width="25" height="25" />
 );
 
 const EditIcon = (props) => (
-  <Icon {...props} name='edit-2-outline' width='25' height='25' />
+  <Icon {...props} name="edit-2-outline" width="25" height="25" />
 );
 
 const LogoutIcon = (props) => (
-  <Icon {...props} name='log-out' width='25' height='25' />
+  <Icon {...props} name="log-out" width="25" height="25" />
 );
 
 const VerifyIcon = (props) => (
-  <Icon {...props} name='person-done-outline' width='25' height='25' />
+  <Icon {...props} name="person-done-outline" width="25" height="25" />
 );
 
 const AddressIcon = (props) => (
-  <Icon {...props} name='map-outline' width='25' height='25' />
+  <Icon {...props} name="map-outline" width="25" height="25" />
 );
-
 
 class ProfileScreen extends React.Component {
   constructor(props) {
@@ -41,16 +40,40 @@ class ProfileScreen extends React.Component {
     this.props.navigation.replace('Login');
   };
 
+  checkmarkIfVerified = (user) => {
+    if (user && user.isSingPassVerified) {
+      return (
+        <Icon
+          name="checkmark-circle"
+          style={{width: 17, height: 17}}
+          fill="green"
+        />
+      );
+    }
+  };
+
+  verifyAccountButton = (user) => {
+    if (user && !user.isSingPassVerified) {
+      return (
+        <MenuItem
+          accessoryLeft={VerifyIcon}
+          title={<Text style={styles.menuItem}>Verify Account</Text>}
+          onPress={() => this.props.navigation.navigate('VerifyAccount')}
+        />
+      );
+    }
+  };
+
   render() {
     return (
       <Layout style={styles.layout}>
         <StatusBar
-          barStyle='dark-content'
+          barStyle="dark-content"
           hidden={false}
-          backgroundColor='#ffffff'
+          backgroundColor="#ffffff"
           translucent={true}
         />
-        <Text style={styles.header} category='h4'>
+        <Text style={styles.header} category="h4">
           Profile
         </Text>
         <Layout style={styles.container}>
@@ -60,37 +83,40 @@ class ProfileScreen extends React.Component {
               <Text style={styles.nameCardText}>
                 <Text style={{fontWeight: 'bold', fontSize: 16}}>
                   {this.props.user ? this.props.user.name : ''}
-                  {'\n'}
                 </Text>
+                <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
+                  {this.checkmarkIfVerified(this.props.user)}
+                </Layout>
+                {'\n'}
                 <Text style={styles.lineText}>
                   Email: {this.props.user ? this.props.user.email : ''}
                   {'\n'}
                 </Text>
                 <Text style={styles.lineText}>
-                  Mobile: {this.props.user ? this.props.user.mobileNumber : '-'}
+                  Mobile:{' '}
+                  {this.props.user
+                    ? this.props.user.mobileNumber
+                      ? this.props.user.mobileNumber
+                      : '-'
+                    : '-'}
                 </Text>
               </Text>
             </View>
           </Card>
 
           <Menu style={styles.menu}>
-            <Icon name='email-outline' width='10' height='10' color='black' />
+            <Icon name="email-outline" width="10" height="10" color="black" />
             <MenuItem
               accessoryLeft={EditIcon}
               title={<Text style={styles.menuItem}>Edit Profile</Text>}
               onPress={() => this.props.navigation.navigate('EditProfile')}
             />
-            <MenuItem
-              accessoryLeft={VerifyIcon}
-              title={<Text style={styles.menuItem}>Verify Account</Text>}
-              onPress={() => this.props.navigation.navigate('VerifyAccount')}
-            />
+            {this.verifyAccountButton(this.props.user)}
             <MenuItem
               accessoryLeft={PasswordIcon}
               title={<Text style={styles.menuItem}>Change Password</Text>}
               onPress={() => this.props.navigation.navigate('ChangePassword')}
             />
-
             <MenuItem
               accessoryLeft={AddressIcon}
               title={<Text style={styles.menuItem}>Address Book</Text>}
