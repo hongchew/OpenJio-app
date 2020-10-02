@@ -45,28 +45,20 @@ class VerifyAccount extends React.Component {
   );
 
   handleVerify = () => {
-    if (this.state.name == '' || this.state.email == '') {
+    if (this.state.nric === '' || this.state.password === '') {
       this.setState({
         isUpdated: false,
-        message: 'Name and email fields cannot be empty.',
+        message: 'NRIC or Password cannot be empty.',
       });
     } else {
-      const user = {
-        userId: this.props.user.userId,
-        name: this.state.name,
-        mobileNumber: this.state.mobileNumber,
-        email: this.state.email,
-      };
-      this.props.editProfile(user);
-      setTimeout(() => {
-        if (this.props.isUpdated) {
-          this.props.navigation.replace('Tabs', {screen: 'Profile'});
-        } else {
-          this.setState({
-            message: 'Unable to update profile.',
-          });
-        }
-      }, 500);
+      axios
+        .post(globalVariable.apiUrl + 'verify-user-singpass', {
+          userId: this.state.userId,
+          nric: this.state.nric,
+          password: this.state.password,
+        })
+        .then((response) => {})
+        .catch((error) => {});
     }
   };
 
