@@ -4,30 +4,29 @@ import {StatusBar, View, ImageBackground, StyleSheet} from 'react-native';
 import {Text, Layout, Menu, MenuItem, Icon, Card} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
 import {DefaultAvatar} from '../GLOBAL_VARIABLE';
-import renderIf from '../components/renderIf';
 
 const PasswordIcon = (props) => (
-  <Icon {...props} name="shield-outline" width="25" height="25" />
+  <Icon {...props} name='shield-outline' width='25' height='25' />
 );
 
 const EditIcon = (props) => (
-  <Icon {...props} name="edit-2-outline" width="25" height="25" />
+  <Icon {...props} name='edit-2-outline' width='25' height='25' />
 );
 
 const LogoutIcon = (props) => (
-  <Icon {...props} name="log-out" width="25" height="25" />
+  <Icon {...props} name='log-out' width='25' height='25' />
 );
 
 const VerifyIcon = (props) => (
-  <Icon {...props} name="person-done-outline" width="25" height="25" />
+  <Icon {...props} name='person-done-outline' width='25' height='25' />
 );
 
 const AddressIcon = (props) => (
-  <Icon {...props} name="map-outline" width="25" height="25" />
+  <Icon {...props} name='map-outline' width='25' height='25' />
 );
 
 const EmailIcon = (props) => (
-  <Icon {...props} name="email-outline" width="25" height="25" />
+  <Icon {...props} name='email-outline' width='25' height='25' />
 );
 
 class ProfileScreen extends React.Component {
@@ -52,12 +51,12 @@ class ProfileScreen extends React.Component {
     return (
       <Layout style={styles.layout}>
         <StatusBar
-          barStyle="dark-content"
+          barStyle='dark-content'
           hidden={false}
-          backgroundColor="#ffffff"
+          backgroundColor='#ffffff'
           translucent={true}
         />
-        <Text style={styles.header} category="h4">
+        <Text style={styles.header} category='h4'>
           Profile
         </Text>
         <Layout style={styles.container}>
@@ -81,7 +80,7 @@ class ProfileScreen extends React.Component {
           </Card>
 
           <Menu style={styles.menu}>
-            <Icon name="email-outline" width="10" height="10" color="black" />
+            <Icon name='email-outline' width='10' height='10' color='black' />
             <MenuItem
               accessoryLeft={EditIcon}
               title={<Text style={styles.menuItem}>Edit Profile</Text>}
