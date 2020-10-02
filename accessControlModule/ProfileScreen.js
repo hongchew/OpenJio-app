@@ -1,8 +1,29 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusBar, StyleSheet} from 'react-native';
-import {Text, Layout, Menu, MenuItem} from '@ui-kitten/components';
+import {StatusBar, View, StyleSheet} from 'react-native';
+import {Text, Layout, Menu, MenuItem, Icon, Card} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
+import {DefaultAvatar} from '../GLOBAL_VARIABLE';
+
+const PasswordIcon = (props) => (
+  <Icon {...props} name="shield-outline" width="25" height="25" />
+);
+
+const EditIcon = (props) => (
+  <Icon {...props} name="edit-2-outline" width="25" height="25" />
+);
+
+const LogoutIcon = (props) => (
+  <Icon {...props} name="log-out" width="25" height="25" />
+);
+
+const VerifyIcon = (props) => (
+  <Icon {...props} name="person-done-outline" width="25" height="25" />
+);
+
+const AddressIcon = (props) => (
+  <Icon {...props} name="map-outline" width="25" height="25" />
+);
 
 class ProfileScreen extends React.Component {
   constructor(props) {
@@ -11,15 +32,36 @@ class ProfileScreen extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
     };
-    //console.log(this.props.user);
+    //console.log(this.props);
   }
 
   handleLogout = () => {
     this.props.logout();
-    this.setState({
-      user: {},
-    });
     this.props.navigation.replace('Login');
+  };
+
+  checkmarkIfVerified = (user) => {
+    if (user && user.isSingPassVerified) {
+      return (
+        <Icon
+          name="checkmark-circle"
+          style={{width: 17, height: 17}}
+          fill="green"
+        />
+      );
+    }
+  };
+
+  verifyAccountButton = (user) => {
+    if (user && !user.isSingPassVerified) {
+      return (
+        <MenuItem
+          accessoryLeft={VerifyIcon}
+          title={<Text style={styles.menuItem}>Verify Account</Text>}
+          onPress={() => this.props.navigation.navigate('VerifyAccount')}
+        />
+      );
+    }
   };
 
   render() {
@@ -31,16 +73,57 @@ class ProfileScreen extends React.Component {
           backgroundColor="#ffffff"
           translucent={true}
         />
+        <Text style={styles.header} category="h4">
+          Profile
+        </Text>
         <Layout style={styles.container}>
-          <Text style={styles.header} category="h4">
-            {this.state.user.name}'s profile
-          </Text>
+          <Card style={styles.firstCard}>
+            <View style={styles.headerRow}>
+              <DefaultAvatar />
+              <Text style={styles.nameCardText}>
+                <Text style={{fontWeight: 'bold', fontSize: 16}}>
+                  {this.props.user ? this.props.user.name : ''}
+                </Text>
+                <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
+                  {this.checkmarkIfVerified(this.props.user)}
+                </Layout>
+                {'\n'}
+                <Text style={styles.lineText}>
+                  Email: {this.props.user ? this.props.user.email : ''}
+                  {'\n'}
+                </Text>
+                <Text style={styles.lineText}>
+                  Mobile:{' '}
+                  {this.props.user
+                    ? this.props.user.mobileNumber
+                      ? this.props.user.mobileNumber
+                      : '-'
+                    : '-'}
+                </Text>
+              </Text>
+            </View>
+          </Card>
+
           <Menu style={styles.menu}>
+            <Icon name="email-outline" width="10" height="10" color="black" />
             <MenuItem
+              accessoryLeft={EditIcon}
+              title={<Text style={styles.menuItem}>Edit Profile</Text>}
+              onPress={() => this.props.navigation.navigate('EditProfile')}
+            />
+            {this.verifyAccountButton(this.props.user)}
+            <MenuItem
+              accessoryLeft={PasswordIcon}
               title={<Text style={styles.menuItem}>Change Password</Text>}
               onPress={() => this.props.navigation.navigate('ChangePassword')}
             />
             <MenuItem
+              accessoryLeft={AddressIcon}
+              title={<Text style={styles.menuItem}>Address Book</Text>}
+              onPress={() => this.props.navigation.navigate('Address')}
+            />
+            <MenuItem
+              accessoryLeft={LogoutIcon}
               title={<Text style={styles.menuItem}>Logout</Text>}
               onPress={this.handleLogout}
             />
@@ -57,6 +140,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    marginLeft: 5,
+    marginRight: 5,
   },
   header: {
     marginTop: 60,
@@ -66,10 +151,42 @@ const styles = StyleSheet.create({
   },
   menu: {
     flex: 1,
+    marginTop: 25,
     backgroundColor: 'white',
   },
   menuItem: {
     fontSize: 16,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nameCardText: {
+    marginLeft: 15,
+    lineHeight: 24,
+  },
+  firstCard: {
+    marginLeft: 15,
+    marginRight: 15,
+    backgroundColor: 'white',
+    borderRadius: 15,
+    elevation: 2,
+    //shadowColor doesn't work on android
+    //shadowColor: 'blue',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
+  card: {
+    backgroundColor: 'white',
+    borderRadius: 15,
+    marginTop: 20,
+    elevation: 4,
+    padding: -2,
+    shadowColor: '#ededed',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
   },
 });
 

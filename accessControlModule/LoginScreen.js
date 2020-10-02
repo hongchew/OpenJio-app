@@ -2,7 +2,6 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {
   StatusBar,
-  View,
   StyleSheet,
   TouchableWithoutFeedback,
   TouchableOpacity,
@@ -15,10 +14,11 @@ import {
   Text,
   Layout,
   Spinner,
-  Divider,
 } from '@ui-kitten/components';
-import {login} from '../redux/actions';
+import {setUser} from '../redux/actions';
 import loginStyle from '../styles/loginStyle';
+import axios from 'axios';
+import {globalVariable} from '../GLOBAL_VARIABLE';
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -29,17 +29,7 @@ class LoginScreen extends React.Component {
       password: '',
       errorMessage: '',
     };
-  }
-
-  componentDidMount() {
-    if (this.props.user != null) {
-      this.props.navigation.navigate('Profile');
-    } else {
-      this.setState({
-        email: '',
-        password: '',
-      });
-    }
+    console.log(this.props);
   }
 
   toggleSecureEntry = () => {
@@ -60,59 +50,54 @@ class LoginScreen extends React.Component {
     </TouchableWithoutFeedback>
   );
 
-  handleLogin = () => {
-    var loginDetails = {
-      email: this.state.email,
-      password: this.state.password,
-    };
-    this.props.login(loginDetails);
-
-    //after calling login from redux action, should return a user
-    //have to delay and wait for the redux props to be updated
-    setTimeout(() => {
-      if (this.props.user != null) {
-        this.props.navigation.navigate('Profile');
-      } else {
-        this.setState({
-          email: '',
-          password: '',
-          errorMessage: 'Login failed, incorrect email/password',
-        });
-      }
-    }, 800);
-
-    //console.log(this.props);
-  };
+  async handleLogin() {
+    try {
+      const response = await axios.post(globalVariable.userApi + 'login', {
+        email: this.state.email,
+        password: this.state.password,
+      });
+      console.log(response.data);
+      this.props.setUser(response.data);
+      this.props.navigation.navigate('Tabs');
+    } catch (error) {
+      this.setState({
+        email: '',
+        password: '',
+        errorMessage: 'Login failed, please try again.',
+      });
+    }
+  }
 
   render() {
     return (
       <Layout style={loginStyle.layout}>
         <StatusBar
-          barStyle="dark-content"
+          barStyle='dark-content'
           hidden={false}
-          backgroundColor="#ffffff"
+          backgroundColor='#ffffff'
           translucent={true}
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={loginStyle.container}>
             {this.props.isLoading && <Spinner />}
-            <Text style={loginStyle.header} category="h1">
+            <Text style={loginStyle.header} category='h1'>
               OpenJio
             </Text>
             <Input
-              label="Email"
+              label='Email'
               value={this.state.email}
               onChangeText={(text) => this.setState({email: text})}
             />
             <Input
-              label="Password"
+              label='Password'
               accessoryRight={this.renderIcon}
               secureTextEntry={this.state.secureTextEntry}
               value={this.state.password}
               onChangeText={(text) => this.setState({password: text})}
             />
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('ForgotPassword')}>
-              <Text style={loginStyle.link} status="primary">
+            <TouchableOpacity style={styles.link}
+              onPress={() => this.props.navigation.navigate('ForgotPassword')}>
+              <Text style={loginStyle.link} status='primary'>
                 Forgot Password?
               </Text>
             </TouchableOpacity>
@@ -122,7 +107,7 @@ class LoginScreen extends React.Component {
 
             {/* <Divider style={loginStyle.divider}/> */}
 
-            <Text style={loginStyle.message} status="danger">
+            <Text style={loginStyle.message} status='danger'>
               {this.state.errorMessage}
             </Text>
             <TouchableOpacity
@@ -130,7 +115,7 @@ class LoginScreen extends React.Component {
               onPress={() => this.props.navigation.navigate('Signup')}>
               <Text style={loginStyle.signupLink}>
                 <Text>Don't have an account? </Text>
-                <Text status="primary">Sign up here.</Text>
+                <Text status='primary'>Sign up here.</Text>
               </Text>
             </TouchableOpacity>
           </Layout>
@@ -142,10 +127,14 @@ class LoginScreen extends React.Component {
 
 const styles = StyleSheet.create({
   //define styles that is only specific to this page
+  link: {
+    width: '40%',
+    //to force it to the right
+    alignSelf: 'flex-end'
+  }
 });
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     user: state.user,
     error: state.error,
@@ -155,8 +144,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (loginDetails) => {
-      dispatch(login(loginDetails));
+    setUser: (user) => {
+      dispatch(setUser(user));
     },
   };
 };

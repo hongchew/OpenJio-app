@@ -1,32 +1,19 @@
-import axios from 'axios';
-import {globalVariable} from '../GLOBAL_VARIABLE';
-
 export const type = {
-  LOGIN_SUCCESS: 'LOGIN_SUCCESS',
-  REQUEST_LOGIN: 'REQUEST_LOGIN',
-  LOGIN_FAILED: 'LOGIN_FAILED',
+  SET_USER: 'SET_USER',
   LOGOUT: 'LOGOUT',
+  UPDATE_ADDRESS_ARR: 'UPDATE_ADDRESS_ARR',
+  DELETE_ADDRESS: 'DELETE_ADDRESS',
 };
 
-export function requestLogin() {
-  return {
-    type: type.REQUEST_LOGIN,
-  };
-}
 
-export function loginSuccess(loginDetails) {
+//getting the user after api is called
+//and set it the redux state 
+export function setUser(user) {
+  console.log("coming into action");
+  console.log("what is useracc: " + user);
   return {
-    type: type.LOGIN_SUCCESS,
-    payload: {
-      loginDetails,
-    },
-  };
-}
-
-export function loginFailed(error) {
-  return {
-    type: type.LOGIN_FAILED,
-    payload: error,
+    type: type.SET_USER,
+    payload: user,
   };
 }
 
@@ -36,21 +23,14 @@ export function logout() {
   };
 }
 
-//Thunk action creator
-export function login({email, password}) {
-  return function (dispatch, getState) {
-    dispatch(requestLogin());
-    //console.log('Current state: ' + getState());
-    axios
-      .post(globalVariable.apiUrl + 'login', {
-        email,
-        password,
-      })
-      .then((response) => {
-        dispatch(loginSuccess(response.data));
-      })
-      .catch((error) => {
-        dispatch(loginFailed(error.message));
-      });
+
+//for addresses management
+//the details here is the array of addresses 
+//that we want to put in the state
+export function updateAddressArr(details) {
+  return {
+    type: type.UPDATE_ADDRESS_ARR,
+    payload: details,
   };
 }
+

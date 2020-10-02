@@ -24,7 +24,7 @@ class ForgotPassword extends React.Component {
       });
     } else {
       axios
-        .post(globalVariable.apiUrl + 'reset-user-password', {
+        .put(globalVariable.userApi + 'reset-user-password', {
           email: this.state.email,
         })
         .then((response) => {
