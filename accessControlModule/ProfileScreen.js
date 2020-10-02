@@ -1,8 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusBar, ImageBackground, StyleSheet} from 'react-native';
+import {StatusBar, View, ImageBackground, StyleSheet} from 'react-native';
 import {Text, Layout, Menu, MenuItem, Icon, Card} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
+import {DefaultAvatar} from '../GLOBAL_VARIABLE';
+import renderIf from '../components/renderIf';
 
 const PasswordIcon = (props) => (
   <Icon {...props} name='shield-outline' width='25' height='25'/>
@@ -23,6 +25,11 @@ const VerifyIcon = (props) => (
 const AddressIcon = (props) => (
   <Icon {...props} name='map-outline' width='25' height='25'/>
 )
+
+const EmailIcon = (props) => (
+  <Icon {...props} name='email-outline' width='25' height='25'/>
+)
+
 
 class ProfileScreen extends React.Component {
   constructor(props) {
@@ -57,13 +64,22 @@ class ProfileScreen extends React.Component {
         <Layout style={styles.container}>
           
           <Card style={styles.firstCard}>
-            <Text>
-              Name: {this.props.user.name} {"\n"}
-              Email: {this.props.user.email}
+            <View style={styles.headerRow}>
+            <DefaultAvatar />
+            <Text style={styles.nameCardText}>
+              <Text style={{fontWeight: 'bold', fontSize: 16}} >{this.props.user.name}{"\n"}</Text>
+              <Text style={styles.lineText}>Email: {this.props.user.email}{"\n"}</Text>
+              {renderIf(
+                this.props.user.mobileNumber != null, 
+                <Text style={styles.lineText}>Mobile: {this.props.user.mobileNumber}</Text>,
+                <Text style={styles.lineText}>Mobile: -</Text>
+              )}
             </Text>
+            </View>
           </Card>
           
             <Menu style={styles.menu}>
+            <Icon name='email-outline' width='10' height='10' color='black'/>
               <MenuItem
                 accessoryLeft={EditIcon}
                 title={<Text style={styles.menuItem}>Edit Profile</Text>}
@@ -72,7 +88,7 @@ class ProfileScreen extends React.Component {
               <MenuItem
                 accessoryLeft={VerifyIcon}
                 title={<Text style={styles.menuItem}>Verify Account</Text>}
-                onPress={() => this.props.navigation.navigate('ChangePassword')}
+                onPress={() => this.props.navigation.navigate('VerifyAccount')}
               />
               <MenuItem
                 accessoryLeft={PasswordIcon}
@@ -120,12 +136,20 @@ const styles = StyleSheet.create({
   menuItem: {
     fontSize: 16,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nameCardText: {
+    marginLeft: 15,
+    lineHeight: 24,
+  },
   firstCard: {
     marginLeft: 15, 
     marginRight: 15,
     backgroundColor:"white",
     borderRadius:15,
-    elevation:24,
+    elevation:2,
     //shadowColor doesn't work on android
     //shadowColor: 'blue',
     shadowOffset: { width: 0, height: 2 },

@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
+    alignContent: 'center',
     justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,

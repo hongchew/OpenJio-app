@@ -8,14 +8,14 @@ import {globalVariable} from '../GLOBAL_VARIABLE';
 import {editProfile} from '../redux/actions';
 
 
-class EditProfile extends React.Component {
+class VerifyAccount extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       secureTextEntry: true,
-      name: this.props.user.name,
-      mobileNumber: this.props.user.mobileNumber,
-      email: this.props.user.email,
+      userId: this.props.user.userId,
+      nric: '',
+      password: '',
       message: '',
       isUpdated: this.props.isUpdated,
     };
@@ -78,24 +78,19 @@ class EditProfile extends React.Component {
           translucent={true}
         />
         <Text style={styles.header} category="h4">
-          Edit Profile
+          Verify Account
         </Text>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
             <Input
-              label="Name"
-              value={this.state.name}
-              onChangeText={(text) => this.setState({name: text})}
+              label="NRIC"
+              value={this.state.nric}
+              onChangeText={(text) => this.setState({nric: text})}
             />
             <Input
-              label="Email"
-              value={this.state.email}
-              onChangeText={(text) => this.setState({email: text})}
-            />
-            <Input
-              label="Mobile No. (Optional)"
-              value={this.state.mobileNumber}
-              onChangeText={(text) => this.setState({mobileNumber: text})}
+              label="Password"
+              value={this.state.password}
+              onChangeText={(text) => this.setState({password: text})}
             />
             
             <Button
@@ -147,4 +142,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
+export default connect(mapStateToProps, mapDispatchToProps)(VerifyAccount);

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusBar, StyleSheet} from 'react-native';
+import {StatusBar, StyleSheet, ScrollView} from 'react-native';
 import {Text, Layout, Card} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
 
@@ -24,18 +24,89 @@ class HomeScreen extends React.Component {
           translucent={true}
         />
         <Text style={styles.header} category="h4">
-          Home
+          Announcements
         </Text>
-        <Layout style={styles.container}>
+        <ScrollView style={styles.container}>
           <Card style={styles.card}>
-            <Text>
-              The Maldives, officially the Republic of Maldives, is a small
-              country in South Asia, located in the Arabian Sea of the Indian
-              Ocean. It lies southwest of Sri Lanka and India, about 1,000
-              kilometres (620 mi) from the Asian continent
+            
+            <Text category="label" style={styles.label}>
+              Description
             </Text>
+            <Text style={styles.word}>
+              Heading out to buy koi at jurong point, anyone wants anything from koi? 
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Start Location
+            </Text>
+            <Text style={styles.word}>
+              Jurong Point 
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Destination
+            </Text>
+            <Text style={styles.word}>
+              Jurong Point 
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Close Time
+            </Text>
+            <Text style={styles.word}>
+              5pm
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Status
+            </Text>
+            <Text style={styles.word}>
+              Active
+              {'\n'}
+            </Text>
+            
           </Card>
-        </Layout>
+
+          <Card style={styles.card}>
+            
+            <Text category="label" style={styles.label}>
+              Description
+            </Text>
+            <Text style={styles.word}>
+              Heading out to buy koi at jurong point, anyone wants anything from koi? 
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Start Location
+            </Text>
+            <Text style={styles.word}>
+              Jurong Point 
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Destination
+            </Text>
+            <Text style={styles.word}>
+              Jurong Point 
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Close Time
+            </Text>
+            <Text style={styles.word}>
+              5pm
+              {'\n'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Status
+            </Text>
+            <Text style={styles.word}>
+              Active
+              {'\n'}
+            </Text>
+            
+          </Card>
+        </ScrollView>
       </Layout>
     );
   }
@@ -47,13 +118,11 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginLeft: 25,
-    marginRight: 25,
     backgroundColor: 'transparent',
   },
   header: {
     marginTop: 60,
-    marginBottom: 30,
+    marginBottom: 20,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
@@ -66,13 +135,24 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor:"white",
+    marginLeft: 20, 
+    marginRight: 20,
+    marginBottom: 20,
+    marginTop: 10,
     borderRadius:15,
-    padding:5,
     elevation:4,
     shadowColor: '#ededed',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 10, 
+  },
+  label: {
+    marginTop: 5,
+    marginBottom: 8,
+    color: 'grey'
+  },
+  word: {
+    fontSize: 16,
   },
 });
 

@@ -4,6 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
+  TransitionPresets
 } from '@react-navigation/stack';
 
 import LoginScreen from './accessControlModule/LoginScreen';
@@ -15,12 +16,17 @@ import HomeScreen from './accessControlModule/HomeScreen';
 import EditProfile from './profileManagement/EditProfile';
 import AddressScreen from './profileManagement/AddressScreen';
 import AddAddress from './profileManagement/AddAddress';
+import VerifyAccount from './profileManagement/VerifyAccount';
 
 import TabNavigator from './tabs';
 
 const Stack = createStackNavigator();
 
 const BackIcon = (props) => (
+  <Icon {...props} name="close-outline" width="25" height="25" />
+);
+
+const Back = (props) => (
   <Icon {...props} name="arrow-back-outline" width="25" height="25" />
 );
 
@@ -34,7 +40,9 @@ const HomeNavigator = () => (
       headerTitleStyle: {
         color: '#ffffff', //hide the ugly title
       },
-    }}>
+    }}
+    mode='modal'
+  >
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -47,6 +55,7 @@ const HomeNavigator = () => (
         gestureEnabled: true,
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -75,6 +84,7 @@ const HomeNavigator = () => (
         gestureEnabled: true,
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -96,6 +106,7 @@ const HomeNavigator = () => (
         gestureEnabled: true,
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -121,6 +132,27 @@ const HomeNavigator = () => (
           <Button
             onPress={() => {
               navigation.replace('Address');
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="VerifyAccount"
+      component={VerifyAccount}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Profile'});
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"

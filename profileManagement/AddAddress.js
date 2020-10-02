@@ -95,6 +95,11 @@ class AddAddress extends React.Component {
                 onChangeText={(text) => this.setState({line1: text})}
               />
               <Input
+                label="Line 2 (Optional)"
+                value={this.state.line2}
+                onChangeText={(text) => this.setState({line2: text})}
+              />
+              <Input
                 label="Postal Code"
                 value={this.state.postalCode}
                 onChangeText={(text) => this.setState({postalCode: text})}
@@ -103,11 +108,6 @@ class AddAddress extends React.Component {
                 label="Country"
                 value={this.state.country}
                 onChangeText={(text) => this.setState({country: text})}
-              />
-              <Input
-                label="Line 2 (Optional)"
-                value={this.state.line2}
-                onChangeText={(text) => this.setState({line2: text})}
               />
               <Input
                 label="Description (Optional)"
