@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
+  Image
 } from 'react-native';
 import {
   Button,
@@ -19,6 +20,7 @@ import {setUser} from '../redux/actions';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
+import {Logo} from '../GLOBAL_VARIABLE';
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -77,12 +79,18 @@ class LoginScreen extends React.Component {
           backgroundColor='#ffffff'
           translucent={true}
         />
+        
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        
           <Layout style={loginStyle.container}>
-            {this.props.isLoading && <Spinner />}
+          <Layout style={styles.logo}>
+            <Image source={require('../img/openjioLogo.jpg')} style={{width: 70, height: 70}}/>
             <Text style={loginStyle.header} category='h1'>
-              OpenJio
+              OpenJio 
             </Text>
+          </Layout>
+            {this.props.isLoading && <Spinner />}
+            
             <Input
               label='Email'
               value={this.state.email}
@@ -131,7 +139,10 @@ const styles = StyleSheet.create({
     width: '40%',
     //to force it to the right
     alignSelf: 'flex-end'
-  }
+  },
+  logo: {
+    alignItems: 'center',
+  },
 });
 
 const mapStateToProps = (state) => {

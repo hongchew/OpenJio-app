@@ -13,7 +13,8 @@ const loginStyle = StyleSheet.create({
     justifyContent: 'center',
   },
   header: {
-    marginBottom: 20,
+    marginTop: 5,
+    marginBottom: 35,
     fontFamily: 'Karla-Bold',
   },
   login: {

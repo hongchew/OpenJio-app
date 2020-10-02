@@ -25,6 +25,7 @@ const AddressIcon = (props) => (
   <Icon {...props} name="map-outline" width="25" height="25" />
 );
 
+
 class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -39,6 +40,26 @@ class ProfileScreen extends React.Component {
     this.props.logout();
     this.props.navigation.replace('Login');
   };
+
+  displayEmailIcon = () => {
+      return (
+        <Icon
+          name="email-outline"
+          style={{width: 17, height: 17, marginBottom: -4, marginRight: 8}}
+          fill="grey"
+        />
+      );
+  };
+
+  displayPhoneIcon = () => {
+    return (
+      <Icon
+        name="phone-outline"
+        style={{width: 17, height: 17, marginBottom: -4, marginRight: 8}}
+        fill="grey"
+      />
+    );
+};
 
   checkmarkIfVerified = (user) => {
     if (user && user.isSingPassVerified) {
@@ -89,11 +110,11 @@ class ProfileScreen extends React.Component {
                 </Layout>
                 {'\n'}
                 <Text style={styles.lineText}>
-                  Email: {this.props.user ? this.props.user.email : ''}
+                {this.displayEmailIcon()} {this.props.user ? this.props.user.email : ''}
                   {'\n'}
                 </Text>
                 <Text style={styles.lineText}>
-                  Mobile:{' '}
+                {this.displayPhoneIcon()}
                   {this.props.user
                     ? this.props.user.mobileNumber
                       ? this.props.user.mobileNumber
@@ -164,6 +185,8 @@ const styles = StyleSheet.create({
   nameCardText: {
     marginLeft: 15,
     lineHeight: 24,
+    flexWrap: 'wrap',
+    flex: 1
   },
   firstCard: {
     marginLeft: 15,
