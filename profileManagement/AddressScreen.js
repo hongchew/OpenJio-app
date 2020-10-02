@@ -1,11 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {View, StatusBar, ImageBackground, StyleSheet} from 'react-native';
-import {Text, Layout, Button, Icon, Card} from '@ui-kitten/components';
+import {View, StatusBar, StyleSheet} from 'react-native';
+import {Text, Layout, Button, Card} from '@ui-kitten/components';
 import renderIf from '../components/renderIf';
 import {ScrollView} from 'react-native-gesture-handler';
-import {deleteAddress} from '../redux/actions';
-import {editProfile} from '../redux/actions';
+import {updateAddressArr, setUser} from '../redux/actions';
+import axios from 'axios';
+import {globalVariable} from '../GLOBAL_VARIABLE';
 
 class AddressScreen extends React.Component {
   constructor(props) {
@@ -15,28 +16,53 @@ class AddressScreen extends React.Component {
       user: this.props.user,
       addresses: this.props.user.Addresses,
     };
-    console.log(this.props);
   }
 
-  handleDelete = (addressId) => {
-    this.props.deleteAddress(addressId);
-  };
+  async handleSetDefault(addressId) {
+    try {
+      const response = await axios.put(
+        globalVariable.userApi + 'update-user-details',
+        {
+          userId: this.props.user.userId,
+          defaultAddressId: addressId,
+        }
+      );
+      this.props.setUser(response.data);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to set default address.',
+      });
+    }
+  }
 
-  handleSetDefault = (addressId) => {
-    const user = {
-      userId: this.props.user.userId,
-      defaultAddressId: addressId,
-    };
-    console.log(user);
-    this.props.editProfile(user);
-  };
+  async handleDelete(addressId) {
+    //check whether if this address is the default one
+    //then i will have to set user's defaultAddressId to null before i delete
+    if (this.props.user.defaultAddressId == addressId) {
+      this.handleSetDefault(null);
+    }
+
+    try {
+      const response = await axios.delete(
+        globalVariable.addressApi + addressId
+      );
+      console.log(response.data);
+      this.props.updateAddressArr(response.data);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to delete address.',
+      });
+    }
+  }
 
   RenderAddress = () =>
     this.props.user.Addresses.map((address) => {
       let DefaultButton;
       if (this.props.user.defaultAddressId == address.addressId) {
         DefaultButton = (
-          <Button style={styles.footerControl} size="small" disabled={true}>
+          <Button style={styles.footerControl} size='small' disabled={true}>
             DEFAULT ADDRESS
           </Button>
         );
@@ -44,7 +70,7 @@ class AddressScreen extends React.Component {
         DefaultButton = (
           <Button
             style={styles.footerControl}
-            size="small"
+            size='small'
             onPress={() => this.handleSetDefault(address.addressId)}>
             SET DEFAULT
           </Button>
@@ -54,8 +80,8 @@ class AddressScreen extends React.Component {
         <View {...props} style={[props.style, styles.footerContainer]}>
           <Button
             style={styles.footerControl}
-            size="small"
-            status="basic"
+            size='small'
+            status='basic'
             onPress={() => this.handleDelete(address.addressId)}>
             DELETE
           </Button>
@@ -65,7 +91,7 @@ class AddressScreen extends React.Component {
 
       return (
         <Card key={address.addressId} style={styles.card} footer={Footer}>
-          <Text category="label" style={styles.label}>
+          <Text category='label' style={styles.label}>
             LINE 1
           </Text>
           {renderIf(
@@ -74,9 +100,9 @@ class AddressScreen extends React.Component {
               {address.line1}
               {'\n'}
             </Text>,
-            <Text category="s2">-</Text>
+            <Text category='s2'>-</Text>
           )}
-          <Text category="label" style={styles.label}>
+          <Text category='label' style={styles.label}>
             LINE 2
           </Text>
           {renderIf(
@@ -85,9 +111,9 @@ class AddressScreen extends React.Component {
               {address.line2}
               {'\n'}
             </Text>,
-            <Text category="s2">-</Text>
+            <Text category='s2'>-</Text>
           )}
-          <Text category="label" style={styles.label}>
+          <Text category='label' style={styles.label}>
             POSTAL CODE
           </Text>
           {renderIf(
@@ -96,9 +122,9 @@ class AddressScreen extends React.Component {
               {address.postalCode}
               {'\n'}
             </Text>,
-            <Text category="s2">-</Text>
+            <Text category='s2'>-</Text>
           )}
-          <Text category="label" style={styles.label}>
+          <Text category='label' style={styles.label}>
             COUNTRY
           </Text>
           {renderIf(
@@ -107,9 +133,9 @@ class AddressScreen extends React.Component {
               {address.country}
               {'\n'}
             </Text>,
-            <Text category="s2">-</Text>
+            <Text category='s2'>-</Text>
           )}
-          <Text category="label" style={styles.label}>
+          <Text category='label' style={styles.label}>
             DESCRIPTION
           </Text>
           {renderIf(
@@ -118,7 +144,7 @@ class AddressScreen extends React.Component {
               {address.description}
               {'\n'}
             </Text>,
-            <Text category="s2">-</Text>
+            <Text category='s2'>-</Text>
           )}
         </Card>
       );
@@ -128,29 +154,45 @@ class AddressScreen extends React.Component {
     return (
       <Layout style={styles.layout}>
         <StatusBar
-          barStyle="dark-content"
+          barStyle='dark-content'
           hidden={false}
-          backgroundColor="#ffffff"
+          backgroundColor='#ffffff'
           translucent={true}
         />
         <View style={styles.headerRow}>
-          <Text style={styles.header} category="h4">
+          <Text style={styles.header} category='h4'>
             Address Book
           </Text>
+
           {renderIf(
-            this.state.addresses.length < 3,
+            this.props.user.Addresses.length < 3,
             <Button
-              size="small"
+              size='small'
               style={styles.button}
-              onPress={() => this.props.navigation.navigate('AddAddress')}>
+              onPress={() => this.props.navigation.navigate('AddAddress')}
+            >
+              ADD ADDRESS
+            </Button>,
+            <Button
+              size='small'
+              style={styles.button}
+              onPress={() => this.props.navigation.navigate('AddAddress')}
+              disabled={true}
+            >
               ADD ADDRESS
             </Button>
           )}
         </View>
         <ScrollView style={styles.container}>
-          {/* <Text style={styles.description}>Maximum of 3 addresses</Text> */}
           {renderIf(
-            this.state.addresses.length == 0,
+            this.state.message,
+            <Text styles={styles.description} status='danger'>
+              {this.state.message}
+            </Text>
+          )}
+
+          {renderIf(
+            this.props.user.Addresses.length == 0,
             <Card style={styles.card}>
               <Text>No addresses yet</Text>
             </Card>,
@@ -171,9 +213,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    //marginTop: 30,
     marginBottom: 30,
-    //marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
   headerRow: {
@@ -231,12 +271,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// function mapStateToProps(state) {
-//   return {
-//     user: state.user,
-//   };
-// }
-
 const mapStateToProps = (state) => {
   //console.log(state);
   return {
@@ -244,17 +278,16 @@ const mapStateToProps = (state) => {
       ...state.user,
       Addresses: state.user.Addresses,
     },
-    isUpdated: state.isUpdated,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    deleteAddress: (addressId) => {
-      dispatch(deleteAddress(addressId));
+    updateAddressArr: (addresses) => {
+      dispatch(updateAddressArr(addresses));
     },
-    editProfile: (user) => {
-      dispatch(editProfile(user));
+    setUser: (user) => {
+      dispatch(setUser(user));
     },
   };
 };

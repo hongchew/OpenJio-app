@@ -9,7 +9,9 @@ import {
 import {Text, Layout, Input, Button} from '@ui-kitten/components';
 import {connect} from 'react-redux';
 import loginStyle from '../styles/loginStyle';
-import {addAddress} from '../redux/actions';
+import axios from 'axios';
+import {globalVariable} from '../GLOBAL_VARIABLE';
+import {updateAddressArr} from '../redux/actions';
 
 class AddAddress extends React.Component {
   constructor(props) {
@@ -25,39 +27,65 @@ class AddAddress extends React.Component {
       message: '',
       isUpdated: this.props.isUpdated,
     };
+    //console.log('this props: ');
+    //console.log(this.props.user.userId);
   }
 
-  handleAddAddress = () => {
-    if (
-      this.state.line1 == '' ||
-      this.state.country == '' ||
-      this.state.postalCode == ''
-    ) {
-      this.setState({
-        isUpdated: false,
-        message: 'Line 1, country and postal code fields cannot be empty.',
-      });
-    } else {
-      const address = {
-        line1: this.state.line1,
-        line2: this.state.line2,
-        postalCode: this.state.postalCode,
-        country: this.state.country,
-        description: this.state.description,
-      };
-      this.props.addAddress(this.state.userId, address);
 
-      setTimeout(() => {
-        if (this.props.isUpdated) {
-          this.props.navigation.replace('Address');
-        } else {
-          this.setState({
-            message: 'Unable to update profile.',
-          });
+  async handleAddAddress() {
+    try {
+      const response = await axios.post(globalVariable.addressApi + 'add', {
+        userId: this.props.user.userId,
+        address: {
+          line1: this.state.line1,
+          line2: this.state.line2,
+          postalCode: this.state.postalCode,
+          country: this.state.country,
+          description: this.state.description,
         }
-      }, 800);
+      })
+      console.log(response.data);
+      this.props.updateAddressArr(response.data);
+      this.props.navigation.replace('Address');
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to add address.',
+      });
     }
-  };
+  }
+
+  // handleAddAddress = () => {
+  //   if (
+  //     this.state.line1 == '' ||
+  //     this.state.country == '' ||
+  //     this.state.postalCode == ''
+  //   ) {
+  //     this.setState({
+  //       isUpdated: false,
+  //       message: 'Line 1, country and postal code fields cannot be empty.',
+  //     });
+  //   } else {
+  //     const address = {
+  //       line1: this.state.line1,
+  //       line2: this.state.line2,
+  //       postalCode: this.state.postalCode,
+  //       country: this.state.country,
+  //       description: this.state.description,
+  //     };
+  //     this.props.addAddress(this.state.userId, address);
+
+  //     setTimeout(() => {
+  //       if (this.props.isUpdated) {
+  //         this.props.navigation.replace('Address');
+  //       } else {
+  //         this.setState({
+  //           message: 'Unable to update profile.',
+  //         });
+  //       }
+  //     }, 800);
+  //   }
+  // };
 
   render() {
     let responseMessage;
@@ -163,8 +191,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addAddress: (userId, address) => {
-      dispatch(addAddress(userId, address));
+    updateAddressArr: (addresses) => {
+      dispatch(updateAddressArr(addresses));
     },
   };
 };

@@ -1,12 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {
-  StatusBar,
-  View,
-  ImageBackground,
-  StyleSheet,
-  LayoutAnimation,
-} from 'react-native';
+import {StatusBar, View, StyleSheet} from 'react-native';
 import {Text, Layout, Menu, MenuItem, Icon, Card} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
 import {DefaultAvatar} from '../GLOBAL_VARIABLE';
@@ -31,10 +25,6 @@ const AddressIcon = (props) => (
   <Icon {...props} name="map-outline" width="25" height="25" />
 );
 
-const EmailIcon = (props) => (
-  <Icon {...props} name="email-outline" width="25" height="25" />
-);
-
 class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -47,9 +37,6 @@ class ProfileScreen extends React.Component {
 
   handleLogout = () => {
     this.props.logout();
-    // this.setState({
-    //   user: {},
-    // });
     this.props.navigation.replace('Login');
   };
 

@@ -65,7 +65,7 @@ class SignupScreen extends React.Component {
       });
     } else {
       axios
-        .post(globalVariable.apiUrl + 'signup', {
+        .post(globalVariable.userApi + 'signup', {
           email: this.state.email,
           password: this.state.password,
           name: this.state.name,

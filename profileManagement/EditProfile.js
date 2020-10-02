@@ -1,11 +1,11 @@
 import React from 'react';
 import {StatusBar, TouchableWithoutFeedback, Keyboard, StyleSheet} from 'react-native';
-import {Text, Icon, Layout, Input, Button} from '@ui-kitten/components';
+import {Text, Layout, Input, Button} from '@ui-kitten/components';
 import {connect} from 'react-redux';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
-import {editProfile} from '../redux/actions';
+import {setUser} from '../redux/actions';
 
 
 class EditProfile extends React.Component {
@@ -22,36 +22,25 @@ class EditProfile extends React.Component {
   }
 
 
-  handleEditProfile = () => {
-    if (
-      this.state.name == '' ||
-      this.state.email == ''
-    ) {
-      this.setState({
-        isUpdated: false,
-        message: 'Name and email fields cannot be empty.',
-      });
-    } else {
-      const user = {
+  async handleEditProfile () {
+    try {
+      const response = await axios.put(globalVariable.userApi + 'update-user-details', {
         userId: this.props.user.userId,
         name: this.state.name,
         mobileNumber: this.state.mobileNumber,
         email: this.state.email
-      }
-      this.props.editProfile(user);
-      setTimeout(() => {
-        if (this.props.isUpdated) {
-          this.props.navigation.replace('Tabs', {screen: 'Profile'});
-        } else {
-          this.setState({
-            message: 'Unable to update profile.',
-          });
-        }
-      }, 500);
+      })
+      console.log(response.data);
+      this.props.setUser(response.data);
+      this.props.navigation.navigate('Tabs', {screen: 'Profile'});
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to update profile.',
+      });
     }
-
-  };
-
+  }
+  
 
   render() {
     let responseMessage;
@@ -135,16 +124,19 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    isUpdated: state.isUpdated,
+    error: state.error,
+    isLoading: state.loading,
   };
 };
 
+
 const mapDispatchToProps = (dispatch) => {
   return {
-    editProfile: (user) => {
-      dispatch(editProfile(user));
+    setUser: (user) => {
+      dispatch(setUser(user));
     },
   };
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);
