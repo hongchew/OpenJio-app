@@ -62,7 +62,7 @@ class AddressScreen extends React.Component {
       let DefaultButton;
       if (this.props.user.defaultAddressId == address.addressId) {
         DefaultButton = (
-          <Button style={styles.footerControl} size='small' disabled={true}>
+          <Button style={styles.footerControl} size="small" disabled={true}>
             DEFAULT ADDRESS
           </Button>
         );
@@ -70,7 +70,7 @@ class AddressScreen extends React.Component {
         DefaultButton = (
           <Button
             style={styles.footerControl}
-            size='small'
+            size="small"
             onPress={() => this.handleSetDefault(address.addressId)}>
             SET DEFAULT
           </Button>
@@ -80,8 +80,8 @@ class AddressScreen extends React.Component {
         <View {...props} style={[props.style, styles.footerContainer]}>
           <Button
             style={styles.footerControl}
-            size='small'
-            status='basic'
+            size="small"
+            status="basic"
             onPress={() => this.handleDelete(address.addressId)}>
             DELETE
           </Button>
@@ -91,60 +91,52 @@ class AddressScreen extends React.Component {
 
       return (
         <Card key={address.addressId} style={styles.card} footer={Footer}>
-          <Text category='label' style={styles.label}>
+          <Text category="label" style={styles.label}>
+            DESCRIPTION
+          </Text>
+
+          <Text style={{fontWeight: 'bold', marginBottom: 10}} category="h6">
+            {address.description}
+          </Text>
+          <Text category="label" style={styles.label}>
             LINE 1
           </Text>
           {renderIf(
             address.line1 != null,
             <Text style={styles.word}>
               {address.line1}
-              {'\n'}
             </Text>,
-            <Text category='s2'>-</Text>
+            <Text category="s2">-</Text>
           )}
-          <Text category='label' style={styles.label}>
+          <Text category="label" style={styles.label}>
             LINE 2
           </Text>
           {renderIf(
             address.line2 != null,
             <Text style={styles.word}>
               {address.line2}
-              {'\n'}
             </Text>,
-            <Text category='s2'>-</Text>
+            <Text category="s2">-</Text>
           )}
-          <Text category='label' style={styles.label}>
+          <Text category="label" style={styles.label}>
             POSTAL CODE
           </Text>
           {renderIf(
             address.postalCode != null,
             <Text style={styles.word}>
               {address.postalCode}
-              {'\n'}
             </Text>,
-            <Text category='s2'>-</Text>
+            <Text category="s2">-</Text>
           )}
-          <Text category='label' style={styles.label}>
+          <Text category="label" style={styles.label}>
             COUNTRY
           </Text>
           {renderIf(
             address.country != null,
             <Text style={styles.word}>
               {address.country}
-              {'\n'}
             </Text>,
-            <Text category='s2'>-</Text>
-          )}
-          <Text category='label' style={styles.label}>
-            DESCRIPTION
-          </Text>
-          {renderIf(
-            address.description != null,
-            <Text style={styles.word}>
-              {address.description}
-              {'\n'}
-            </Text>,
-            <Text category='s2'>-</Text>
+            <Text category="s2">-</Text>
           )}
         </Card>
       );
@@ -154,31 +146,29 @@ class AddressScreen extends React.Component {
     return (
       <Layout style={styles.layout}>
         <StatusBar
-          barStyle='dark-content'
+          barStyle="dark-content"
           hidden={false}
-          backgroundColor='#ffffff'
+          backgroundColor="#ffffff"
           translucent={true}
         />
         <View style={styles.headerRow}>
-          <Text style={styles.header} category='h4'>
+          <Text style={styles.header} category="h4">
             Address Book
           </Text>
 
           {renderIf(
             this.props.user.Addresses.length < 3,
             <Button
-              size='small'
+              size="small"
               style={styles.button}
-              onPress={() => this.props.navigation.navigate('AddAddress')}
-            >
+              onPress={() => this.props.navigation.navigate('AddAddress')}>
               ADD ADDRESS
             </Button>,
             <Button
-              size='small'
+              size="small"
               style={styles.button}
               onPress={() => this.props.navigation.navigate('AddAddress')}
-              disabled={true}
-            >
+              disabled={true}>
               ADD ADDRESS
             </Button>
           )}
@@ -186,7 +176,7 @@ class AddressScreen extends React.Component {
         <ScrollView style={styles.container}>
           {renderIf(
             this.state.message,
-            <Text styles={styles.description} status='danger'>
+            <Text styles={styles.description} status="danger">
               {this.state.message}
             </Text>
           )}
@@ -233,6 +223,7 @@ const styles = StyleSheet.create({
   word: {
     fontSize: 16,
     marginTop: 5,
+    marginBottom: 10,
   },
   firstCard: {
     backgroundColor: 'white',

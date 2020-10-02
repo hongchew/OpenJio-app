@@ -31,61 +31,40 @@ class AddAddress extends React.Component {
     //console.log(this.props.user.userId);
   }
 
-
   async handleAddAddress() {
-    try {
-      const response = await axios.post(globalVariable.addressApi + 'add', {
-        userId: this.props.user.userId,
-        address: {
-          line1: this.state.line1,
-          line2: this.state.line2,
-          postalCode: this.state.postalCode,
-          country: this.state.country,
-          description: this.state.description,
-        }
-      })
-      console.log(response.data);
-      this.props.updateAddressArr(response.data);
-      this.props.navigation.replace('Address');
-    } catch (error) {
-      console.log(error);
+    if (
+      this.state.line1 === null ||
+      this.state.postalCode === null ||
+      this.state.country === null ||
+      this.state.description === null
+    ) {
       this.setState({
-        message: 'Unable to add address.',
+        message: 'Required fields are empty. Unable to add address.',
       });
+    } else {
+      try {
+        const response = await axios.post(globalVariable.addressApi + 'add', {
+          userId: this.props.user.userId,
+          address: {
+            line1: this.state.line1,
+            line2: this.state.line2,
+            postalCode: this.state.postalCode,
+            country: this.state.country,
+            description: this.state.description,
+          },
+        });
+        console.log(response.data);
+        this.props.updateAddressArr(response.data);
+        this.props.navigation.replace('Address');
+      } catch (error) {
+        console.log(error);
+        this.setState({
+          message: 'Unable to add address.',
+        });
+      }
     }
+    
   }
-
-  // handleAddAddress = () => {
-  //   if (
-  //     this.state.line1 == '' ||
-  //     this.state.country == '' ||
-  //     this.state.postalCode == ''
-  //   ) {
-  //     this.setState({
-  //       isUpdated: false,
-  //       message: 'Line 1, country and postal code fields cannot be empty.',
-  //     });
-  //   } else {
-  //     const address = {
-  //       line1: this.state.line1,
-  //       line2: this.state.line2,
-  //       postalCode: this.state.postalCode,
-  //       country: this.state.country,
-  //       description: this.state.description,
-  //     };
-  //     this.props.addAddress(this.state.userId, address);
-
-  //     setTimeout(() => {
-  //       if (this.props.isUpdated) {
-  //         this.props.navigation.replace('Address');
-  //       } else {
-  //         this.setState({
-  //           message: 'Unable to update profile.',
-  //         });
-  //       }
-  //     }, 800);
-  //   }
-  // };
 
   render() {
     let responseMessage;
@@ -117,6 +96,11 @@ class AddAddress extends React.Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView>
             <Layout style={styles.container}>
+            <Input
+                label="Description"
+                value={this.state.description}
+                onChangeText={(text) => this.setState({description: text})}
+              />
               <Input
                 label="Line 1"
                 value={this.state.line1}
@@ -136,11 +120,6 @@ class AddAddress extends React.Component {
                 label="Country"
                 value={this.state.country}
                 onChangeText={(text) => this.setState({country: text})}
-              />
-              <Input
-                label="Description (Optional)"
-                value={this.state.description}
-                onChangeText={(text) => this.setState({description: text})}
               />
 
               <Button

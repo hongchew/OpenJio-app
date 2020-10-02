@@ -17,90 +17,72 @@ class HomeScreen extends React.Component {
     return (
       <Layout style={styles.layout}>
         <StatusBar
-          barStyle='dark-content'
+          barStyle="dark-content"
           hidden={false}
-          backgroundColor='transparent'
+          backgroundColor="transparent"
           translucent={true}
         />
-        <Text style={styles.header} category='h4'>
+        <Text style={styles.header} category="h4">
           Announcements
         </Text>
         <ScrollView style={styles.container}>
-          <Card style={styles.card}>
-            <Text category='label' style={styles.label}>
+        <Card style={styles.card}>
+            <Text category="label" style={styles.label}>
+              Destination
+            </Text>
+            <Text style={{fontWeight: 'bold'}} category="h5">
+              Jurong Point
+            </Text>
+
+            <Text category="label" style={styles.label}>
               Description
             </Text>
             <Text style={styles.word}>
               Heading out to buy koi at jurong point, anyone wants anything from
               koi?
-              {'\n'}
             </Text>
-            <Text category='label' style={styles.label}>
-              Start Location
-            </Text>
-            <Text style={styles.word}>
-              Jurong Point
-              {'\n'}
-            </Text>
-            <Text category='label' style={styles.label}>
-              Destination
-            </Text>
-            <Text style={styles.word}>
-              Jurong Point
-              {'\n'}
-            </Text>
-            <Text category='label' style={styles.label}>
+
+            <Text category="label" style={styles.label}>
               Close Time
             </Text>
             <Text style={styles.word}>
               5pm
-              {'\n'}
             </Text>
-            <Text category='label' style={styles.label}>
-              Status
+
+            <Text category="label" style={styles.label}>
+              Submitted by 
             </Text>
             <Text style={styles.word}>
-              Active
-              {'\n'}
+              Terry Lim
             </Text>
           </Card>
 
           <Card style={styles.card}>
-            <Text category='label' style={styles.label}>
+            <Text category="label" style={styles.label}>
+              Destination
+            </Text>
+            <Text style={{fontWeight: 'bold', marginBottom: 8}} category="h5">
+              Blk 2 Mama Shop
+            </Text>
+
+            <Text category="label" style={styles.label}>
               Description
             </Text>
             <Text style={styles.word}>
-              Heading out to buy koi at jurong point, anyone wants anything from
-              koi?
-              {'\n'}
+              Heading out to get some groceries at the mama shop at blk 2, anyone wants me to help them buy anything?
             </Text>
-            <Text category='label' style={styles.label}>
-              Start Location
-            </Text>
-            <Text style={styles.word}>
-              Jurong Point
-              {'\n'}
-            </Text>
-            <Text category='label' style={styles.label}>
-              Destination
-            </Text>
-            <Text style={styles.word}>
-              Jurong Point
-              {'\n'}
-            </Text>
-            <Text category='label' style={styles.label}>
+
+            <Text category="label" style={styles.label}>
               Close Time
             </Text>
             <Text style={styles.word}>
               5pm
-              {'\n'}
             </Text>
-            <Text category='label' style={styles.label}>
-              Status
+            <Text category="label" style={styles.label}>
+              Submitted by 
             </Text>
             <Text style={styles.word}>
-              Active
-              {'\n'}
+              Darren Low
             </Text>
           </Card>
         </ScrollView>
@@ -144,13 +126,14 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   label: {
-    marginTop: 5,
-    marginBottom: 8,
+    marginTop: 10,
     color: 'grey',
   },
   word: {
-    fontSize: 16,
-  },
+    marginTop: 10,
+    marginBottom: 8,
+    lineHeight: 22,
+  }
 });
 
 function mapStateToProps(state) {
