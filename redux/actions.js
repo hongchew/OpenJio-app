@@ -5,12 +5,11 @@ export const type = {
   DELETE_ADDRESS: 'DELETE_ADDRESS',
 };
 
-
 //getting the user after api is called
-//and set it the redux state 
+//and set it the redux state
 export function setUser(user) {
-  console.log("coming into action");
-  console.log("what is useracc: " + user);
+  console.log('coming into action');
+  console.log('what is useracc: ' + user);
   return {
     type: type.SET_USER,
     payload: user,
@@ -23,9 +22,8 @@ export function logout() {
   };
 }
 
-
 //for addresses management
-//the details here is the array of addresses 
+//the details here is the array of addresses
 //that we want to put in the state
 export function updateAddressArr(details) {
   return {
@@ -33,4 +31,3 @@ export function updateAddressArr(details) {
     payload: details,
   };
 }
-
