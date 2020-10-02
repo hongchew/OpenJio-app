@@ -12,6 +12,7 @@ import {connect} from 'react-redux';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
+import {setUser} from '../redux/actions';
 
 class VerifyAccount extends React.Component {
   constructor(props) {
@@ -21,8 +22,7 @@ class VerifyAccount extends React.Component {
       userId: this.props.user.userId,
       nric: '',
       password: '',
-      message: '',
-      isUpdated: this.props.isUpdated,
+      errorMessage: '',
     };
   }
 
@@ -44,64 +44,62 @@ class VerifyAccount extends React.Component {
     </TouchableWithoutFeedback>
   );
 
-  handleVerify = () => {
+  handleVerify = async () => {
     if (this.state.nric === '' || this.state.password === '') {
       this.setState({
         isUpdated: false,
-        message: 'NRIC or Password cannot be empty.',
+        errorMessage: 'NRIC or Password cannot be empty.',
       });
     } else {
-      axios
-        .post(globalVariable.apiUrl + 'verify-user-singpass', {
-          userId: this.state.userId,
-          nric: this.state.nric,
-          password: this.state.password,
-        })
-        .then((response) => {})
-        .catch((error) => {});
+      try {
+        const response = await axios.put(
+          globalVariable.userApi + 'verify-user-singpass',
+          {
+            userId: this.state.userId,
+            nric: this.state.nric,
+            password: this.state.password,
+          }
+        );
+        console.log(response.data);
+        this.props.setUser(response.data);
+        this.props.navigation.replace('Tabs', {screen: 'Profile'});
+      } catch (error) {
+        console.log(error);
+        this.setState({
+          nric: '',
+          password: '',
+          errorMessage:
+            'SingPass MyInfo verification failed, please try again.',
+        });
+      }
     }
   };
 
   render() {
-    let responseMessage;
-    if (this.state.isUpdated) {
-      responseMessage = (
-        <Text style={loginStyle.message} status='success'>
-          {this.state.message}
-        </Text>
-      );
-    } else {
-      responseMessage = (
-        <Text style={loginStyle.message} status='danger'>
-          {this.state.message}
-        </Text>
-      );
-    }
-
     return (
       <Layout style={loginStyle.layout}>
         <Layout style={styles.container}>
           <StatusBar
-            barStyle='dark-content'
+            barStyle="dark-content"
             hidden={false}
-            backgroundColor='#ffffff'
+            backgroundColor="#ffffff"
             translucent={true}
           />
           <Layout style={styles.singpassLogo}>
             <Image source={require('../img/SingPassLogo.jpg')} />
           </Layout>
-          <Text style={loginStyle.header} category='h4'>
+          <Text style={loginStyle.header} category="h4">
             Log In
           </Text>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <Layout>
               <Input
-                label='NRIC'
+                label="NRIC"
                 value={this.state.nric}
                 onChangeText={(text) => this.setState({nric: text})}
               />
               <Input
-                label='Password'
+                label="Password"
                 accessoryRight={this.renderIcon}
                 secureTextEntry={this.state.secureTextEntry}
                 value={this.state.password}
@@ -110,14 +108,16 @@ class VerifyAccount extends React.Component {
 
               <Button
                 style={styles.button}
-                status='danger'
+                status="danger"
                 onPress={() => this.handleVerify()}>
                 Login
               </Button>
               <Text style={loginStyle.message}>
                 {`This page is a simulation of SingPass MyInfo verification`}
               </Text>
-              {responseMessage}
+              <Text style={loginStyle.message} status="danger">
+                {this.state.errorMessage}
+              </Text>
             </Layout>
           </TouchableWithoutFeedback>
         </Layout>
@@ -155,10 +155,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    isUpdated: state.isUpdated,
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({});
-
-export default connect(mapStateToProps, mapDispatchToProps)(VerifyAccount);
+export default connect(mapStateToProps, {setUser})(VerifyAccount);
