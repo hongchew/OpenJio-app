@@ -1,9 +1,11 @@
 import React from 'react';
 import {Avatar} from '@ui-kitten/components';
 
+const serverUrl = 'http://192.168.1.224:3000';
+
 export const globalVariable = {
-  apiUrl: 'http://10.0.2.2:3000/users/',
-  addressApi: 'http://10.0.2.2:3000/addresses/',
+  userApi: `${serverUrl}/users/`,
+  addressApi: `${serverUrl}/addresses/`,
 };
 
 export const DefaultAvatar = () => (

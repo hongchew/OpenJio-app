@@ -51,7 +51,7 @@ class ChangePassword extends React.Component {
       });
     } else {
       axios
-        .put(globalVariable.apiUrl + 'change-user-password', {
+        .put(globalVariable.userApi + 'change-user-password', {
           email: this.state.email,
           currPassword: this.state.currPassword,
           newPassword: this.state.newPassword,
