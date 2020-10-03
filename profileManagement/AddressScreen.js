@@ -13,10 +13,10 @@ class AddressScreen extends React.Component {
     super(props);
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
-      user: this.props.user,
-      addresses: this.props.user.Addresses,
     };
+    console.log(this.props);
   }
+  
 
   async handleSetDefault(addressId) {
     try {
@@ -155,9 +155,8 @@ class AddressScreen extends React.Component {
           <Text style={styles.header} category="h4">
             Address Book
           </Text>
-
           {renderIf(
-            this.props.user.Addresses.length < 3,
+            this.props.user && this.props.user.Addresses.length < 3,
             <Button
               size="small"
               style={styles.button}
@@ -182,7 +181,7 @@ class AddressScreen extends React.Component {
           )}
 
           {renderIf(
-            this.props.user.Addresses.length == 0,
+            this.props.user && this.props.user.Addresses.length == 0,
             <Card style={styles.card}>
               <Text>No addresses yet</Text>
             </Card>,

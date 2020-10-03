@@ -33,7 +33,7 @@ class ProfileScreen extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
     };
-    //console.log(this.props);
+    console.log(this.props);
   }
 
   handleLogout = () => {

@@ -9,7 +9,8 @@ class ChangePassword extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      secureTextEntry: true,
+      secureTextCurr: true,
+      secureTextNew: true,
       email: '',
       currPassword: '',
       newPassword: '',
@@ -18,21 +19,39 @@ class ChangePassword extends React.Component {
     };
   }
 
-  toggleSecureEntry = () => {
-    if (this.state.secureTextEntry) {
+  toggleSecureCurr = () => {
+    if (this.state.secureTextCurr) {
       this.setState({
-        secureTextEntry: false,
+        secureTextCurr: false,
       });
     } else {
       this.setState({
-        secureTextEntry: true,
+        secureTextCurr: true,
       });
     }
   };
 
-  renderIcon = (props) => (
-    <TouchableWithoutFeedback onPress={this.toggleSecureEntry}>
-      <Icon name={this.state.secureTextEntry ? 'eye-off' : 'eye'} {...props} />
+  toggleSecureNew = () => {
+    if (this.state.secureTextNew) {
+      this.setState({
+        secureTextNew: false,
+      });
+    } else {
+      this.setState({
+        secureTextNew: true,
+      });
+    }
+  };
+
+  renderCurrIcon = (props) => (
+    <TouchableWithoutFeedback onPress={this.toggleSecureCurr}>
+      <Icon name={this.state.secureTextCurr ? 'eye-off' : 'eye'} {...props} />
+    </TouchableWithoutFeedback>
+  );
+
+  renderNewIcon = (props) => (
+    <TouchableWithoutFeedback onPress={this.toggleSecureNew}>
+      <Icon name={this.state.secureTextNew ? 'eye-off' : 'eye'} {...props} />
     </TouchableWithoutFeedback>
   );
 
@@ -114,16 +133,16 @@ class ChangePassword extends React.Component {
             />
             <Input
               label="Current Password"
-              accessoryRight={this.renderIcon}
-              secureTextEntry={this.state.secureTextEntry}
+              accessoryRight={this.renderCurrIcon}
+              secureTextEntry={this.state.secureTextCurr}
               value={this.state.currPassword}
               onChangeText={(text) => this.setState({currPassword: text})}
             />
             <Input
               label="New Password"
               value={this.state.name}
-              accessoryRight={this.renderIcon}
-              secureTextEntry={this.state.secureTextEntry}
+              accessoryRight={this.renderNewIcon}
+              secureTextEntry={this.state.secureTextNew}
               value={this.state.newPassword}
               onChangeText={(text) => this.setState({newPassword: text})}
             />
