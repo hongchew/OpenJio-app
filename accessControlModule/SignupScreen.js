@@ -5,6 +5,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
+  Image
 } from 'react-native';
 import {
   Button,
@@ -118,10 +119,13 @@ class SignupScreen extends React.Component {
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={loginStyle.container}>
-            {this.props.isLoading && <Spinner />}
-            <Text style={loginStyle.header} category="h1">
-              Sign Up
+          <Layout style={styles.logo}>
+            <Image source={require('../img/openjioLogo.jpg')} style={{width: 70, height: 70}}/>
+            <Text style={loginStyle.header} category='h1'>
+              Sign Up 
             </Text>
+          </Layout>
+            
             <Input
               label="Email"
               value={this.state.email}
@@ -165,6 +169,9 @@ class SignupScreen extends React.Component {
 
 const styles = StyleSheet.create({
   //define styles that is specific to only this page
+  logo: {
+    alignItems: 'center',
+  },
 });
 
 export default SignupScreen;
