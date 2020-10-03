@@ -1,12 +1,16 @@
 import React from 'react';
-import {StatusBar, TouchableWithoutFeedback, Keyboard, StyleSheet} from 'react-native';
+import {
+  StatusBar,
+  TouchableWithoutFeedback,
+  Keyboard,
+  StyleSheet,
+} from 'react-native';
 import {Text, Layout, Input, Button} from '@ui-kitten/components';
 import {connect} from 'react-redux';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import {setUser} from '../redux/actions';
-
 
 class EditProfile extends React.Component {
   constructor(props) {
@@ -21,16 +25,17 @@ class EditProfile extends React.Component {
     };
   }
 
-
-  async handleEditProfile () {
+  async handleEditProfile() {
     try {
-      const response = await axios.put(globalVariable.userApi + 'update-user-details', {
-        userId: this.props.user.userId,
-        name: this.state.name,
-        mobileNumber: this.state.mobileNumber,
-        email: this.state.email
-      })
-      console.log(response.data);
+      const response = await axios.put(
+        globalVariable.userApi + 'update-user-details',
+        {
+          userId: this.props.user.userId,
+          name: this.state.name,
+          mobileNumber: this.state.mobileNumber,
+          email: this.state.email,
+        }
+      );
       this.props.setUser(response.data);
       this.props.navigation.navigate('Tabs', {screen: 'Profile'});
     } catch (error) {
@@ -40,7 +45,6 @@ class EditProfile extends React.Component {
       });
     }
   }
-  
 
   render() {
     let responseMessage;
@@ -86,7 +90,7 @@ class EditProfile extends React.Component {
               value={this.state.mobileNumber}
               onChangeText={(text) => this.setState({mobileNumber: text})}
             />
-            
+
             <Button
               style={styles.button}
               onPress={() => this.handleEditProfile()}>
@@ -129,7 +133,6 @@ const mapStateToProps = (state) => {
   };
 };
 
-
 const mapDispatchToProps = (dispatch) => {
   return {
     setUser: (user) => {
@@ -137,6 +140,5 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditProfile);

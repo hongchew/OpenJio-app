@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
-  Image
+  Image,
 } from 'react-native';
 import {
   Button,
@@ -20,7 +20,6 @@ import {setUser} from '../redux/actions';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
-import {Logo} from '../GLOBAL_VARIABLE';
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -74,38 +73,38 @@ class LoginScreen extends React.Component {
     return (
       <Layout style={loginStyle.layout}>
         <StatusBar
-          barStyle='dark-content'
+          barStyle="dark-content"
           hidden={false}
-          backgroundColor='#ffffff'
+          backgroundColor="#ffffff"
           translucent={true}
         />
-        
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        
           <Layout style={loginStyle.container}>
-          <Layout style={styles.logo}>
-            <Image source={require('../img/openjioLogo.jpg')} style={{width: 70, height: 70}}/>
-            <Text style={loginStyle.header} category='h1'>
-              OpenJio 
-            </Text>
-          </Layout>
-            {this.props.isLoading && <Spinner />}
-            
+            <Layout style={styles.logo}>
+              <Image
+                source={require('../img/openjioLogo.jpg')}
+                style={{width: 70, height: 70}}
+              />
+              <Text style={loginStyle.header} category="h1">
+                OpenJio
+              </Text>
+            </Layout>
             <Input
-              label='Email'
+              label="Email"
               value={this.state.email}
               onChangeText={(text) => this.setState({email: text})}
             />
             <Input
-              label='Password'
+              label="Password"
               accessoryRight={this.renderIcon}
               secureTextEntry={this.state.secureTextEntry}
               value={this.state.password}
               onChangeText={(text) => this.setState({password: text})}
             />
-            <TouchableOpacity style={styles.link}
+            <TouchableOpacity
+              style={styles.link}
               onPress={() => this.props.navigation.navigate('ForgotPassword')}>
-              <Text style={loginStyle.link} status='primary'>
+              <Text style={loginStyle.link} status="primary">
                 Forgot Password?
               </Text>
             </TouchableOpacity>
@@ -115,7 +114,7 @@ class LoginScreen extends React.Component {
 
             {/* <Divider style={loginStyle.divider}/> */}
 
-            <Text style={loginStyle.message} status='danger'>
+            <Text style={loginStyle.message} status="danger">
               {this.state.errorMessage}
             </Text>
             <TouchableOpacity
@@ -123,7 +122,7 @@ class LoginScreen extends React.Component {
               onPress={() => this.props.navigation.navigate('Signup')}>
               <Text style={loginStyle.signupLink}>
                 <Text>Don't have an account? </Text>
-                <Text status='primary'>Sign up here.</Text>
+                <Text status="primary">Sign up here.</Text>
               </Text>
             </TouchableOpacity>
           </Layout>
@@ -138,7 +137,7 @@ const styles = StyleSheet.create({
   link: {
     width: '40%',
     //to force it to the right
-    alignSelf: 'flex-end'
+    alignSelf: 'flex-end',
   },
   logo: {
     alignItems: 'center',

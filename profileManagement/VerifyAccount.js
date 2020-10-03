@@ -5,7 +5,6 @@ import {
   Keyboard,
   StyleSheet,
   Image,
-  KeyboardAvoidingView,
 } from 'react-native';
 import {Text, Icon, Layout, Input, Button} from '@ui-kitten/components';
 import {connect} from 'react-redux';

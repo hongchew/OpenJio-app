@@ -26,7 +26,7 @@ class HomeScreen extends React.Component {
           Announcements
         </Text>
         <ScrollView style={styles.container}>
-        <Card style={styles.card}>
+          <Card style={styles.card}>
             <Text category="label" style={styles.label}>
               Destination
             </Text>
@@ -45,16 +45,12 @@ class HomeScreen extends React.Component {
             <Text category="label" style={styles.label}>
               Close Time
             </Text>
-            <Text style={styles.word}>
-              5pm
-            </Text>
+            <Text style={styles.word}>5pm</Text>
 
             <Text category="label" style={styles.label}>
-              Submitted by 
+              Submitted by
             </Text>
-            <Text style={styles.word}>
-              Terry Lim
-            </Text>
+            <Text style={styles.word}>Terry Lim</Text>
           </Card>
 
           <Card style={styles.card}>
@@ -69,21 +65,18 @@ class HomeScreen extends React.Component {
               Description
             </Text>
             <Text style={styles.word}>
-              Heading out to get some groceries at the mama shop at blk 2, anyone wants me to help them buy anything?
+              Heading out to get some groceries at the mama shop at blk 2,
+              anyone wants me to help them buy anything?
             </Text>
 
             <Text category="label" style={styles.label}>
               Close Time
             </Text>
-            <Text style={styles.word}>
-              5pm
-            </Text>
+            <Text style={styles.word}>5pm</Text>
             <Text category="label" style={styles.label}>
-              Submitted by 
+              Submitted by
             </Text>
-            <Text style={styles.word}>
-              Darren Low
-            </Text>
+            <Text style={styles.word}>Darren Low</Text>
           </Card>
         </ScrollView>
       </Layout>
@@ -133,7 +126,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 8,
     lineHeight: 22,
-  }
+  },
 });
 
 function mapStateToProps(state) {

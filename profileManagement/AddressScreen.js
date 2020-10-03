@@ -11,12 +11,8 @@ import {globalVariable} from '../GLOBAL_VARIABLE';
 class AddressScreen extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      //populate state.user because after logging out, this.props.user will cause error
-    };
-    console.log(this.props);
+    this.state = {};
   }
-  
 
   async handleSetDefault(addressId) {
     try {
@@ -103,9 +99,7 @@ class AddressScreen extends React.Component {
           </Text>
           {renderIf(
             address.line1 != null,
-            <Text style={styles.word}>
-              {address.line1}
-            </Text>,
+            <Text style={styles.word}>{address.line1}</Text>,
             <Text category="s2">-</Text>
           )}
           <Text category="label" style={styles.label}>
@@ -113,9 +107,7 @@ class AddressScreen extends React.Component {
           </Text>
           {renderIf(
             address.line2 != null,
-            <Text style={styles.word}>
-              {address.line2}
-            </Text>,
+            <Text style={styles.word}>{address.line2}</Text>,
             <Text category="s2">-</Text>
           )}
           <Text category="label" style={styles.label}>
@@ -123,9 +115,7 @@ class AddressScreen extends React.Component {
           </Text>
           {renderIf(
             address.postalCode != null,
-            <Text style={styles.word}>
-              {address.postalCode}
-            </Text>,
+            <Text style={styles.word}>{address.postalCode}</Text>,
             <Text category="s2">-</Text>
           )}
           <Text category="label" style={styles.label}>
@@ -133,9 +123,7 @@ class AddressScreen extends React.Component {
           </Text>
           {renderIf(
             address.country != null,
-            <Text style={styles.word}>
-              {address.country}
-            </Text>,
+            <Text style={styles.word}>{address.country}</Text>,
             <Text category="s2">-</Text>
           )}
         </Card>

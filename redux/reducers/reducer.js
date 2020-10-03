@@ -3,7 +3,7 @@ import {type} from '../actions';
 const initialState = {
   loading: false,
   user: {
-    Addresses: []
+    Addresses: [],
   },
 };
 
@@ -22,7 +22,7 @@ export default function reducer(state = initialState, action) {
         ...state,
         loading: false,
         user: {
-          Addresses: []
+          Addresses: [],
         },
       };
     case type.UPDATE_ADDRESS_ARR:

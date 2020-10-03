@@ -5,20 +5,12 @@ import {
   TouchableWithoutFeedback,
   TouchableOpacity,
   Keyboard,
-  Image
+  Image,
 } from 'react-native';
-import {
-  Button,
-  Icon,
-  Input,
-  Text,
-  Layout,
-  Spinner,
-} from '@ui-kitten/components';
+import {Button, Icon, Input, Text, Layout} from '@ui-kitten/components';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
-import {loginSuccess} from '../redux/actions';
 
 class SignupScreen extends React.Component {
   constructor(props) {
@@ -119,13 +111,16 @@ class SignupScreen extends React.Component {
         />
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={loginStyle.container}>
-          <Layout style={styles.logo}>
-            <Image source={require('../img/openjioLogo.jpg')} style={{width: 70, height: 70}}/>
-            <Text style={loginStyle.header} category='h1'>
-              Sign Up 
-            </Text>
-          </Layout>
-            
+            <Layout style={styles.logo}>
+              <Image
+                source={require('../img/openjioLogo.jpg')}
+                style={{width: 70, height: 70}}
+              />
+              <Text style={loginStyle.header} category="h1">
+                Sign Up
+              </Text>
+            </Layout>
+
             <Input
               label="Email"
               value={this.state.email}

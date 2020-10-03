@@ -25,7 +25,6 @@ const AddressIcon = (props) => (
   <Icon {...props} name="map-outline" width="25" height="25" />
 );
 
-
 class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -33,7 +32,6 @@ class ProfileScreen extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
     };
-    console.log(this.props);
   }
 
   handleLogout = () => {
@@ -42,13 +40,13 @@ class ProfileScreen extends React.Component {
   };
 
   displayEmailIcon = () => {
-      return (
-        <Icon
-          name="email-outline"
-          style={{width: 17, height: 17, marginBottom: -4, marginRight: 8}}
-          fill="grey"
-        />
-      );
+    return (
+      <Icon
+        name="email-outline"
+        style={{width: 17, height: 17, marginBottom: -4, marginRight: 8}}
+        fill="grey"
+      />
+    );
   };
 
   displayPhoneIcon = () => {
@@ -59,7 +57,7 @@ class ProfileScreen extends React.Component {
         fill="grey"
       />
     );
-};
+  };
 
   checkmarkIfVerified = (user) => {
     if (user && user.isSingPassVerified) {
@@ -110,11 +108,12 @@ class ProfileScreen extends React.Component {
                 </Layout>
                 {'\n'}
                 <Text style={styles.lineText}>
-                {this.displayEmailIcon()} {this.props.user ? this.props.user.email : ''}
+                  {this.displayEmailIcon()}{' '}
+                  {this.props.user ? this.props.user.email : ''}
                   {'\n'}
                 </Text>
                 <Text style={styles.lineText}>
-                {this.displayPhoneIcon()}
+                  {this.displayPhoneIcon()}
                   {this.props.user
                     ? this.props.user.mobileNumber
                       ? this.props.user.mobileNumber
@@ -186,7 +185,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     lineHeight: 24,
     flexWrap: 'wrap',
-    flex: 1
+    flex: 1,
   },
   firstCard: {
     marginLeft: 15,

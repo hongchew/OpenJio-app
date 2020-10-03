@@ -27,8 +27,6 @@ class AddAddress extends React.Component {
       message: '',
       isUpdated: this.props.isUpdated,
     };
-    //console.log('this props: ');
-    //console.log(this.props.user.userId);
   }
 
   async handleAddAddress() {
@@ -63,7 +61,6 @@ class AddAddress extends React.Component {
         });
       }
     }
-    
   }
 
   render() {
@@ -96,7 +93,7 @@ class AddAddress extends React.Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView>
             <Layout style={styles.container}>
-            <Input
+              <Input
                 label="Description"
                 value={this.state.description}
                 onChangeText={(text) => this.setState({description: text})}
@@ -158,7 +155,6 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => {
-  //console.log(state);
   return {
     user: {
       ...state.user,

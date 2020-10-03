@@ -1,5 +1,10 @@
 import React from 'react';
-import {StatusBar, StyleSheet, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  Keyboard,
+} from 'react-native';
 import {Text, Layout, Input, Button} from '@ui-kitten/components';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
