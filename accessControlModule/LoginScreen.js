@@ -59,16 +59,25 @@ class LoginScreen extends React.Component {
       });
       console.log(response.data);
 
-      if (response.data.isValidated) {
-        this.props.setUser(response.data);
-        this.props.navigation.navigate('Tabs');
-      } else {
+      // 1st login, check if account is validated
+      // (isPasswordReset: false, isValidated: false)
+      if (!response.data.isValidated) {
         this.setState({
           email: '',
           password: '',
           errorMessage:
             'Your account is not verified, please verify your account first.',
         });
+      }
+      // subsequent logins, check if user had just reset their password
+      // (isPasswordReset: true, isValidated: true)
+      else if (response.data.isPasswordReset) {
+        this.props.navigation.navigate('ChangePassword');
+      }
+      // (isPasswordReset: false, isValidated: true)
+      else {
+        this.props.setUser(response.data);
+        this.props.navigation.navigate('Tabs');
       }
     } catch (error) {
       this.setState({
