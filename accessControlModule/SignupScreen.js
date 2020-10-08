@@ -96,7 +96,8 @@ class SignupScreen extends React.Component {
             reEnterPassword: '',
             name: '',
             isCreated: true,
-            message: 'Account created successfully.',
+            message:
+              'Account created successfully. Please verify your account through the link sent to your email.',
           });
         })
         .catch((error) => {
