@@ -16,45 +16,71 @@ class SignupScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      secureTextEntry: true,
-      email: null,
-      password: null,
-      name: null,
+      secureTextEntry1: true,
+      secureTextEntry2: true,
+      email: '',
+      password: '',
+      reEnterPassword: '',
+      name: '',
       message: '',
       isCreated: false,
     };
   }
 
-  toggleSecureEntry = () => {
-    if (this.state.secureTextEntry) {
+  toggleSecureEntry1 = () => {
+    if (this.state.secureTextEntry1) {
       this.setState({
-        secureTextEntry: false,
+        secureTextEntry1: false,
       });
     } else {
       this.setState({
-        secureTextEntry: true,
+        secureTextEntry1: true,
       });
     }
   };
 
-  renderIcon = (props) => (
-    <TouchableWithoutFeedback onPress={this.toggleSecureEntry}>
-      <Icon name={this.state.secureTextEntry ? 'eye-off' : 'eye'} {...props} />
+  toggleSecureEntry2 = () => {
+    if (this.state.secureTextEntry2) {
+      this.setState({
+        secureTextEntry2: false,
+      });
+    } else {
+      this.setState({
+        secureTextEntry2: true,
+      });
+    }
+  };
+
+  renderIcon1 = (props) => (
+    <TouchableWithoutFeedback onPress={this.toggleSecureEntry1}>
+      <Icon name={this.state.secureTextEntry1 ? 'eye-off' : 'eye'} {...props} />
+    </TouchableWithoutFeedback>
+  );
+
+  renderIcon2 = (props) => (
+    <TouchableWithoutFeedback onPress={this.toggleSecureEntry2}>
+      <Icon name={this.state.secureTextEntry2 ? 'eye-off' : 'eye'} {...props} />
     </TouchableWithoutFeedback>
   );
 
   handleSignup = () => {
-    if (
-      this.state.email == null ||
-      this.state.password == null ||
-      this.state.name == null
-    ) {
+    const emptyFields =
+      this.state.email == '' ||
+      this.state.password == '' ||
+      this.state.name == '' ||
+      this.state.reEnterPassword == '';
+    const unmatchedPasswords =
+      this.state.password != this.state.reEnterPassword;
+    if (emptyFields || unmatchedPasswords) {
       this.setState({
         email: '',
         password: '',
+        reEnterPassword: '',
         name: '',
         isCreated: false,
-        message: 'Empty fields. Unable to create account.',
+        message: emptyFields
+          ? 'Empty fields. Unable to create account.'
+          : 'Passwords do not match',
       });
     } else {
       axios
@@ -67,6 +93,7 @@ class SignupScreen extends React.Component {
           this.setState({
             email: '',
             password: '',
+            reEnterPassword: '',
             name: '',
             isCreated: true,
             message: 'Account created successfully.',
@@ -77,6 +104,7 @@ class SignupScreen extends React.Component {
           this.setState({
             email: '',
             password: '',
+            reEnterPassword: '',
             name: '',
             isCreated: false,
             message: 'Unable to create account.',
@@ -127,16 +155,23 @@ class SignupScreen extends React.Component {
               onChangeText={(text) => this.setState({email: text})}
             />
             <Input
+              label="Name"
+              value={this.state.name}
+              onChangeText={(text) => this.setState({name: text})}
+            />
+            <Input
               label="Password"
-              accessoryRight={this.renderIcon}
-              secureTextEntry={this.state.secureTextEntry}
+              accessoryRight={this.renderIcon1}
+              secureTextEntry={this.state.secureTextEntry1}
               value={this.state.password}
               onChangeText={(text) => this.setState({password: text})}
             />
             <Input
-              label="Name"
-              value={this.state.name}
-              onChangeText={(text) => this.setState({name: text})}
+              label="Re-Enter Password"
+              accessoryRight={this.renderIcon2}
+              secureTextEntry={this.state.secureTextEntry2}
+              value={this.state.reEnterPassword}
+              onChangeText={(text) => this.setState({reEnterPassword: text})}
             />
 
             <Button
