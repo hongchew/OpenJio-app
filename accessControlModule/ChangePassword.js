@@ -16,9 +16,11 @@ class ChangePassword extends React.Component {
     this.state = {
       secureTextCurr: true,
       secureTextNew: true,
+      secureTextNew2: true,
       email: '',
       currPassword: '',
       newPassword: '',
+      reEnterNewPassword: '',
       isChanged: false,
       message: '',
     };
@@ -48,6 +50,18 @@ class ChangePassword extends React.Component {
     }
   };
 
+  toggleSecureNew2 = () => {
+    if (this.state.secureTextNew2) {
+      this.setState({
+        secureTextNew2: false,
+      });
+    } else {
+      this.setState({
+        secureTextNew2: true,
+      });
+    }
+  };
+
   renderCurrIcon = (props) => (
     <TouchableWithoutFeedback onPress={this.toggleSecureCurr}>
       <Icon name={this.state.secureTextCurr ? 'eye-off' : 'eye'} {...props} />
@@ -60,18 +74,31 @@ class ChangePassword extends React.Component {
     </TouchableWithoutFeedback>
   );
 
+  renderNewIcon2 = (props) => (
+    <TouchableWithoutFeedback onPress={this.toggleSecureNew2}>
+      <Icon name={this.state.secureTextNew2 ? 'eye-off' : 'eye'} {...props} />
+    </TouchableWithoutFeedback>
+  );
+
   handleChangePassword = () => {
-    if (
+    const emptyFields =
       this.state.email == '' ||
       this.state.currPassword == '' ||
-      this.state.newPassword == ''
-    ) {
+      this.state.newPassword == '' ||
+      this.state.name == '' ||
+      this.state.reEnterNewPassword == '';
+    const unmatchedPasswords =
+      this.state.newPassword != this.state.reEnterNewPassword;
+    if (emptyFields || unmatchedPasswords) {
       this.setState({
         email: '',
         currPassword: '',
         newPassword: '',
+        reEnterNewPassword: '',
         isChanged: false,
-        message: 'Empty fields. Unable to change password.',
+        message: emptyFields
+          ? 'Empty fields. Unable to change password.'
+          : 'New Passwords do not match',
       });
     } else {
       axios
@@ -85,6 +112,7 @@ class ChangePassword extends React.Component {
             email: '',
             currPassword: '',
             newPassword: '',
+            reEnterNewPassword: '',
             isChanged: true,
             message: 'Password changed successfully.',
           });
@@ -95,6 +123,7 @@ class ChangePassword extends React.Component {
             email: '',
             currPassword: '',
             newPassword: '',
+            reEnterNewPassword: '',
             isChanged: false,
             message: 'Unable to change password.',
           });
@@ -150,6 +179,14 @@ class ChangePassword extends React.Component {
               secureTextEntry={this.state.secureTextNew}
               value={this.state.newPassword}
               onChangeText={(text) => this.setState({newPassword: text})}
+            />
+            <Input
+              label="Re-Enter New Password"
+              value={this.state.name}
+              accessoryRight={this.renderNewIcon2}
+              secureTextEntry={this.state.secureTextNew2}
+              value={this.state.reEnterNewPassword}
+              onChangeText={(text) => this.setState({reEnterNewPassword: text})}
             />
             <Button
               style={styles.button}
