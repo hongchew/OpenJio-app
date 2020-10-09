@@ -5,13 +5,15 @@ import {
   Keyboard,
   StyleSheet,
   Image,
+  Platform,
 } from 'react-native';
-import {Text, Layout, Input, Button} from '@ui-kitten/components';
+import {Text, Layout, Input, Button, Modal, Card} from '@ui-kitten/components';
 import {connect} from 'react-redux';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import {setUser} from '../redux/actions';
+import ImagePicker from 'react-native-image-picker';
 
 class EditProfile extends React.Component {
   constructor(props) {
@@ -23,6 +25,9 @@ class EditProfile extends React.Component {
       email: this.props.user.email,
       message: '',
       isUpdated: this.props.isUpdated,
+      newAvatar: null,
+      removeAvatarModalVisible: false,
+      changeAvatarModalVisible: false,
     };
   }
 
@@ -47,6 +52,55 @@ class EditProfile extends React.Component {
     }
   }
 
+  handlePickImage() {
+    const options = {
+      noData: true,
+    };
+    ImagePicker.launchImageLibrary(options, async (picture) => {
+      if (picture.uri) {
+        this.setState({newAvatar: picture}, () => {
+          this.setState({changeAvatarModalVisible: true});
+        });
+      } else {
+        console.log(picture);
+        return;
+      }
+    });
+  }
+
+  async handleChangeAvatar() {
+    try {
+      const data = new FormData();
+      data.append('avatar', {
+        name: this.state.newAvatar.fileName,
+        type: this.state.newAvatar.type,
+        uri:
+          Platform.OS === 'android'
+            ? this.state.newAvatar.uri
+            : this.state.newAvatar.uri.replace('file://', ''),
+      });
+      const url =
+        'http://192.168.1.221:3000/users/upload-avatar/7ff1596b-6644-47c0-9a36-414c4083a0fe';
+      const response = await axios.post(
+        //globalVariable.userApi + `upload-avatar/${this.props.user.userId}`,
+        url,
+        data,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      console.log(response);
+      this.props.setUser(response.data.user);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to change avatar.',
+      });
+    }
+  }
+
   async handleRemoveAvatar() {
     try {
       const response = await axios.put(
@@ -62,6 +116,84 @@ class EditProfile extends React.Component {
       this.setState({
         message: 'Unable to remove avatar, please try again later.',
       });
+    }
+  }
+
+  renderModals() {
+    if (this.state.removeAvatarModalVisible) {
+      return (
+        <Modal
+          backdropStyle={styles.backdrop}
+          visible={this.state.removeAvatarModalVisible}
+          onBackdropPress={() =>
+            this.setState({removeAvatarModalVisible: false})
+          }>
+          <Card>
+            <Text> Are you sure you want to remove your avatar?</Text>
+            <Layout style={styles.modalButtonsContainer}>
+              <Button
+                style={styles.modalButton}
+                size={'small'}
+                onPress={() => {
+                  this.setState({removeAvatarModalVisible: false});
+                  this.handleRemoveAvatar();
+                }}>
+                Remove
+              </Button>
+              <Button
+                appearance={'outline'}
+                style={styles.modalButton}
+                size={'small'}
+                onPress={() => {
+                  this.setState({removeAvatarModalVisible: false});
+                }}>
+                Dismiss
+              </Button>
+            </Layout>
+          </Card>
+        </Modal>
+      );
+    } else if (this.state.changeAvatarModalVisible) {
+      return (
+        <Modal
+          backdropStyle={styles.backdrop}
+          visible={this.state.changeAvatarModalVisible}
+          onBackdropPress={() =>
+            this.setState({changeAvatarModalVisible: false})
+          }>
+          <Card>
+            <Layout style={styles.changeAvatarPreview}>
+              <Text> Change avatar to this picture?</Text>
+              <Image
+                style={styles.image}
+                source={{uri: this.state.newAvatar.uri}}
+              />
+            </Layout>
+            <Layout style={styles.modalButtonsContainer}>
+              <Button
+                style={styles.modalButton}
+                size={'small'}
+                onPress={() => {
+                  this.setState({changeAvatarModalVisible: false});
+                  this.handleChangeAvatar();
+                }}>
+                Change
+              </Button>
+              <Button
+                appearance={'outline'}
+                style={styles.modalButton}
+                size={'small'}
+                onPress={() => {
+                  this.setState({changeAvatarModalVisible: false});
+                }}>
+                Dismiss
+              </Button>
+            </Layout>
+          </Card>
+        </Modal>
+      );
+    } else {
+      return null;
     }
   }
 
@@ -110,6 +242,7 @@ class EditProfile extends React.Component {
                 }
               />
               <Button
+                onPress={() => this.handlePickImage()}
                 style={styles.pictureButton}
                 size={'small'}
                 appearance={'outline'}
@@ -117,13 +250,14 @@ class EditProfile extends React.Component {
                 CHANGE AVATAR
               </Button>
               <Button
-                onPress={() => this.handleRemoveAvatar()}
+                onPress={() => this.setState({removeAvatarModalVisible: true})}
                 style={styles.pictureButton}
                 size={'small'}
                 appearance={'outline'}
                 status={'warning'}>
                 REMOVE AVATAR
               </Button>
+              {this.renderModals()}
             </Layout>
             <Input
               label="Name"
@@ -181,6 +315,7 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   image: {
+    margin: 10,
     width: 150,
     height: 150,
     borderRadius: 999,
@@ -188,6 +323,23 @@ const styles = StyleSheet.create({
   pictureButton: {
     marginTop: 8,
     width: 130,
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  changeAvatarPreview: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
   },
 });
 
