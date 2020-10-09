@@ -4,6 +4,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
+  Image,
 } from 'react-native';
 import {Text, Layout, Input, Button} from '@ui-kitten/components';
 import {connect} from 'react-redux';
@@ -46,6 +47,24 @@ class EditProfile extends React.Component {
     }
   }
 
+  async handleRemoveAvatar() {
+    try {
+      const response = await axios.put(
+        globalVariable.userApi + 'update-user-details',
+        {
+          userId: this.props.user.userId,
+          avatarPath: null,
+        }
+      );
+      this.props.setUser(response.data);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to remove avatar, please try again later.',
+      });
+    }
+  }
+
   render() {
     let responseMessage;
     if (this.state.isUpdated) {
@@ -75,6 +94,37 @@ class EditProfile extends React.Component {
         </Text>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
+            <Layout style={styles.avatar}>
+              <Image
+                resizeMethod={'auto'}
+                resizeMode={'cover'}
+                style={styles.image}
+                source={
+                  this.props.user && this.props.user.avatarPath
+                    ? {
+                        uri: `${
+                          globalVariable.serverUrl
+                        }${this.props.user.avatarPath.slice(1)}`,
+                      }
+                    : require('../img/defaultAvatar.png')
+                }
+              />
+              <Button
+                style={styles.pictureButton}
+                size={'small'}
+                appearance={'outline'}
+                status={'primary'}>
+                CHANGE AVATAR
+              </Button>
+              <Button
+                onPress={() => this.handleRemoveAvatar()}
+                style={styles.pictureButton}
+                size={'small'}
+                appearance={'outline'}
+                status={'warning'}>
+                REMOVE AVATAR
+              </Button>
+            </Layout>
             <Input
               label="Name"
               value={this.state.name}
@@ -110,18 +160,34 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginTop: 20,
+    marginTop: 0,
     marginLeft: 20,
     marginRight: 20,
+    justifyContent: 'center',
   },
   header: {
     marginTop: 20,
-    marginBottom: 30,
+    marginBottom: 15,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
   button: {
     marginTop: 30,
+  },
+  avatar: {
+    alignContent: 'center',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 20,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    borderRadius: 999,
+  },
+  pictureButton: {
+    marginTop: 8,
+    width: 130,
   },
 });
 
