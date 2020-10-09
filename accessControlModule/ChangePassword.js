@@ -81,12 +81,19 @@ class ChangePassword extends React.Component {
   );
 
   handleChangePassword = () => {
-    const emptyFields =
-      this.state.email == '' ||
-      this.state.currPassword == '' ||
-      this.state.newPassword == '' ||
-      this.state.name == '' ||
-      this.state.reEnterNewPassword == '';
+    let emptyFields;
+
+    if (this.props.route.params.fromLogin) {
+      emptyFields =
+        this.state.newPassword == '' || this.state.reEnterNewPassword == '';
+    } else {
+      emptyFields =
+        this.state.email == '' ||
+        this.state.currPassword == '' ||
+        this.state.newPassword == '' ||
+        this.state.name == '' ||
+        this.state.reEnterNewPassword == '';
+    }
     const unmatchedPasswords =
       this.state.newPassword != this.state.reEnterNewPassword;
     if (emptyFields || unmatchedPasswords) {
@@ -103,8 +110,12 @@ class ChangePassword extends React.Component {
     } else {
       axios
         .put(globalVariable.userApi + 'change-user-password', {
-          email: this.state.email,
-          currPassword: this.state.currPassword,
+          email: this.props.route.params.fromLogin
+            ? this.props.route.params.email
+            : this.state.email,
+          currPassword: this.props.route.params.fromLogin
+            ? this.props.route.params.currPassword
+            : this.state.currPassword,
           newPassword: this.state.newPassword,
         })
         .then((response) => {
@@ -160,18 +171,24 @@ class ChangePassword extends React.Component {
         </Text>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
-            <Input
-              label="Email"
-              value={this.state.email}
-              onChangeText={(text) => this.setState({email: text})}
-            />
-            <Input
-              label="Current Password"
-              accessoryRight={this.renderCurrIcon}
-              secureTextEntry={this.state.secureTextCurr}
-              value={this.state.currPassword}
-              onChangeText={(text) => this.setState({currPassword: text})}
-            />
+            {/* don't render if user came from login page */}
+            {!this.props.route.params.fromLogin && (
+              <Input
+                label="Email"
+                value={this.state.email}
+                onChangeText={(text) => this.setState({email: text})}
+              />
+            )}
+            {/* don't render if user came from login page */}
+            {!this.props.route.params.fromLogin && (
+              <Input
+                label="Current Password"
+                accessoryRight={this.renderCurrIcon}
+                secureTextEntry={this.state.secureTextCurr}
+                value={this.state.currPassword}
+                onChangeText={(text) => this.setState({currPassword: text})}
+              />
+            )}
             <Input
               label="New Password"
               value={this.state.name}

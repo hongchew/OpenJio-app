@@ -72,7 +72,11 @@ class LoginScreen extends React.Component {
       // subsequent logins, check if user had just reset their password
       // (isPasswordReset: true, isValidated: true)
       else if (response.data.isPasswordReset) {
-        this.props.navigation.navigate('ChangePassword');
+        this.props.navigation.navigate('ChangePassword', {
+          fromLogin: true,
+          email: this.state.email,
+          currPassword: this.state.password,
+        });
       }
       // (isPasswordReset: false, isValidated: true)
       else {

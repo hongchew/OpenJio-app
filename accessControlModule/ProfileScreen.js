@@ -135,7 +135,11 @@ class ProfileScreen extends React.Component {
             <MenuItem
               accessoryLeft={PasswordIcon}
               title={<Text style={styles.menuItem}>Change Password</Text>}
-              onPress={() => this.props.navigation.navigate('ChangePassword')}
+              onPress={() =>
+                this.props.navigation.navigate('ChangePassword', {
+                  fromLogin: false,
+                })
+              }
             />
             <MenuItem
               accessoryLeft={AddressIcon}
