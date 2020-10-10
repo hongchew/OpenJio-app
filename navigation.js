@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
-  TransitionPresets
+  TransitionPresets,
 } from '@react-navigation/stack';
 
 import LoginScreen from './accessControlModule/LoginScreen';
@@ -17,6 +17,7 @@ import EditProfile from './profileManagement/EditProfile';
 import AddressScreen from './profileManagement/AddressScreen';
 import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
+import UserBadges from './profileManagement/UserBadges';
 
 import TabNavigator from './tabs';
 
@@ -41,8 +42,7 @@ const HomeNavigator = () => (
         color: '#ffffff', //hide the ugly title
       },
     }}
-    mode='modal'
-  >
+    mode="modal">
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -144,6 +144,27 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="VerifyAccount"
       component={VerifyAccount}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Profile'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="UserBadges"
+      component={UserBadges}
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
