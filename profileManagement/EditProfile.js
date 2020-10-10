@@ -89,6 +89,7 @@ class EditProfile extends React.Component {
         }
       );
       console.log(response);
+      this.setState({message: ''});
       this.props.setUser(response.data.user);
     } catch (error) {
       console.log(error);
@@ -247,7 +248,11 @@ class EditProfile extends React.Component {
                 CHANGE AVATAR
               </Button>
               <Button
-                onPress={() => this.setState({removeAvatarModalVisible: true})}
+                onPress={() => {
+                  this.props.user && this.props.user.avatarPath
+                    ? this.setState({removeAvatarModalVisible: true})
+                    : this.setState({message: 'No avatar to remove.'});
+                }}
                 style={styles.pictureButton}
                 size={'small'}
                 appearance={'outline'}
