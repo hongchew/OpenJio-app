@@ -79,11 +79,8 @@ class EditProfile extends React.Component {
             ? this.state.newAvatar.uri
             : this.state.newAvatar.uri.replace('file://', ''),
       });
-      const url =
-        'http://192.168.1.221:3000/users/upload-avatar/7ff1596b-6644-47c0-9a36-414c4083a0fe';
       const response = await axios.post(
-        //globalVariable.userApi + `upload-avatar/${this.props.user.userId}`,
-        url,
+        globalVariable.userApi + `upload-avatar/${this.props.user.userId}`,
         data,
         {
           headers: {
