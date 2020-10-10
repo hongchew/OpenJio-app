@@ -4,7 +4,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {
   createStackNavigator,
   CardStyleInterpolators,
-  TransitionPresets
+  TransitionPresets,
 } from '@react-navigation/stack';
 
 import LoginScreen from './accessControlModule/LoginScreen';
@@ -41,8 +41,7 @@ const HomeNavigator = () => (
         color: '#ffffff', //hide the ugly title
       },
     }}
-    mode='modal'
-  >
+    mode="modal">
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -59,7 +58,8 @@ const HomeNavigator = () => (
         headerLeft: () => (
           <Button
             onPress={() => {
-              navigation.replace('Tabs', {screen: 'Profile'});
+              // navigation.replace('Tabs', {screen: 'Profile'});
+              navigation.goBack();
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"
