@@ -165,27 +165,7 @@ const HomeNavigator = () => (
         ),
       })}
     />
-    <Stack.Screen
-      name="UserBadges"
-      component={UserBadges}
-      options={({navigation}) => ({
-        headerShown: true,
-        gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        headerLeft: () => (
-          <Button
-            onPress={() => {
-              navigation.replace('Tabs', {screen: 'Profile'});
-            }}
-            accessoryLeft={BackIcon}
-            appearance="ghost"
-            status="basic"
-            size="tiny"
-          />
-        ),
-      })}
-    />
+    <Stack.Screen name="UserBadges" component={UserBadges} />
     <Stack.Screen
       name="LeaderboardScreen"
       component={LeaderboardScreen}
