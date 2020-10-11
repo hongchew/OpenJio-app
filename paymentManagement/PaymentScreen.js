@@ -36,11 +36,11 @@ class PaymentScreen extends React.Component {
           //translucent={true}
         />
         <Text style={styles.header} category="h4">
-          Payment
+          Wallet
         </Text>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
-            <Text style={styles.label}>OpenJio Wallet</Text>
+            <Text style={styles.label}>Balance</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
               <Text style={styles.money}>3.00</Text>
