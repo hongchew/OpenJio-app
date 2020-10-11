@@ -1,35 +1,35 @@
 module.exports = {
   types: {
-    EXCELLENT_COMMUNICATOR: 'EXCELLENT_COMMUNICATOR',
-    FAST_AND_FURIOUS: 'FAST_AND_FURIOUS',
-    LOCAL_LOBANG: 'LOCAL_LOBANG',
-    SUPER_NEIGHBOUR: 'SUPER_NEIGHBOUR',
+    EXCELLENT_COMMUNICATOR: 'EXCELENT COMMUNICATOR',
+    FAST_AND_FURIOUS: 'FAST AND FURIOUS',
+    LOCAL_LOBANG: 'LOCAL LOBANG',
+    SUPER_NEIGHBOUR: 'SUPER NEIGHBOUR',
   },
-  badges: [
-    {
+  badges: {
+    EXCELLENT_COMMUNICATOR: {
       name: 'EXCELLENT COMMUNICATOR',
       badgeType: 'EXCELLENT_COMMUNICATOR',
-      description: 'Nice and friendly, maybe kopi together next time?',
+      description: 'User-awarded badge',
       image: 'excellentCommunicator.jpg',
     },
-    {
+    FAST_AND_FURIOUS: {
       name: 'FAST AND FURIOUS',
       badgeType: 'FAST_AND_FURIOUS',
-      description:
-        'Fastest in this street, this part of town, and some say the whole Singapore!',
+      description: 'User-awarded badge',
       image: 'fastAndFurious.png',
     },
-    {
+    LOCAL_LOBANG: {
       name: 'LOCAL LOBANG',
       badgeType: 'LOCAL_LOBANG',
-      description: 'The neighbour we all want to have',
+      description: 'User-awarded badge',
       image: 'localLobang.png',
     },
-    {
+    SUPER_NEIGHBOUR: {
       name: 'SUPER NEIGHBOUR',
       badgeType: 'SUPER_NEIGHBOUR',
-      description: 'Top of Monthly Leaderboard - wow, a Super Neigbour indeed!',
+      description:
+        'System-awarded badge, to the user with the highest number of badges for a month',
       image: 'superNeighbour.jpg',
     },
-  ],
+  },
 };

@@ -1,4 +1,5 @@
 import React from 'react';
+import { SafeAreaView } from 'react-native';
 import {Button, Icon} from '@ui-kitten/components';
 import {NavigationContainer} from '@react-navigation/native';
 import {
@@ -18,6 +19,7 @@ import AddressScreen from './profileManagement/AddressScreen';
 import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
+import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 
 import TabNavigator from './tabs';
 
@@ -59,7 +61,8 @@ const HomeNavigator = () => (
         headerLeft: () => (
           <Button
             onPress={() => {
-              navigation.replace('Tabs', {screen: 'Profile'});
+              // navigation.replace('Tabs', {screen: 'Profile'});
+              navigation.goBack();
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"
@@ -163,6 +166,17 @@ const HomeNavigator = () => (
       })}
     />
     <Stack.Screen name="UserBadges" component={UserBadges} />
+    <Stack.Screen
+      name="LeaderboardScreen"
+      component={LeaderboardScreen}
+      options={({navigation}) => ({
+        title: 'Leaderboard',
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      })}
+    />
     {/* <Stack.Screen
       name="AddAddress"
       component={AddAddress}

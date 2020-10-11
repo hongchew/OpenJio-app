@@ -16,9 +16,11 @@ class ChangePassword extends React.Component {
     this.state = {
       secureTextCurr: true,
       secureTextNew: true,
+      secureTextNew2: true,
       email: '',
       currPassword: '',
       newPassword: '',
+      reEnterNewPassword: '',
       isChanged: false,
       message: '',
     };
@@ -48,6 +50,18 @@ class ChangePassword extends React.Component {
     }
   };
 
+  toggleSecureNew2 = () => {
+    if (this.state.secureTextNew2) {
+      this.setState({
+        secureTextNew2: false,
+      });
+    } else {
+      this.setState({
+        secureTextNew2: true,
+      });
+    }
+  };
+
   renderCurrIcon = (props) => (
     <TouchableWithoutFeedback onPress={this.toggleSecureCurr}>
       <Icon name={this.state.secureTextCurr ? 'eye-off' : 'eye'} {...props} />
@@ -60,24 +74,48 @@ class ChangePassword extends React.Component {
     </TouchableWithoutFeedback>
   );
 
+  renderNewIcon2 = (props) => (
+    <TouchableWithoutFeedback onPress={this.toggleSecureNew2}>
+      <Icon name={this.state.secureTextNew2 ? 'eye-off' : 'eye'} {...props} />
+    </TouchableWithoutFeedback>
+  );
+
   handleChangePassword = () => {
-    if (
-      this.state.email == '' ||
-      this.state.currPassword == '' ||
-      this.state.newPassword == ''
-    ) {
+    let emptyFields;
+
+    if (this.props.route.params.fromLogin) {
+      emptyFields =
+        this.state.newPassword == '' || this.state.reEnterNewPassword == '';
+    } else {
+      emptyFields =
+        this.state.email == '' ||
+        this.state.currPassword == '' ||
+        this.state.newPassword == '' ||
+        this.state.name == '' ||
+        this.state.reEnterNewPassword == '';
+    }
+    const unmatchedPasswords =
+      this.state.newPassword != this.state.reEnterNewPassword;
+    if (emptyFields || unmatchedPasswords) {
       this.setState({
         email: '',
         currPassword: '',
         newPassword: '',
+        reEnterNewPassword: '',
         isChanged: false,
-        message: 'Empty fields. Unable to change password.',
+        message: emptyFields
+          ? 'Empty fields. Unable to change password.'
+          : 'New Passwords do not match',
       });
     } else {
       axios
         .put(globalVariable.userApi + 'change-user-password', {
-          email: this.state.email,
-          currPassword: this.state.currPassword,
+          email: this.props.route.params.fromLogin
+            ? this.props.route.params.email
+            : this.state.email,
+          currPassword: this.props.route.params.fromLogin
+            ? this.props.route.params.currPassword
+            : this.state.currPassword,
           newPassword: this.state.newPassword,
         })
         .then((response) => {
@@ -85,6 +123,7 @@ class ChangePassword extends React.Component {
             email: '',
             currPassword: '',
             newPassword: '',
+            reEnterNewPassword: '',
             isChanged: true,
             message: 'Password changed successfully.',
           });
@@ -95,6 +134,7 @@ class ChangePassword extends React.Component {
             email: '',
             currPassword: '',
             newPassword: '',
+            reEnterNewPassword: '',
             isChanged: false,
             message: 'Unable to change password.',
           });
@@ -131,18 +171,24 @@ class ChangePassword extends React.Component {
         </Text>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
-            <Input
-              label="Email"
-              value={this.state.email}
-              onChangeText={(text) => this.setState({email: text})}
-            />
-            <Input
-              label="Current Password"
-              accessoryRight={this.renderCurrIcon}
-              secureTextEntry={this.state.secureTextCurr}
-              value={this.state.currPassword}
-              onChangeText={(text) => this.setState({currPassword: text})}
-            />
+            {/* don't render if user came from login page */}
+            {!this.props.route.params.fromLogin && (
+              <Input
+                label="Email"
+                value={this.state.email}
+                onChangeText={(text) => this.setState({email: text})}
+              />
+            )}
+            {/* don't render if user came from login page */}
+            {!this.props.route.params.fromLogin && (
+              <Input
+                label="Current Password"
+                accessoryRight={this.renderCurrIcon}
+                secureTextEntry={this.state.secureTextCurr}
+                value={this.state.currPassword}
+                onChangeText={(text) => this.setState({currPassword: text})}
+              />
+            )}
             <Input
               label="New Password"
               value={this.state.name}
@@ -150,6 +196,14 @@ class ChangePassword extends React.Component {
               secureTextEntry={this.state.secureTextNew}
               value={this.state.newPassword}
               onChangeText={(text) => this.setState({newPassword: text})}
+            />
+            <Input
+              label="Re-Enter New Password"
+              value={this.state.name}
+              accessoryRight={this.renderNewIcon2}
+              secureTextEntry={this.state.secureTextNew2}
+              value={this.state.reEnterNewPassword}
+              onChangeText={(text) => this.setState({reEnterNewPassword: text})}
             />
             <Button
               style={styles.button}

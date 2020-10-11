@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {StatusBar, View, StyleSheet} from 'react-native';
 import {Text, Layout, Menu, MenuItem, Icon, Card} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
-import {DefaultAvatar} from '../GLOBAL_VARIABLE';
+import {UserAvatar} from '../GLOBAL_VARIABLE';
 
 const PasswordIcon = (props) => (
   <Icon {...props} name="shield-outline" width="25" height="25" />
@@ -102,7 +102,9 @@ class ProfileScreen extends React.Component {
         <Layout style={styles.container}>
           <Card style={styles.firstCard}>
             <View style={styles.headerRow}>
-              <DefaultAvatar />
+              <UserAvatar
+                source={this.props.user ? this.props.user.avatarPath : null}
+              />
               <Text style={styles.nameCardText}>
                 <Text style={{fontWeight: 'bold', fontSize: 16}}>
                   {this.props.user ? this.props.user.name : ''}
@@ -139,7 +141,11 @@ class ProfileScreen extends React.Component {
             <MenuItem
               accessoryLeft={PasswordIcon}
               title={<Text style={styles.menuItem}>Change Password</Text>}
-              onPress={() => this.props.navigation.navigate('ChangePassword')}
+              onPress={() =>
+                this.props.navigation.navigate('ChangePassword', {
+                  fromLogin: false,
+                })
+              }
             />
             <MenuItem
               accessoryLeft={AddressIcon}
