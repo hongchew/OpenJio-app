@@ -89,7 +89,7 @@ class EditProfile extends React.Component {
         }
       );
       console.log(response);
-      this.setState({message: ''});
+      this.setState({message: '', newAvatar: null});
       this.props.setUser(response.data.user);
     } catch (error) {
       console.log(error);
