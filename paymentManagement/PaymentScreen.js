@@ -8,7 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import {Text, Layout, Card} from '@ui-kitten/components';
+
+//to make sure the status bar change to certain colour only on this page
+function FocusAwareStatusBar(props) {
+    const isFocused = useIsFocused();
+    return isFocused ? <StatusBar {...props} /> : null;
+  }
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -22,11 +29,11 @@ class PaymentScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
-        <StatusBar
+        <FocusAwareStatusBar
           barStyle="dark-content"
           hidden={false}
           backgroundColor="transparent"
-          translucent={true}
+          //translucent={true}
         />
         <Text style={styles.header} category="h4">
           Payment

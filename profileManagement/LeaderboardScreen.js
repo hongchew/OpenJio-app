@@ -4,6 +4,7 @@ import {StatusBar, View, StyleSheet, FlatList, Image} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import {Text, Button, Avatar, Card} from '@ui-kitten/components';
 import axios from 'axios';
+import {UserAvatar} from '../GLOBAL_VARIABLE';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
 //to make sure the status bar change to certain colour only on this page
@@ -70,7 +71,6 @@ class LeaderboardScreen extends React.Component {
       monthlyBtn: 'basic',
       allTimeBtn: 'primary',
     });
-    console.log('viewAllTime');
   };
 
   viewMonthly = () => {
@@ -80,7 +80,6 @@ class LeaderboardScreen extends React.Component {
       monthlyBtn: 'primary',
       allTimeBtn: 'basic',
     });
-    console.log('view Monthly');
   };
 
   renderItem = ({item, index}) => {
@@ -118,14 +117,9 @@ class LeaderboardScreen extends React.Component {
               {parseInt(index) + 1}
             </Text>
           )}
-
-          {!item.avatarPath && (
-            <Avatar
-              source={require('../img/defaultAvatar.png')}
-              shape="rounded"
-              size="small"
-            />
-          )}
+          <UserAvatar
+            source={item.avatarPath ? item.avatarPath : null}
+          />
 
           <Text style={styles.labelStyle} numberOfLines={1}>
             {item.name}
@@ -149,7 +143,6 @@ class LeaderboardScreen extends React.Component {
           backgroundColor="white"
           //translucent={true}
         />
-
         <Text style={styles.header} category="h4">
           Leaderboard
         </Text>
@@ -157,7 +150,7 @@ class LeaderboardScreen extends React.Component {
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 10,
+            marginTop: 20,
             marginBottom: 20,
             alignSelf: 'center',
           }}>

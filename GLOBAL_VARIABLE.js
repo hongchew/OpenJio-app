@@ -18,7 +18,7 @@ export const UserAvatar = (props) => {
           : require('./img/defaultAvatar.png')
       }
       shape="round"
-      size="giant"
+      size={props.size}
     />
   );
 };

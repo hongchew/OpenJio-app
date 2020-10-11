@@ -104,6 +104,7 @@ class ProfileScreen extends React.Component {
             <View style={styles.headerRow}>
               <UserAvatar
                 source={this.props.user ? this.props.user.avatarPath : null}
+                size="giant"
               />
               <Text style={styles.nameCardText}>
                 <Text style={{fontWeight: 'bold', fontSize: 16}}>
