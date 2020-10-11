@@ -1,10 +1,12 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusBar, View, StyleSheet, FlatList, Image} from 'react-native';
+import {StatusBar, View, StyleSheet, FlatList, Image, RefreshControl} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import {Text, Button, Avatar, Card} from '@ui-kitten/components';
 import axios from 'axios';
+import {UserAvatar} from '../GLOBAL_VARIABLE';
 import {globalVariable} from '../GLOBAL_VARIABLE';
+import { ScrollView } from 'react-native-gesture-handler';
 
 //to make sure the status bar change to certain colour only on this page
 function FocusAwareStatusBar(props) {
@@ -14,6 +16,7 @@ function FocusAwareStatusBar(props) {
 
 const oddRowColor = 'white';
 const evenRowColor = '#f2f5f7';
+
 
 class LeaderboardScreen extends React.Component {
   constructor(props) {
@@ -27,11 +30,21 @@ class LeaderboardScreen extends React.Component {
       allTimeBtn: 'primary',
       allTimeData: [],
       monthlyData: [],
+      refreshing: false,
     };
     console.log(this.props);
   }
-
+  
   componentDidMount() {
+    this.getAllTimeLeaderboard();
+    this.getMonthlyLeaderboard();
+  }
+
+
+  onRefresh = () => {
+    this.setState({
+      refreshing: true
+    });
     this.getAllTimeLeaderboard();
     this.getMonthlyLeaderboard();
   }
@@ -43,6 +56,7 @@ class LeaderboardScreen extends React.Component {
       );
       this.setState({
         allTimeData: response.data,
+        refreshing: false
       });
     } catch (error) {
       console.log(error);
@@ -57,6 +71,7 @@ class LeaderboardScreen extends React.Component {
       //console.log(response.data);
       this.setState({
         monthlyData: response.data,
+        refreshing: false
       });
     } catch (error) {
       console.log(error);
@@ -70,7 +85,6 @@ class LeaderboardScreen extends React.Component {
       monthlyBtn: 'basic',
       allTimeBtn: 'primary',
     });
-    console.log('viewAllTime');
   };
 
   viewMonthly = () => {
@@ -80,7 +94,6 @@ class LeaderboardScreen extends React.Component {
       monthlyBtn: 'primary',
       allTimeBtn: 'basic',
     });
-    console.log('view Monthly');
   };
 
   renderItem = ({item, index}) => {
@@ -118,14 +131,9 @@ class LeaderboardScreen extends React.Component {
               {parseInt(index) + 1}
             </Text>
           )}
-
-          {!item.avatarPath && (
-            <Avatar
-              source={require('../img/defaultAvatar.png')}
-              shape="rounded"
-              size="small"
-            />
-          )}
+          <UserAvatar
+            source={item.avatarPath ? item.avatarPath : null}
+          />
 
           <Text style={styles.labelStyle} numberOfLines={1}>
             {item.name}
@@ -149,7 +157,6 @@ class LeaderboardScreen extends React.Component {
           backgroundColor="white"
           //translucent={true}
         />
-
         <Text style={styles.header} category="h4">
           Leaderboard
         </Text>
@@ -157,7 +164,7 @@ class LeaderboardScreen extends React.Component {
         <View
           style={{
             flexDirection: 'row',
-            marginTop: 10,
+            marginTop: 20,
             marginBottom: 20,
             alignSelf: 'center',
           }}>
@@ -175,7 +182,6 @@ class LeaderboardScreen extends React.Component {
           </Button>
         </View>
 
-        <Card appearance="filled">
           <FlatList
             data={
               this.state.viewAllTime
@@ -184,8 +190,14 @@ class LeaderboardScreen extends React.Component {
             }
             keyExtractor={(item, index) => index.toString()}
             renderItem={(data) => this.renderItem(data)}
+            refreshControl={
+              <RefreshControl 
+                refreshing={this.state.refreshing} 
+                onRefresh={this.onRefresh} 
+                title="Hello"
+              />
+            }
           />
-        </Card>
       </View>
     );
   }
@@ -202,6 +214,8 @@ const styles = StyleSheet.create({
     fontFamily: 'Karla-Bold',
   },
   row: {
+    paddingLeft: 10,
+    paddingRight: 10,
     paddingTop: 10,
     paddingBottom: 10,
     flexDirection: 'row',
@@ -241,9 +255,7 @@ const styles = StyleSheet.create({
   score: {
     fontSize: 20,
     fontWeight: 'bold',
-    position: 'absolute',
     right: 15,
-    paddingLeft: 15,
   },
 });
 
