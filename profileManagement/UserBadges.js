@@ -15,12 +15,12 @@ import {
   List,
   ListItem,
   Divider,
+  Avatar,
 } from '@ui-kitten/components';
 import {connect} from 'react-redux';
 import loginStyle from '../styles/loginStyle';
-import axios from 'axios';
-import {globalVariable} from '../GLOBAL_VARIABLE';
 import {setUser} from '../redux/actions';
+import badgesControl from '../enum/badgesControl';
 
 class UserBadges extends React.Component {
   constructor(props) {
@@ -28,16 +28,44 @@ class UserBadges extends React.Component {
     this.state = {};
   }
   render() {
-    const data = new Array(15).fill({
-      title: 'Item',
-      description: 'Description for Item',
+    console.log('User badges');
+    console.log(this.props);
+
+    //array of user badges
+    const badges = this.props.user.Badges;
+    const data = badges.map((badge) => {
+      return {
+        title: badge.name,
+        description: badge.description,
+        monthlyCounter: badge.monthlyCounter,
+      };
     });
     const renderItem = ({item, index}) => (
       <ListItem
-        title={`${item.title} ${index + 1}`}
-        description={`${item.description} ${index + 1}`}
+        title={`${item.title}`}
+        description={`${item.description}`}
+        accessoryLeft={() => {
+          switch (item.title) {
+            case 'EXCELLENT COMMUNICATOR':
+              return (
+                <Avatar source={require('../img/excellentCommunicator.png')} />
+              );
+            case 'FAST AND FURIOUS':
+              return <Avatar source={require('../img/fastAndFurious.png')} />;
+            case 'LOCAL LOBANG':
+              return <Avatar source={require('../img/localLobang.png')} />;
+            case 'SUPER NEIGHBOUR':
+              return <Avatar source={require('../img/superNeighbour.png')} />;
+            default:
+              return <Avatar source={require('../img/openjioLogo.jpg')} />;
+          }
+        }}
+        accessoryRight={() => {
+          return <Text style={styles.text}>{item.monthlyCounter}</Text>;
+        }}
       />
     );
+
     return (
       <Layout style={styles.layout}>
         <StatusBar
@@ -50,16 +78,13 @@ class UserBadges extends React.Component {
           My Badges
         </Text>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView>
-            <Layout style={styles.container}>
-              <List
-                // style={styles.container}
-                data={badges}
-                ItemSeparatorComponent={Divider}
-                renderItem={renderItem}
-              />
-            </Layout>
-          </ScrollView>
+          <Layout style={styles.container}>
+            <List
+              data={data}
+              ItemSeparatorComponent={Divider}
+              renderItem={renderItem}
+            />
+          </Layout>
         </TouchableWithoutFeedback>
       </Layout>
     );
@@ -71,8 +96,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    flex: 1,
-    marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
   },
@@ -85,22 +108,27 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 30,
   },
+  // circle: {
+  //   backgroundColor: '#0456c9',
+  //   color: 'white',
+  //   justifyContent: 'center',
+  //   alignItems: 'center',
+  //   borderRadius: 50,
+  //   textAlign: 'center',
+  //   display: 'flex',
+  //   paddingLeft: 5,
+  //   paddingRight: 5,
+  // },
+  text: {
+    fontFamily: 'Karla-Bold',
+    marginLeft: 20,
+  },
 });
 
 const mapStateToProps = (state) => {
   return {
     user: state.user,
-    error: state.error,
-    isLoading: state.loading,
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setUser: (user) => {
-      dispatch(setUser(user));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(UserBadges);
+export default connect(mapStateToProps, {setUser})(UserBadges);
