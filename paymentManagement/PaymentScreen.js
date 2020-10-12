@@ -8,7 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {Text, Layout, Card} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  Card,
+  Divider,
+  List,
+  ListItem,
+} from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 
@@ -16,28 +23,48 @@ class PaymentScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
+      transactionListCounter: 5
     };
-    //console.log('The user state from redux is:')
-    //console.log(this.state.user)
   }
 
-  //Retrieve wallet balance of user
-  async getBalance (userId) {
+  componentDidMount() {
+    this.getTransactions(this.state.user.userId);
+  }
+
+  //obtain the list of transactions
+  async getTransactions(userId) {
     try {
-      //retrieve user wallet info by userId
-      const wallet = await axios.post(globalVariable.walletApi + 'retrieve-wallet-by-userId', {
-        userId: userId
+      const response = await axios.get(
+        globalVariable.transactionApi + `by/${userId}`
+      );
+      console.log(response);
+      this.setState({
+        transactions: response.data,
       });
-      console.log('Wallet balance:')
-      console.log(wallet)
-      console.log(wallet.data);
-      this.setState({wallet: wallet.data.balance})
-      console.log(`Wallet state: ${this.state.wallet.balance}`)
-      const balance = wallet.data.balance
     } catch (error) {
-      console.log(error)
+      console.log(error);
+    }
+  }
+
+  //render the list of transactions
+  renderItem = ({item}) => {
+    return (
+      <TouchableOpacity onPress= {() => {}}>
+        <ListItem
+          style={styles.listItem}
+          title={`${this.printReceive(item)} SGD ${item.amount}`}
+          description={item.description}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  printReceive (transaction) {
+    if(transaction.senderWalletId === this.state.user.Wallet.walletId) {
+      return "-"
+    } else {
+      return "+"
     }
   }
 
@@ -58,16 +85,19 @@ class PaymentScreen extends React.Component {
 
           <Card>
             <Text style={styles.action}>Quick Actions</Text>
-            <View
-              style={styles.actionContainer}>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('TopUp')} style={styles.buttonItem}>
+            <View style={styles.actionContainer}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('TopUp')}
+                style={styles.buttonItem}>
                 <Image
                   source={require('../img/topUp.png')}
                   style={styles.imageContainer}
                 />
                 <Text style={styles.subtitle}>Top-Up</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('MakePayment')} style={styles.buttonItem}>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.navigate('MakePayment')}
+                style={styles.buttonItem}>
                 <Image
                   source={require('../img/sendMoney.png')}
                   style={styles.imageContainer}
@@ -92,10 +122,15 @@ class PaymentScreen extends React.Component {
           </Card>
           <Card style={styles.transaction}>
             <Text style={styles.action}>Recent Transactions</Text>
-            <Text style={styles.link}>Show all</Text>
-            <View
-              style={styles.actionContainer}>
-            </View>
+            <TouchableOpacity onPress={() => {}}>
+              <Text style={styles.link}>Show all</Text>
+            </TouchableOpacity>
+            <List
+              style={styles.listContainer}
+              data={this.state.transactions}
+              ItemSeparatorComponent={Divider}
+              renderItem={this.renderItem}
+            />
           </Card>
         </ScrollView>
       </Layout>
@@ -130,7 +165,6 @@ const styles = StyleSheet.create({
   actionContainer: {
     justifyContent: 'flex-start',
     flexDirection: 'row',
-    
   },
   label: {
     color: '#3366FF',
@@ -144,6 +178,7 @@ const styles = StyleSheet.create({
   money: {
     fontSize: 24,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   subtitle: {
     fontFamily: 'Karla-Regular',
@@ -168,8 +203,14 @@ const styles = StyleSheet.create({
   },
   transaction: {
     marginTop: 20,
-    marginBottom: 20
-  }
+    marginBottom: 20,
+  },
+  listContainer: {
+    maxHeight: 200,
+  },
+  listItem: {
+    paddingTop: 10,
+  },
 });
 
 function mapStateToProps(state) {
