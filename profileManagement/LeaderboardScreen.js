@@ -151,7 +151,7 @@ class LeaderboardScreen extends React.Component {
   render() {
     return (
       <View style={styles.layout}>
-        <FocusAwareStatusBar
+        <StatusBar
           barStyle="dark-content"
           hidden={false}
           backgroundColor="white"
@@ -238,7 +238,8 @@ const styles = StyleSheet.create({
   rank: {
     fontSize: 17,
     fontWeight: 'bold',
-    marginRight: 5,
+    marginLeft: 4,
+    marginRight: 14,
   },
   singleDidget: {
     paddingLeft: 16,
