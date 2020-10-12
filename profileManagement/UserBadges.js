@@ -14,7 +14,6 @@ import {
   ListItem,
   Divider,
   Avatar,
-  Icon,
 } from '@ui-kitten/components';
 import {connect} from 'react-redux';
 import {setUser} from '../redux/actions';
@@ -59,7 +58,6 @@ class UserBadges extends React.Component {
     } else {
       condition = false;
     }
-    console.log(this.state.monthlyBadges, this.state.allTimeBadges, condition);
     return renderIf(
       condition,
       <Text style={styles.message}>
@@ -70,6 +68,17 @@ class UserBadges extends React.Component {
   };
 
   RenderBadges = () => {
+    const data = this.state.userBadges.map((badge) => {
+      return {
+        title: badge.name,
+        description: badge.description,
+        count: this.state.viewMonthly
+          ? badge.monthlyCounter
+          : badge.totalCounter,
+        badgeType: badge.badgeType,
+      };
+    });
+
     //if badge count > 0, render the list item. If not, hide the list item
     const renderItem = ({item}) => {
       if (item.count > 0) {
@@ -91,43 +100,16 @@ class UserBadges extends React.Component {
               </Text>
             )}
             accessoryLeft={() => {
-              switch (item.title) {
-                case 'EXCELLENT COMMUNICATOR':
-                  return (
-                    <Avatar
-                      source={require('../img/excellentCommunicator.png')}
-                      size="giant"
-                    />
-                  );
-                case 'FAST AND FURIOUS':
-                  return (
-                    <Avatar
-                      source={require('../img/fastAndFurious.png')}
-                      size="giant"
-                    />
-                  );
-                case 'LOCAL LOBANG':
-                  return (
-                    <Avatar
-                      source={require('../img/localLobang.png')}
-                      size="giant"
-                    />
-                  );
-                case 'SUPER NEIGHBOUR':
-                  return (
-                    <Avatar
-                      source={require('../img/superNeighbour.png')}
-                      size="giant"
-                    />
-                  );
-                default:
-                  return (
-                    <Avatar
-                      source={require('../img/openjioLogo.jpg')}
-                      size="giant"
-                    />
-                  );
-              }
+              var listOfBadges = badgesControl;
+              var img = eval(
+                'listOfBadges.badges.' + item.badgeType + '.image'
+              );
+              return (
+                <Avatar
+                  source={img ? img : require('../img/defaultAvatar.png')}
+                  size="giant"
+                />
+              );
             }}
             accessoryRight={() => {
               return <Text style={styles.count}>{item.count}</Text>;
@@ -139,15 +121,6 @@ class UserBadges extends React.Component {
       }
     };
 
-    const data = this.state.userBadges.map((badge) => {
-      return {
-        title: badge.name,
-        description: badge.description,
-        count: this.state.viewMonthly
-          ? badge.monthlyCounter
-          : badge.totalCounter,
-      };
-    });
     return (
       <List
         data={data}
@@ -157,9 +130,6 @@ class UserBadges extends React.Component {
     );
   };
   render() {
-    console.log('User badges');
-    // console.log(this.props);
-
     return (
       <Layout style={styles.layout}>
         <StatusBar
@@ -189,7 +159,6 @@ class UserBadges extends React.Component {
                   monthlyBtn: 'primary',
                   allTimeBtn: 'basic',
                 });
-                console.log(this.state);
               }}>
               Monthly
             </Button>
@@ -204,7 +173,6 @@ class UserBadges extends React.Component {
                   monthlyBtn: 'basic',
                   allTimeBtn: 'primary',
                 });
-                console.log(this.state);
               }}>
               All-Time
             </Button>
