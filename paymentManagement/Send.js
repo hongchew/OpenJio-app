@@ -8,7 +8,14 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import {Text, Layout, Card} from '@ui-kitten/components';
+
+//to make sure the status bar change to certain colour only on this page
+function FocusAwareStatusBar(props) {
+    const isFocused = useIsFocused();
+    return isFocused ? <StatusBar {...props} /> : null;
+  }
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -17,26 +24,17 @@ class PaymentScreen extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
     };
-    console.log('The user state from redux is:')
-    console.log(this.state.user)
-  }
-
-  //Retrieve wallet balance of user
-  async getBalance (userId) {
-    try {
-      //retrieve user wallet info by userId
-      const wallet = await axios.post(globalVariable.walletApi + 'retrieve-wallet-by-userId', {
-        userId: this.state.user.userId
-      });
-      console.log(wallet.data);
-    } catch (error) {
-      console.log(error)
-    }
   }
 
   render() {
     return (
       <Layout style={styles.layout}>
+        <FocusAwareStatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+          //translucent={true}
+        />
         <Text style={styles.header} category="h4">
           Payment
         </Text>
@@ -45,7 +43,7 @@ class PaymentScreen extends React.Component {
             <Text style={styles.label}>OpenJio Wallet</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
-              <Text style={styles.money}>{getBalance(this.state.user.userId)}</Text>
+              <Text style={styles.money}>3.00</Text>
             </View>
           </Card>
 
@@ -53,7 +51,7 @@ class PaymentScreen extends React.Component {
             <Text style={styles.action}>Quick Actions</Text>
             <View
               style={styles.actionContainer}>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('TopUp')} style={styles.buttonItem}>
+              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
                 <Image
                   source={require('../img/topUp.png')}
                   style={styles.imageContainer}
@@ -69,14 +67,14 @@ class PaymentScreen extends React.Component {
               </TouchableOpacity>
               <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
                 <Image
-                  source={require('../img/withdraw.png')}
+                  source={require('../img/sendMoney.png')}
                   style={styles.imageContainer}
                 />
                 <Text style={styles.subtitle}>Withdraw</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
                 <Image
-                  source={require('../img/donate.png')}
+                  source={require('../img/sendMoney.png')}
                   style={styles.imageContainer}
                 />
                 <Text style={styles.subtitle}>Donate</Text>
@@ -100,6 +98,9 @@ const styles = StyleSheet.create({
   layout: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  container: {
+    flex: 2,
   },
   header: {
     marginTop: 60,

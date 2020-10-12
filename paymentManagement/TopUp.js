@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Text, Layout, Card} from '@ui-kitten/components';
+import axios from 'axios';
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -16,19 +17,16 @@ class PaymentScreen extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
+      amountPayable: 0,
+      recipientEmail: '',
     };
-    console.log('The user state from redux is:')
-    console.log(this.state.user)
   }
 
   //Retrieve wallet balance of user
   async getBalance (userId) {
     try {
       //retrieve user wallet info by userId
-      const wallet = await axios.post(globalVariable.walletApi + 'retrieve-wallet-by-userId', {
-        userId: this.state.user.userId
-      });
-      console.log(wallet.data);
+      //const wallet = axios.get('')
     } catch (error) {
       console.log(error)
     }
@@ -38,50 +36,33 @@ class PaymentScreen extends React.Component {
     return (
       <Layout style={styles.layout}>
         <Text style={styles.header} category="h4">
-          Payment
+          Top Up 
         </Text>
         <ScrollView style={styles.container}>
-          <Card style={styles.card}>
-            <Text style={styles.label}>OpenJio Wallet</Text>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{marginTop: 5}}>SGD </Text>
-              <Text style={styles.money}>{getBalance(this.state.user.userId)}</Text>
-            </View>
-          </Card>
-
           <Card>
-            <Text style={styles.action}>Quick Actions</Text>
-            <View
-              style={styles.actionContainer}>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('TopUp')} style={styles.buttonItem}>
-                <Image
-                  source={require('../img/topUp.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Top-Up</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
-                <Image
-                  source={require('../img/sendMoney.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Send</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
-                <Image
-                  source={require('../img/withdraw.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Withdraw</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
-                <Image
-                  source={require('../img/donate.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Donate</Text>
-              </TouchableOpacity>
-            </View>
+            <Text style={styles.action}>Enter Payment Details:</Text>
+            <Input
+              label="Amount"
+              value={this.state.amountPayable}
+              onChangeText={(amount) => this.setState({amountPayable: amount})}
+            />
+            <Input
+              label="Email"
+              value={this.state.recipientEmail}
+              onChangeText={(email) => this.setState({recipientEmail: email})}
+            />
+            <Text>Balance: {getBalance}</Text>
+            <Input
+              label="Mobile No. (Optional)"
+              value={this.state.mobileNumber}
+              onChangeText={(text) => this.setState({mobileNumber: text})}
+            />
+
+            <Button
+              style={styles.button}
+              onPress={() => this.handleEditProfile()}>
+              UPDATE PROFILE
+            </Button>
           </Card>
           <Card style={styles.transaction}>
             <Text style={styles.action}>Recent Transactions</Text>
@@ -100,6 +81,9 @@ const styles = StyleSheet.create({
   layout: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  container: {
+    flex: 2,
   },
   header: {
     marginTop: 60,
