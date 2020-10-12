@@ -178,7 +178,8 @@ const HomeNavigator = () => (
         headerLeft: () => (
           <Button
             onPress={() => {
-              navigation.replace('Tabs', {screen: 'Profile'});
+              // navigation.replace('Tabs', {screen: 'Profile'});
+              navigation.goBack();
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"

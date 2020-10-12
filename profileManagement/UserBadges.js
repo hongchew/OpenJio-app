@@ -28,7 +28,9 @@ class UserBadges extends React.Component {
       monthlyBadges: 0,
       allTimeBadges: 0,
       //array of user's badges
-      userBadges: this.props.user.Badges,
+      userBadges: this.props.route.params
+        ? this.props.route.params.badges
+        : this.props.user.Badges,
       //view all time or monthly badges depending value is true or false
       viewMonthly: true,
       monthlyBtn: 'primary',
@@ -140,7 +142,9 @@ class UserBadges extends React.Component {
         />
         <View>
           <Text style={styles.header} category="h4">
-            My Badges
+            {this.props.route.params
+              ? this.props.route.params.name + "'s Badges"
+              : 'My Badges'}
           </Text>
           <View
             style={{

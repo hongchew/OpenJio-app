@@ -1,12 +1,20 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusBar, View, StyleSheet, FlatList, Image, RefreshControl} from 'react-native';
+import {
+  StatusBar,
+  View,
+  StyleSheet,
+  FlatList,
+  Image,
+  RefreshControl,
+  TouchableOpacity,
+} from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
 import {Text, Button, Avatar, Card} from '@ui-kitten/components';
 import axios from 'axios';
 import {UserAvatar} from '../GLOBAL_VARIABLE';
 import {globalVariable} from '../GLOBAL_VARIABLE';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 
 //to make sure the status bar change to certain colour only on this page
 function FocusAwareStatusBar(props) {
@@ -16,7 +24,6 @@ function FocusAwareStatusBar(props) {
 
 const oddRowColor = 'white';
 const evenRowColor = '#f2f5f7';
-
 
 class LeaderboardScreen extends React.Component {
   constructor(props) {
@@ -34,20 +41,19 @@ class LeaderboardScreen extends React.Component {
     };
     console.log(this.props);
   }
-  
+
   componentDidMount() {
     this.getAllTimeLeaderboard();
     this.getMonthlyLeaderboard();
   }
 
-
   onRefresh = () => {
     this.setState({
-      refreshing: true
+      refreshing: true,
     });
     this.getAllTimeLeaderboard();
     this.getMonthlyLeaderboard();
-  }
+  };
 
   async getAllTimeLeaderboard() {
     try {
@@ -56,7 +62,7 @@ class LeaderboardScreen extends React.Component {
       );
       this.setState({
         allTimeData: response.data,
-        refreshing: false
+        refreshing: false,
       });
     } catch (error) {
       console.log(error);
@@ -71,7 +77,7 @@ class LeaderboardScreen extends React.Component {
       //console.log(response.data);
       this.setState({
         monthlyData: response.data,
-        refreshing: false
+        refreshing: false,
       });
     } catch (error) {
       console.log(error);
@@ -102,7 +108,15 @@ class LeaderboardScreen extends React.Component {
     const rowColor = index % 2 === 0 ? evenColor : oddColor;
 
     return (
-      <View style={[styles.row, {backgroundColor: rowColor}]}>
+      <TouchableOpacity
+        style={[styles.row, {backgroundColor: rowColor}]}
+        onPress={() => {
+          this.props.navigation.navigate('UserBadges', {
+            badges: item.Badges,
+            name: item.name,
+          });
+        }}
+        activeOpacity={0.7}>
         <View style={styles.left}>
           {index == 0 && (
             <Image
@@ -131,9 +145,7 @@ class LeaderboardScreen extends React.Component {
               {parseInt(index) + 1}
             </Text>
           )}
-          <UserAvatar
-            source={item.avatarPath ? item.avatarPath : null}
-          />
+          <UserAvatar source={item.avatarPath ? item.avatarPath : null} />
 
           <Text style={styles.labelStyle} numberOfLines={1}>
             {item.name}
@@ -144,7 +156,7 @@ class LeaderboardScreen extends React.Component {
             ? item.badgeCountTotal
             : item.badgeCountMonthly}
         </Text>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -182,22 +194,22 @@ class LeaderboardScreen extends React.Component {
           </Button>
         </View>
 
-          <FlatList
-            data={
-              this.state.viewAllTime
-                ? this.state.allTimeData
-                : this.state.monthlyData
-            }
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={(data) => this.renderItem(data)}
-            refreshControl={
-              <RefreshControl 
-                refreshing={this.state.refreshing} 
-                onRefresh={this.onRefresh} 
-                title="Hello"
-              />
-            }
-          />
+        <FlatList
+          data={
+            this.state.viewAllTime
+              ? this.state.allTimeData
+              : this.state.monthlyData
+          }
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={(data) => this.renderItem(data)}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+              title="Hello"
+            />
+          }
+        />
       </View>
     );
   }
