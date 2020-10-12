@@ -33,7 +33,7 @@ class PaymentScreen extends React.Component {
       console.log('Wallet balance:')
       console.log(wallet)
       console.log(wallet.data);
-      //this.setState({wallet: wallet.data})
+      this.setState({wallet: wallet.data.balance})
       console.log(`Wallet state: ${this.state.wallet.balance}`)
       const balance = wallet.data.balance
     } catch (error) {
@@ -51,8 +51,8 @@ class PaymentScreen extends React.Component {
           <Card style={styles.card}>
             <Text style={styles.label}>Balance</Text>
             <View style={{flexDirection: 'row'}}>
-              <Text style={{marginTop: 5}}>SGD </Text>
-              <Text style={styles.money}>{}</Text>
+              <Text style={{marginTop: 5}}>SGD</Text>
+              <Text style={styles.money}>{this.state.user.Wallet.balance}</Text>
             </View>
           </Card>
 
