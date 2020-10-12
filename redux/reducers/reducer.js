@@ -35,6 +35,14 @@ export default function reducer(state = initialState, action) {
           Addresses: action.payload,
         },
       };
+    case type.SET_WALLET:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          Wallet: action.payload,
+        },
+      };
     default:
       return state;
   }

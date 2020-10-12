@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native';
+import {SafeAreaView} from 'react-native';
 import {Button, Icon} from '@ui-kitten/components';
 import {NavigationContainer} from '@react-navigation/native';
 import {
@@ -22,6 +22,7 @@ import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 
 import TabNavigator from './tabs';
+import WalletLimit from './paymentManagement/WalletLimit';
 
 const Stack = createStackNavigator();
 
@@ -121,6 +122,17 @@ const HomeNavigator = () => (
             size="tiny"
           />
         ),
+      })}
+    />
+    <Stack.Screen
+      name="WalletLimit"
+      component={WalletLimit}
+      options={({navigation}) => ({
+        title: 'Wallet Limit',
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       })}
     />
     <Stack.Screen

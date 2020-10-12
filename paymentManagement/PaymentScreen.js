@@ -13,9 +13,9 @@ import {Text, Layout, Card} from '@ui-kitten/components';
 
 //to make sure the status bar change to certain colour only on this page
 function FocusAwareStatusBar(props) {
-    const isFocused = useIsFocused();
-    return isFocused ? <StatusBar {...props} /> : null;
-  }
+  const isFocused = useIsFocused();
+  return isFocused ? <StatusBar {...props} /> : null;
+}
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -49,8 +49,7 @@ class PaymentScreen extends React.Component {
 
           <Card>
             <Text style={styles.action}>Quick Actions</Text>
-            <View
-              style={styles.actionContainer}>
+            <View style={styles.actionContainer}>
               <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
                 <Image
                   source={require('../img/topUp.png')}
@@ -64,6 +63,17 @@ class PaymentScreen extends React.Component {
                   style={styles.imageContainer}
                 />
                 <Text style={styles.subtitle}>Send</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  this.props.navigation.navigate('WalletLimit');
+                }}
+                style={styles.buttonItem}>
+                <Image
+                  source={require('../img/walletLimit.svg')}
+                  style={styles.imageContainer}
+                />
+                <Text style={styles.subtitle}>Wallet Limit</Text>
               </TouchableOpacity>
             </View>
           </Card>
@@ -104,7 +114,6 @@ const styles = StyleSheet.create({
   actionContainer: {
     justifyContent: 'flex-start',
     flexDirection: 'row',
-    
   },
   label: {
     color: '#3366FF',

@@ -31,3 +31,11 @@ export function updateAddressArr(details) {
     payload: details,
   };
 }
+
+//For Wallet Management
+export function updateWallet(wallet) {
+  return {
+    type: type.SET_WALLET,
+    payload: wallet,
+  };
+}
