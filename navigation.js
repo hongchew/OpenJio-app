@@ -20,6 +20,8 @@ import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
+import TopUpScreen from './paymentManagement/TopUp';
+import PaymentScreen from './paymentManagement/MakePayment';
 
 import TabNavigator from './tabs';
 
@@ -205,6 +207,28 @@ const HomeNavigator = () => (
       }}
     /> */}
     <Stack.Screen name="Tabs" component={TabNavigator} />
+    <Stack.Screen
+      name="TopUp"
+      component={TopUpScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="MakePayment"
+      component={PaymentScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
   </Stack.Navigator>
 );
 

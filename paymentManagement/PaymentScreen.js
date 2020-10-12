@@ -8,14 +8,9 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {useIsFocused} from '@react-navigation/native';
 import {Text, Layout, Card} from '@ui-kitten/components';
-
-//to make sure the status bar change to certain colour only on this page
-function FocusAwareStatusBar(props) {
-    const isFocused = useIsFocused();
-    return isFocused ? <StatusBar {...props} /> : null;
-  }
+import {globalVariable} from '../GLOBAL_VARIABLE';
+import axios from 'axios';
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -24,17 +19,31 @@ class PaymentScreen extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
     };
+    //console.log('The user state from redux is:')
+    //console.log(this.state.user)
+  }
+
+  //Retrieve wallet balance of user
+  async getBalance (userId) {
+    try {
+      //retrieve user wallet info by userId
+      const wallet = await axios.post(globalVariable.walletApi + 'retrieve-wallet-by-userId', {
+        userId: userId
+      });
+      console.log('Wallet balance:')
+      console.log(wallet)
+      console.log(wallet.data);
+      this.setState({wallet: wallet.data.balance})
+      console.log(`Wallet state: ${this.state.wallet.balance}`)
+      const balance = wallet.data.balance
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   render() {
     return (
       <Layout style={styles.layout}>
-        <FocusAwareStatusBar
-          barStyle="dark-content"
-          hidden={false}
-          backgroundColor="transparent"
-          //translucent={true}
-        />
         <Text style={styles.header} category="h4">
           Wallet
         </Text>
@@ -42,8 +51,8 @@ class PaymentScreen extends React.Component {
           <Card style={styles.card}>
             <Text style={styles.label}>Balance</Text>
             <View style={{flexDirection: 'row'}}>
-              <Text style={{marginTop: 5}}>SGD </Text>
-              <Text style={styles.money}>3.00</Text>
+              <Text style={{marginTop: 5}}>SGD</Text>
+              <Text style={styles.money}>{this.state.user.Wallet.balance}</Text>
             </View>
           </Card>
 
@@ -51,20 +60,41 @@ class PaymentScreen extends React.Component {
             <Text style={styles.action}>Quick Actions</Text>
             <View
               style={styles.actionContainer}>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('TopUp')} style={styles.buttonItem}>
                 <Image
                   source={require('../img/topUp.png')}
                   style={styles.imageContainer}
                 />
                 <Text style={styles.subtitle}>Top-Up</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('MakePayment')} style={styles.buttonItem}>
                 <Image
                   source={require('../img/sendMoney.png')}
                   style={styles.imageContainer}
                 />
                 <Text style={styles.subtitle}>Send</Text>
               </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+                <Image
+                  source={require('../img/withdraw.png')}
+                  style={styles.imageContainer}
+                />
+                <Text style={styles.subtitle}>Withdraw</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+                <Image
+                  source={require('../img/donate.png')}
+                  style={styles.imageContainer}
+                />
+                <Text style={styles.subtitle}>Donate</Text>
+              </TouchableOpacity>
+            </View>
+          </Card>
+          <Card style={styles.transaction}>
+            <Text style={styles.action}>Recent Transactions</Text>
+            <Text style={styles.link}>Show all</Text>
+            <View
+              style={styles.actionContainer}>
             </View>
           </Card>
         </ScrollView>
@@ -77,10 +107,6 @@ const styles = StyleSheet.create({
   layout: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-  },
-  container: {
-    flex: 2,
-    //backgroundColor: 'white',
   },
   header: {
     marginTop: 60,
@@ -136,6 +162,14 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
   },
+  link: {
+    textAlign: 'right',
+    marginTop: 10,
+  },
+  transaction: {
+    marginTop: 20,
+    marginBottom: 20
+  }
 });
 
 function mapStateToProps(state) {
