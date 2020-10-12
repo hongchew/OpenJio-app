@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native';
+import {SafeAreaView} from 'react-native';
 import {Button, Icon} from '@ui-kitten/components';
 import {NavigationContainer} from '@react-navigation/native';
 import {
@@ -165,7 +165,27 @@ const HomeNavigator = () => (
         ),
       })}
     />
-    <Stack.Screen name="UserBadges" component={UserBadges} />
+    <Stack.Screen
+      name="UserBadges"
+      component={UserBadges}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Profile'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
     <Stack.Screen
       name="LeaderboardScreen"
       component={LeaderboardScreen}
