@@ -32,7 +32,7 @@ class UserBadges extends React.Component {
       userBadges: this.props.user.Badges,
       //view all time or monthly badges depending value is true or false
       viewMonthly: true,
-      monthlyBtn: 'warning',
+      monthlyBtn: 'primary',
       allTimeBtn: 'basic',
     };
   }
@@ -63,7 +63,7 @@ class UserBadges extends React.Component {
     return renderIf(
       condition,
       <Text style={styles.message}>
-        No Badges yet. Make an announcement to start collecting!
+        No badges yet. Make an announcement to start collecting!
       </Text>,
       this.RenderBadges()
     );
@@ -75,28 +75,58 @@ class UserBadges extends React.Component {
       if (item.count > 0) {
         return (
           <ListItem
-            title={`${item.title}`}
-            description={`${item.description}`}
+            style={{height: 90}}
+            title={(evaProps) => (
+              <Text
+                {...evaProps}
+                style={{fontSize: 18, marginLeft: 5, marginBottom: 5}}>
+                {item.title}
+              </Text>
+            )}
+            description={(evaProps) => (
+              <Text
+                {...evaProps}
+                style={{fontSize: 14, marginLeft: 5, color: 'grey'}}>
+                {item.description}
+              </Text>
+            )}
             accessoryLeft={() => {
               switch (item.title) {
                 case 'EXCELLENT COMMUNICATOR':
                   return (
                     <Avatar
                       source={require('../img/excellentCommunicator.png')}
+                      size="giant"
                     />
                   );
                 case 'FAST AND FURIOUS':
                   return (
-                    <Avatar source={require('../img/fastAndFurious.png')} />
+                    <Avatar
+                      source={require('../img/fastAndFurious.png')}
+                      size="giant"
+                    />
                   );
                 case 'LOCAL LOBANG':
-                  return <Avatar source={require('../img/localLobang.png')} />;
+                  return (
+                    <Avatar
+                      source={require('../img/localLobang.png')}
+                      size="giant"
+                    />
+                  );
                 case 'SUPER NEIGHBOUR':
                   return (
-                    <Avatar source={require('../img/superNeighbour.png')} />
+                    <Avatar
+                      source={require('../img/superNeighbour.png')}
+                      size="giant"
+                    />
                   );
                 default:
-                  return <Avatar source={require('../img/openjioLogo.jpg')} />;
+                  return (
+                    <Avatar
+                      source={require('../img/openjioLogo.jpg')}
+                      size="giant"
+                    />
+                  );
               }
             }}
             accessoryRight={() => {
@@ -130,10 +160,6 @@ class UserBadges extends React.Component {
     console.log('User badges');
     // console.log(this.props);
 
-    const backIcon = (props) => (
-      <Icon {...props} name="close-outline" width="25" height="25" />
-    );
-
     return (
       <Layout style={styles.layout}>
         <StatusBar
@@ -142,17 +168,7 @@ class UserBadges extends React.Component {
           backgroundColor="#ffffff"
           translucent={true}
         />
-        <View style={{backgroundColor: '#3366ff'}}>
-          <Button
-            style={{alignSelf: 'flex-start', flex: 1, marginTop: 50}}
-            onPress={() => {
-              this.props.navigation.replace('Tabs', {screen: 'Profile'});
-            }}
-            accessoryLeft={backIcon}
-            appearance="ghost"
-            status="basic"
-            size="tiny"
-          />
+        <View>
           <Text style={styles.header} category="h4">
             My Badges
           </Text>
@@ -170,7 +186,7 @@ class UserBadges extends React.Component {
                   viewMonthly: true,
                   monthlyBadges: 0,
                   allTimeBadges: 0,
-                  monthlyBtn: 'warning',
+                  monthlyBtn: 'primary',
                   allTimeBtn: 'basic',
                 });
                 console.log(this.state);
@@ -186,7 +202,7 @@ class UserBadges extends React.Component {
                   monthlyBadges: 0,
                   allTimeBadges: 0,
                   monthlyBtn: 'basic',
-                  allTimeBtn: 'warning',
+                  allTimeBtn: 'primary',
                 });
                 console.log(this.state);
               }}>
@@ -210,23 +226,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    marginTop: 20,
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 10,
+    marginRight: 10,
   },
   header: {
+    marginTop: 20,
     marginBottom: 20,
+    marginLeft: 15,
     fontFamily: 'Karla-Bold',
-    textAlign: 'center',
-    color: '#ffffff',
   },
   button: {
     width: 150,
   },
   count: {
     fontFamily: 'Karla-Bold',
-    marginLeft: 20,
-    fontSize: 18,
+    marginLeft: 25,
+    fontSize: 20,
   },
   message: {
     textAlign: 'center',
