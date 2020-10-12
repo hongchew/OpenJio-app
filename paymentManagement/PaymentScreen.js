@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Text, Layout, Card} from '@ui-kitten/components';
+import {globalVariable} from '../GLOBAL_VARIABLE';
+import axios from 'axios';
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -17,8 +19,8 @@ class PaymentScreen extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
     };
-    console.log('The user state from redux is:')
-    console.log(this.state.user)
+    //console.log('The user state from redux is:')
+    //console.log(this.state.user)
   }
 
   //Retrieve wallet balance of user
@@ -26,9 +28,14 @@ class PaymentScreen extends React.Component {
     try {
       //retrieve user wallet info by userId
       const wallet = await axios.post(globalVariable.walletApi + 'retrieve-wallet-by-userId', {
-        userId: this.state.user.userId
+        userId: userId
       });
+      console.log('Wallet balance:')
+      console.log(wallet)
       console.log(wallet.data);
+      //this.setState({wallet: wallet.data})
+      console.log(`Wallet state: ${this.state.wallet.balance}`)
+      const balance = wallet.data.balance
     } catch (error) {
       console.log(error)
     }
@@ -45,7 +52,7 @@ class PaymentScreen extends React.Component {
             <Text style={styles.label}>Balance</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
-              <Text style={styles.money}>{getBalance(this.state.user.userId)}</Text>
+              <Text style={styles.money}>{}</Text>
             </View>
           </Card>
 
@@ -60,7 +67,7 @@ class PaymentScreen extends React.Component {
                 />
                 <Text style={styles.subtitle}>Top-Up</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('MakePayment')} style={styles.buttonItem}>
                 <Image
                   source={require('../img/sendMoney.png')}
                   style={styles.imageContainer}

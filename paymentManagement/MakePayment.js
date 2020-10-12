@@ -11,7 +11,7 @@ import {
 import {Text, Layout, Card, Input, Button} from '@ui-kitten/components';
 import axios from 'axios';
 
-class TopUp extends React.Component {
+class MakePayment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,11 +24,11 @@ class TopUp extends React.Component {
     return (
       <Layout style={styles.layout}>
         <Text style={styles.header} category="h4">
-          Top Up 
+          Payment 
         </Text>
         <ScrollView style={styles.container}>
           <Card>
-            <Text style={styles.action}>Enter Top Up Amount:</Text>
+            <Text style={styles.action}>Enter payment details:</Text>
             <Input
               label="Amount"
               value={this.state.amountPayable}
@@ -49,7 +49,7 @@ class TopUp extends React.Component {
             <Button
               style={styles.button}
               onPress={() => this.handleEditProfile()}>
-              Top Up
+              Pay
             </Button>
           </Card>
         </ScrollView>
@@ -136,4 +136,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(TopUp);
+export default connect(mapStateToProps)(MakePayment);
