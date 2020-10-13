@@ -22,7 +22,7 @@ import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 import TopUpScreen from './paymentManagement/TopUp';
 import PaymentScreen from './paymentManagement/MakePayment';
-//import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
+import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
 
 import TabNavigator from './tabs';
@@ -268,7 +268,7 @@ const HomeNavigator = () => (
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
-    {/* <Stack.Screen
+    <Stack.Screen
       name="TransactionsList"
       component={TransactionsListScreen}
       options={({navigation}) => ({
@@ -278,7 +278,7 @@ const HomeNavigator = () => (
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
-    /> */}
+    />
     <Stack.Screen
       name="PaymentSettings"
       component={PaymentSettingsScreen}
@@ -290,7 +290,7 @@ const HomeNavigator = () => (
         headerLeft: () => (
           <Button
             onPress={() => {
-              navigation.replace('Tabs', {screen: 'Payment'});
+              navigation.replace('Tabs', {screen: 'Wallet'});
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"
