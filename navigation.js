@@ -20,6 +20,8 @@ import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
+import PaymentScreen from './paymentManagement/PaymentScreen.js';
+import TopUpScreen from './paymentManagement/TopUpScreen.js';
 
 import TabNavigator from './tabs';
 
@@ -195,6 +197,28 @@ const HomeNavigator = () => (
         gestureEnabled: true,
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      })}
+    />
+    <Stack.Screen name="Wallet" component={PaymentScreen} />
+    <Stack.Screen
+      name="TopUpScreen"
+      component={TopUpScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     {/* <Stack.Screen
