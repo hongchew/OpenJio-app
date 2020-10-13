@@ -8,8 +8,15 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {useIsFocused} from '@react-navigation/native';
-import {Text, Layout, Card} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  Card,
+  Divider,
+  List,
+  ListItem,
+  Icon,
+} from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 
@@ -23,46 +30,77 @@ class PaymentScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //populate state.user because after logging out, this.props.user will cause error
-      user: this.props.user,
+      user: this.props.user
     };
-    //console.log('The user state from redux is:')
-    //console.log(this.state.user)
   }
 
-  //Retrieve wallet balance of user
-  async getBalance(userId) {
+  componentDidMount() {
+    this.getTransactions(this.state.user.userId);
+  }
+
+  //obtain the list of transactions
+  async getTransactions(userId) {
     try {
-      //retrieve user wallet info by userId
-      const wallet = await axios.post(
-        globalVariable.walletApi + 'retrieve-wallet-by-userId',
-        {
-          userId: userId,
-        }
+      const response = await axios.get(
+        globalVariable.transactionApi + `by/${userId}`
       );
-      console.log('Wallet balance:');
-      console.log(wallet);
-      console.log(wallet.data);
-      this.setState({wallet: wallet.data.balance});
-      console.log(`Wallet state: ${this.state.wallet.balance}`);
-      const balance = wallet.data.balance;
+      console.log(response);
+      this.setState({
+        transactions: response.data,
+      });
     } catch (error) {
       console.log(error);
     }
   }
 
+  //render the list of transactions
+  renderItem = ({item, index}) => {
+    const counter = 4;
+    if (counter > index) {
+      if (item.senderWalletId === this.state.user.Wallet.walletId) {
+        return (
+          <View>
+            <ListItem
+              onPress={() => this.props.navigation.navigate('MakePayment', {
+                transactionId: item.transactionId
+              })}
+              style={styles.listItemMinus}
+              title={`- SGD ${item.amount}`}
+              description={item.description}
+            />
+            <Divider />
+          </View>
+        );
+      } else {
+        return (
+          <View>
+            <ListItem
+              onPress={() => this.props.navigation.navigate('MakePayment', {
+                transactionId: item.transactionId
+              })}
+              style={styles.listItemMinus}
+              title={`+ SGD ${item.amount}`}
+              description={item.description}
+            />
+            <Divider />
+          </View>
+        );
+      }
+    }
+  };
+
   render() {
     return (
       <Layout style={styles.layout}>
-        <FocusAwareStatusBar
-          barStyle="dark-content"
-          hidden={false}
-          backgroundColor="transparent"
-          //translucent={true}
-        />
-        <Text style={styles.header} category="h4">
-          Wallet
-        </Text>
+        <View style={styles.headerRow}>
+          <Text style={styles.header} category="h4">
+            Wallet
+          </Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('PaymentSettings')}>
+            <Icon style={styles.setting} name="settings-outline" fill="#777" />
+          </TouchableOpacity>
+        </View>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
             <Text style={styles.label}>Balance</Text>
@@ -109,12 +147,20 @@ class PaymentScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </Card>
-          <Card style={styles.transaction}>
-            <Text style={styles.action}>Recent Transactions</Text>
-            <Text style={styles.link}>Show all</Text>
-            <View style={styles.actionContainer}></View>
-          </Card>
         </ScrollView>
+        <Card style={styles.transaction}>
+          <Text style={styles.action}>Recent Transactions</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('MakePayment')}>
+            <Text style={styles.link}>Show all</Text>
+          </TouchableOpacity>
+          <List
+            keyExtractor={(item) => item.transactionId}
+            style={styles.listContainer}
+            data={this.state.transactions}
+            renderItem={this.renderItem}
+          />
+        </Card>
       </Layout>
     );
   }
@@ -127,7 +173,6 @@ const styles = StyleSheet.create({
   },
   header: {
     marginTop: 60,
-    marginBottom: 20,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
@@ -160,6 +205,7 @@ const styles = StyleSheet.create({
   money: {
     fontSize: 24,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   subtitle: {
     fontFamily: 'Karla-Regular',
@@ -185,6 +231,27 @@ const styles = StyleSheet.create({
   transaction: {
     marginTop: 20,
     marginBottom: 20,
+  },
+  listContainer: {
+    maxHeight: 200,
+  },
+  listItemMinus: {
+    paddingTop: 10,
+    color: '#fff',
+  },
+  listItemPlus: {
+    paddingTop: 10,
+    color: 'green',
+  },
+  setting: {
+    width: 25,
+    height: 25,
+    marginTop: 65,
+    marginRight: 20,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

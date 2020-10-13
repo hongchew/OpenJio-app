@@ -22,6 +22,8 @@ import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 import TopUpScreen from './paymentManagement/TopUp';
 import PaymentScreen from './paymentManagement/MakePayment';
+//import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
+import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
 
 import TabNavigator from './tabs';
 import WalletLimit from './paymentManagement/WalletLimit';
@@ -264,6 +266,38 @@ const HomeNavigator = () => (
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    {/* <Stack.Screen
+      name="TransactionsList"
+      component={TransactionsListScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    /> */}
+    <Stack.Screen
+      name="PaymentSettings"
+      component={PaymentSettingsScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Payment'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
   </Stack.Navigator>
