@@ -8,9 +8,16 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
 import {Text, Layout, Card} from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
+
+
+function FocusAwareStatusBar(props) {
+  const isFocused = useIsFocused();
+  return isFocused ? <StatusBar {...props} /> : null;
+}
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -47,6 +54,12 @@ class PaymentScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
+        <FocusAwareStatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+          //translucent={true}
+        />
         <Text style={styles.header} category="h4">
           Wallet
         </Text>
@@ -132,7 +145,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   actionContainer: {
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     flexDirection: 'row',
   },
   label: {
