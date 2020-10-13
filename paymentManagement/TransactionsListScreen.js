@@ -33,16 +33,18 @@ class TransactionsListScreen extends React.Component {
     this.getTransactions(this.state.user.userId);
   }
 
-  //obtain the list of transactions
+  //obtain the full list of transactions, credit and debit transactions
   async getTransactions(userId) {
     try {
       const response = await axios.get(
         globalVariable.transactionApi + `by/${userId}`
       );
       console.log(response);
+      //set state of full list of transactions
       this.setState({
         transactions: response.data,
       });
+      getCreditTransactions()
     } catch (error) {
       console.log(error);
     }

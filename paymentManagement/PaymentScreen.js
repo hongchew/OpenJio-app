@@ -24,8 +24,7 @@ class PaymentScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: this.props.user,
-      transactionListCounter: 5,
+      user: this.props.user
     };
   }
 
@@ -54,23 +53,31 @@ class PaymentScreen extends React.Component {
     if (counter > index) {
       if (item.senderWalletId === this.state.user.Wallet.walletId) {
         return (
-          <TouchableOpacity onPress={() => {}}>
+          <View>
             <ListItem
+              onPress={() => this.props.navigation.navigate('MakePayment', {
+                transactionId: item.transactionId
+              })}
               style={styles.listItemMinus}
               title={`- SGD ${item.amount}`}
               description={item.description}
             />
-          </TouchableOpacity>
+            <Divider />
+          </View>
         );
       } else {
         return (
-          <TouchableOpacity onPress={() => {}}>
+          <View>
             <ListItem
-              style={styles.listItemPlus}
+              onPress={() => this.props.navigation.navigate('MakePayment', {
+                transactionId: item.transactionId
+              })}
+              style={styles.listItemMinus}
               title={`+ SGD ${item.amount}`}
               description={item.description}
             />
-          </TouchableOpacity>
+            <Divider />
+          </View>
         );
       }
     }
@@ -79,14 +86,15 @@ class PaymentScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
-        <Text style={styles.header} category="h4">
-          Wallet
-        </Text>
-        <TouchableOpacity
-        onPress={() => this.props.navigation.navigate('TopUp')}
-        >
-          <Icon style={styles.setting} name="settings-outline" fill="#777" />
-        </TouchableOpacity>
+        <View style={styles.headerRow}>
+          <Text style={styles.header} category="h4">
+            Wallet
+          </Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('PaymentSettings')}>
+            <Icon style={styles.setting} name="settings-outline" fill="#777" />
+          </TouchableOpacity>
+        </View>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
             <Text style={styles.label}>Balance</Text>
@@ -137,14 +145,13 @@ class PaymentScreen extends React.Component {
         <Card style={styles.transaction}>
           <Text style={styles.action}>Recent Transactions</Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('TransactionsList')}>
+            onPress={() => this.props.navigation.navigate('MakePayment')}>
             <Text style={styles.link}>Show all</Text>
           </TouchableOpacity>
           <List
             keyExtractor={(item) => item.transactionId}
             style={styles.listContainer}
             data={this.state.transactions}
-            ItemSeparatorComponent={Divider}
             renderItem={this.renderItem}
           />
         </Card>
@@ -155,7 +162,7 @@ class PaymentScreen extends React.Component {
 
 const styles = StyleSheet.create({
   layout: {
-    //flex: 1,
+    flex: 1,
     backgroundColor: '#F5F5F5',
   },
   header: {
@@ -177,7 +184,7 @@ const styles = StyleSheet.create({
     shadowRadius: 10,
   },
   actionContainer: {
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     flexDirection: 'row',
   },
   label: {
@@ -233,8 +240,12 @@ const styles = StyleSheet.create({
   setting: {
     width: 25,
     height: 25,
-    alignSelf: 'flex-end',
+    marginTop: 65,
     marginRight: 20,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 
