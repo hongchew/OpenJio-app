@@ -155,7 +155,7 @@ class ProfileScreen extends React.Component {
             />
             <MenuItem
               accessoryLeft={BadgeIcon}
-              title={<Text style={styles.menuItem}>Badges</Text>}
+              title={<Text style={styles.menuItem}>My Badges</Text>}
               onPress={() => this.props.navigation.navigate('UserBadges')}
             />
             <MenuItem

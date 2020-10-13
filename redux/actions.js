@@ -3,6 +3,7 @@ export const type = {
   LOGOUT: 'LOGOUT',
   UPDATE_ADDRESS_ARR: 'UPDATE_ADDRESS_ARR',
   DELETE_ADDRESS: 'DELETE_ADDRESS',
+  SET_WALLET: 'SET_WALLET',
 };
 
 //getting the user after api is called
@@ -29,5 +30,13 @@ export function updateAddressArr(details) {
   return {
     type: type.UPDATE_ADDRESS_ARR,
     payload: details,
+  };
+}
+
+//For Wallet Management
+export function updateWallet(wallet) {
+  return {
+    type: type.SET_WALLET,
+    payload: wallet,
   };
 }
