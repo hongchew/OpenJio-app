@@ -53,24 +53,25 @@ class PaymentScreen extends React.Component {
   }
 
   async getWalletAmount(walletId) {
-    try{
-      console.log('trying to fetch api')
+    try {
+      console.log('trying to fetch api');
       const response = await axios.get(
-        `${globalVariable.walletApi}retrieve-wallet`, {
-          walletId: walletId
+        `${globalVariable.walletApi}retrieve-wallet`,
+        {
+          walletId: walletId,
         }
-      )
-      console.log('completed fetch')
-      console.log(response.data)
+      );
+      console.log('completed fetch');
+      console.log(response.data);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   }
 
   //render the list of transactions
   renderItem = ({item, index}) => {
     const counter = 5;
-    if (counter === index+1) {
+    if (counter === index + 1) {
       if (item.senderWalletId === this.state.user.Wallet.walletId) {
         return (
           <View>
@@ -156,56 +157,62 @@ class PaymentScreen extends React.Component {
             <Icon style={styles.setting} name="settings-outline" fill="#777" />
           </TouchableOpacity>
         </View>
-          <Card style={styles.card}>
-            <Text style={styles.label}>Balance</Text>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={{marginTop: 5}}>SGD</Text>
-              <Text style={styles.money}>{this.state.user.Wallet.balance}</Text>
-            </View>
-          </Card>
+        <Card style={styles.card}>
+          <Text style={styles.label}>Balance</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Text style={{marginTop: 5}}>SGD</Text>
+            <Text style={styles.money}>{this.state.user.Wallet.balance}</Text>
+          </View>
+        </Card>
 
-          <Card>
-            <Text style={styles.action}>Quick Actions</Text>
-            <View style={styles.actionContainer}>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('TopUpScreen')}
-                style={styles.buttonItem}>
-                <Image
-                  source={require('../img/topUp.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Top-Up</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('MakePayment')}
-                style={styles.buttonItem}>
-                <Image
-                  source={require('../img/sendMoney.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Send</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => this.props.navigation.navigate('WalletLimit')} style={styles.buttonItem}>
-                <Image
-                  source={require('../img/withdraw.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Withdraw</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
-                <Image
-                  source={require('../img/donate.png')}
-                  style={styles.imageContainer}
-                />
-                <Text style={styles.subtitle}>Donate</Text>
-              </TouchableOpacity>
-            </View>
-          </Card>
+        <Card>
+          <Text style={styles.action}>Quick Actions</Text>
+          <View style={styles.quickActionContainer}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('TopUpScreen')}
+              style={styles.buttonItem}>
+              <Image
+                source={require('../img/topUp.png')}
+                style={styles.imageContainer}
+              />
+              <Text style={styles.subtitle}>Top-Up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('MakePayment')}
+              style={styles.buttonItem}>
+              <Image
+                source={require('../img/sendMoney.png')}
+                style={styles.imageContainer}
+              />
+              <Text style={styles.subtitle}>Send</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('WalletLimit')}
+              style={styles.buttonItem}>
+              <Image
+                source={require('../img/withdraw.png')}
+                style={styles.imageContainer}
+              />
+              <Text style={styles.subtitle}>Withdraw</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+              <Image
+                source={require('../img/donate.png')}
+                style={styles.imageContainer}
+              />
+              <Text style={styles.subtitle}>Donate</Text>
+            </TouchableOpacity>
+          </View>
+        </Card>
         <Card style={styles.transaction}>
           <View style={styles.transactionHeader}>
-            <Text style={styles.recentTransactionsTitle}>Recent Transactions</Text>
+            <Text style={styles.recentTransactionsTitle}>
+              Recent Transactions
+            </Text>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('TransactionsList')}>
+              onPress={() =>
+                this.props.navigation.navigate('TransactionsList')
+              }>
               <Text style={styles.showAllLink}>Show all</Text>
             </TouchableOpacity>
           </View>
@@ -216,7 +223,6 @@ class PaymentScreen extends React.Component {
             renderItem={this.renderItem}
           />
         </Card>
-        
       </Layout>
     );
   }
@@ -226,7 +232,7 @@ const styles = StyleSheet.create({
   layout: {
     flex: 1,
     backgroundColor: '#F5F5F5',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
   },
   header: {
     marginTop: 60,
@@ -243,7 +249,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
     marginTop: 20,
-    marginBottom: 20
+    marginBottom: 20,
   },
   quickActionContainer: {
     justifyContent: 'center',
@@ -300,8 +306,8 @@ const styles = StyleSheet.create({
   },
   transactionHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
-  }
+    justifyContent: 'space-between',
+  },
 });
 
 function mapStateToProps(state) {
