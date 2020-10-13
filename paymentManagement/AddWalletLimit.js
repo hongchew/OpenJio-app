@@ -40,9 +40,6 @@ class AddWalletLimit extends React.Component {
         );
         console.log(response.data);
         this.props.updateWallet(response.data);
-        this.setState({
-          message: 'Wallet Limit Added',
-        });
         this.props.navigation.navigate('WalletLimit');
       } catch (error) {
         console.log(error);

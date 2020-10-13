@@ -23,11 +23,11 @@ class EditWalletLimit extends React.Component {
     };
   }
 
-  async handleAddLimit() {
+  async handleEditLimit() {
     console.log(this.state.walletLimit);
     if (this.state.walletLimit === null) {
       this.setState({
-        message: 'Wallet Limit field is empty. Unable to add wallet limit.',
+        message: 'Wallet Limit field is empty. Unable to edit wallet limit.',
       });
     } else {
       try {
@@ -40,36 +40,13 @@ class EditWalletLimit extends React.Component {
         );
         console.log(response.data);
         this.props.updateWallet(response.data);
-        this.setState({
-          message: 'Wallet Limit Added',
-        });
         this.props.navigation.navigate('WalletLimit');
       } catch (error) {
         console.log(error);
         this.setState({
-          message: 'Wallet Limit Addition Failed.',
+          message: 'Wallet Limit Edition Failed.',
         });
       }
-      //   try {
-      //     const response = await axios.post(globalVariable.addressApi + 'add', {
-      //       userId: this.props.user.userId,
-      //       address: {
-      //         line1: this.state.line1,
-      //         line2: this.state.line2,
-      //         postalCode: this.state.postalCode,
-      //         country: this.state.country,
-      //         description: this.state.description,
-      //       },
-      //     });
-      //     console.log(response.data);
-      //     this.props.updateAddressArr(response.data);
-      //     this.props.navigation.replace('Address');
-      //   } catch (error) {
-      //     console.log(error);
-      //     this.setState({
-      //       message: 'Unable to add address.',
-      //     });
-      //   }
     }
   }
 
@@ -98,7 +75,7 @@ class EditWalletLimit extends React.Component {
           translucent={true}
         />
         <Text style={styles.header} category="h4">
-          Add Wallet Limit
+          Edit Wallet Limit
         </Text>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView>
@@ -110,8 +87,8 @@ class EditWalletLimit extends React.Component {
               />
               <Button
                 style={styles.button}
-                onPress={() => this.handleAddLimit()}>
-                ADD WALLET LIMIT
+                onPress={() => this.handleEditLimit()}>
+                EDIT WALLET LIMIT
               </Button>
               {responseMessage}
             </Layout>

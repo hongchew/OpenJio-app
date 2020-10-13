@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,
-    marginBottom: 200,
+    marginBottom: 320,
   },
 });
 
