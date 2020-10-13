@@ -5,7 +5,6 @@ import {
   StatusBar,
   Image,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import {
@@ -17,6 +16,7 @@ import {
   ListItem,
   Icon,
 } from '@ui-kitten/components';
+import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 
@@ -141,6 +141,12 @@ class PaymentScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
+        <FocusAwareStatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+          translucent={true}
+        />
         <View style={styles.headerRow}>
           <Text style={styles.header} category="h4">
             Wallet
@@ -150,7 +156,6 @@ class PaymentScreen extends React.Component {
             <Icon style={styles.setting} name="settings-outline" fill="#777" />
           </TouchableOpacity>
         </View>
-        <ScrollView style={styles.container}>
           <Card style={styles.card}>
             <Text style={styles.label}>Balance</Text>
             <View style={{flexDirection: 'row'}}>
@@ -196,7 +201,6 @@ class PaymentScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </Card>
-        </ScrollView>
         <Card style={styles.transaction}>
           <View style={styles.transactionHeader}>
             <Text style={styles.recentTransactionsTitle}>Recent Transactions</Text>
@@ -212,6 +216,7 @@ class PaymentScreen extends React.Component {
             renderItem={this.renderItem}
           />
         </Card>
+        
       </Layout>
     );
   }
@@ -257,6 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginLeft: 8,
   },
   subtitle: {
     fontFamily: 'Karla-Regular',
