@@ -290,7 +290,7 @@ const HomeNavigator = () => (
         headerLeft: () => (
           <Button
             onPress={() => {
-              navigation.replace('Tabs', {screen: 'Payment'});
+              navigation.replace('Tabs', {screen: 'Wallet'});
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"

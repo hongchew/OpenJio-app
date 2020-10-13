@@ -1,32 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusBar, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import {Text, Layout, Menu, MenuItem, Icon, Card} from '@ui-kitten/components';
-import {globalVariable} from '../GLOBAL_VARIABLE';
-
-const PasswordIcon = (props) => (
-  <Icon {...props} name="shield-outline" width="25" height="25" />
-);
-
-const EditIcon = (props) => (
-  <Icon {...props} name="edit-2-outline" width="25" height="25" />
-);
-
-const LogoutIcon = (props) => (
-  <Icon {...props} name="log-out" width="25" height="25" />
-);
-
-const VerifyIcon = (props) => (
-  <Icon {...props} name="person-done-outline" width="25" height="25" />
-);
-
-const AddressIcon = (props) => (
-  <Icon {...props} name="map-outline" width="25" height="25" />
-);
-
-const BadgeIcon = (props) => (
-  <Icon {...props} name="award-outline" width="25" height="25" />
-);
 
 class PaymentSettingsScreen extends React.Component {
   constructor(props) {
@@ -36,59 +11,36 @@ class PaymentSettingsScreen extends React.Component {
     };
   }
 
-  displayEmailIcon = () => {
-    return (
-      <Icon
-        name="email-outline"
-        style={{width: 17, height: 17, marginBottom: -4, marginRight: 8}}
-        fill="grey"
+  //to render wallet limit icon
+  walletLimitIcon = (props) => (
+    <Icon {...props}
+        name="minus-circle-outline"
+        width= "25" 
+        height= "25"
       />
-    );
-  };
+  )
 
-  displayPhoneIcon = () => {
-    return (
-      <Icon
-        name="phone-outline"
-        style={{width: 17, height: 17, marginBottom: -4, marginRight: 8}}
-        fill="grey"
+  //to render paypal icon
+  paypalIcon = (props) => (
+    <Icon {...props}
+        name="credit-card-outline"
+        width= "25" 
+        height= "25"
       />
-    );
-  };
+  )
 
-  checkmarkIfVerified = (user) => {
-    if (user && user.isSingPassVerified) {
-      return (
-        <Icon
-          name="checkmark-circle"
-          style={{width: 17, height: 17}}
-          fill="green"
-        />
-      );
-    }
-  };
-
-  verifyAccountButton = (user) => {
-    if (user && !user.isSingPassVerified) {
-      return (
-        <MenuItem
-          accessoryLeft={VerifyIcon}
-          title={<Text style={styles.menuItem}>Verify Account</Text>}
-          onPress={() => this.props.navigation.navigate('VerifyAccount')}
-        />
-      );
-    }
-  };
+  //to render recurrent top up icon
+  recurrentTopUpIcon = (props) => (
+    <Icon {...props}
+        name="clock-outline"
+        width= "25" 
+        height= "25"
+      />
+  )
 
   render() {
     return (
       <Layout style={styles.layout}>
-        <StatusBar
-          barStyle="dark-content"
-          hidden={false}
-          backgroundColor="#ffffff"
-          translucent={true}
-        />
         <Text style={styles.header} category="h4">
           Payment Settings
         </Text>
@@ -102,36 +54,20 @@ class PaymentSettingsScreen extends React.Component {
           </Card>
 
           <Menu style={styles.menu}>
-            <Icon name="email-outline" width="10" height="10" color="black" />
             <MenuItem
-              accessoryLeft={EditIcon}
-              title={<Text style={styles.menuItem}>Edit Profile</Text>}
-              onPress={() => this.props.navigation.navigate('EditProfile')}
-            />
-            {this.verifyAccountButton(this.props.user)}
-            <MenuItem
-              accessoryLeft={PasswordIcon}
-              title={<Text style={styles.menuItem}>Change Password</Text>}
-              onPress={() =>
-                this.props.navigation.navigate('ChangePassword', {
-                  fromLogin: false,
-                })
-              }
+              accessoryLeft={this.walletLimitIcon}
+              title={<Text style={styles.menuItem}>Wallet Limit</Text>}
+              onPress={() => this.props.navigation.navigate('WalletLimit')}
             />
             <MenuItem
-              accessoryLeft={AddressIcon}
-              title={<Text style={styles.menuItem}>Address Book</Text>}
-              onPress={() => this.props.navigation.navigate('Address')}
+              accessoryLeft={this.paypalIcon}
+              title={<Text style={styles.menuItem}>PayPal Account Set Up</Text>}
+              onPress={() => this.props.navigation.navigate('Wallet')}
             />
             <MenuItem
-              accessoryLeft={BadgeIcon}
-              title={<Text style={styles.menuItem}>Badges</Text>}
-              onPress={() => this.props.navigation.navigate('UserBadges')}
-            />
-            <MenuItem
-              accessoryLeft={LogoutIcon}
-              title={<Text style={styles.menuItem}>Logout</Text>}
-              onPress={this.handleLogout}
+              accessoryLeft={this.recurrentTopUpIcon}
+              title={<Text style={styles.menuItem}>Recurrent Top Up</Text>}
+              onPress={() => this.props.navigation.navigate('Wallet')}
             />
           </Menu>
         </Layout>
@@ -151,8 +87,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   header: {
-    marginTop: 60,
-    marginBottom: 30,
+    marginTop: 10,
+    marginBottom: 20,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
@@ -164,19 +100,12 @@ const styles = StyleSheet.create({
   menuItem: {
     fontSize: 16,
   },
-  headerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
   card: {
+    marginLeft: 15,
+    marginRight: 15,
     backgroundColor: 'white',
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 20,
-    marginTop: 10,
-    borderRadius: 5,
-    elevation: 5,
-    shadowColor: '#ededed',
+    borderRadius: 15,
+    elevation: 2,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 10,
@@ -186,7 +115,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
   },
-
+  money: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
 });
 
 function mapStateToProps(state) {

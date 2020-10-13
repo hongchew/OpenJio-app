@@ -20,7 +20,6 @@ import {
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 
-
 function FocusAwareStatusBar(props) {
   const isFocused = useIsFocused();
   return isFocused ? <StatusBar {...props} /> : null;
@@ -30,7 +29,7 @@ class PaymentScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: this.props.user
+      user: this.props.user,
     };
   }
 
@@ -61,9 +60,11 @@ class PaymentScreen extends React.Component {
         return (
           <View>
             <ListItem
-              onPress={() => this.props.navigation.navigate('MakePayment', {
-                transactionId: item.transactionId
-              })}
+              onPress={() =>
+                this.props.navigation.navigate('MakePayment', {
+                  transactionId: item.transactionId,
+                })
+              }
               style={styles.listItemMinus}
               title={`- SGD ${item.amount}`}
               description={item.description}
@@ -75,9 +76,11 @@ class PaymentScreen extends React.Component {
         return (
           <View>
             <ListItem
-              onPress={() => this.props.navigation.navigate('MakePayment', {
-                transactionId: item.transactionId
-              })}
+              onPress={() =>
+                this.props.navigation.navigate('MakePayment', {
+                  transactionId: item.transactionId,
+                })
+              }
               style={styles.listItemMinus}
               title={`+ SGD ${item.amount}`}
               description={item.description}
@@ -131,7 +134,7 @@ class PaymentScreen extends React.Component {
                 />
                 <Text style={styles.subtitle}>Send</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('WalletLimit')} style={styles.buttonItem}>
                 <Image
                   source={require('../img/withdraw.png')}
                   style={styles.imageContainer}
@@ -168,7 +171,7 @@ class PaymentScreen extends React.Component {
 
 const styles = StyleSheet.create({
   layout: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: '#F5F5F5',
   },
   header: {
@@ -177,17 +180,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Karla-Bold',
   },
   card: {
+    marginLeft: 15,
+    marginRight: 15,
     backgroundColor: 'white',
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 20,
-    marginTop: 10,
-    borderRadius: 5,
-    elevation: 5,
-    shadowColor: '#ededed',
+    borderRadius: 15,
+    elevation: 2,
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 10,
+    marginTop: 20,
+    marginBottom: 20
   },
   actionContainer: {
     justifyContent: 'center',
