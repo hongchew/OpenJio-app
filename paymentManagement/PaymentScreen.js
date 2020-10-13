@@ -166,9 +166,9 @@ class PaymentScreen extends React.Component {
 
           <Card>
             <Text style={styles.action}>Quick Actions</Text>
-            <View style={styles.quickActionContainer}>
+            <View style={styles.actionContainer}>
               <TouchableOpacity
-                onPress={() => this.props.navigation.navigate('TopUp')}
+                onPress={() => this.props.navigation.navigate('TopUpScreen')}
                 style={styles.buttonItem}>
                 <Image
                   source={require('../img/topUp.png')}

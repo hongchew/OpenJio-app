@@ -7,6 +7,7 @@ export const globalVariable = {
   serverUrl,
   userApi: `${serverUrl}/users/`,
   addressApi: `${serverUrl}/addresses/`,
+  paypalApi: `${serverUrl}/paypal/`,
   walletApi: `${serverUrl}/wallets/`,
   transactionApi: `${serverUrl}/transactions/`
 };
