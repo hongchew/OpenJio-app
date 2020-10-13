@@ -22,6 +22,7 @@ import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 import TopUpScreen from './paymentManagement/TopUp';
 import PaymentScreen from './paymentManagement/MakePayment';
+import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 
 import TabNavigator from './tabs';
 
@@ -221,6 +222,17 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="MakePayment"
       component={PaymentScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="TransactionsList"
+      component={TransactionsListScreen}
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,

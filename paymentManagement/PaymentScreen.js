@@ -15,6 +15,7 @@ import {
   Divider,
   List,
   ListItem,
+  Icon,
 } from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
@@ -24,7 +25,7 @@ class PaymentScreen extends React.Component {
     super(props);
     this.state = {
       user: this.props.user,
-      transactionListCounter: 5
+      transactionListCounter: 5,
     };
   }
 
@@ -48,25 +49,32 @@ class PaymentScreen extends React.Component {
   }
 
   //render the list of transactions
-  renderItem = ({item}) => {
-    return (
-      <TouchableOpacity onPress= {() => {}}>
-        <ListItem
-          style={styles.listItem}
-          title={`${this.printReceive(item)} SGD ${item.amount}`}
-          description={item.description}
-        />
-      </TouchableOpacity>
-    );
-  };
-
-  printReceive (transaction) {
-    if(transaction.senderWalletId === this.state.user.Wallet.walletId) {
-      return "-"
-    } else {
-      return "+"
+  renderItem = ({item, index}) => {
+    const counter = 4;
+    if (counter > index) {
+      if (item.senderWalletId === this.state.user.Wallet.walletId) {
+        return (
+          <TouchableOpacity onPress={() => {}}>
+            <ListItem
+              style={styles.listItemMinus}
+              title={`- SGD ${item.amount}`}
+              description={item.description}
+            />
+          </TouchableOpacity>
+        );
+      } else {
+        return (
+          <TouchableOpacity onPress={() => {}}>
+            <ListItem
+              style={styles.listItemPlus}
+              title={`+ SGD ${item.amount}`}
+              description={item.description}
+            />
+          </TouchableOpacity>
+        );
+      }
     }
-  }
+  };
 
   render() {
     return (
@@ -74,6 +82,11 @@ class PaymentScreen extends React.Component {
         <Text style={styles.header} category="h4">
           Wallet
         </Text>
+        <TouchableOpacity
+        onPress={() => this.props.navigation.navigate('TopUp')}
+        >
+          <Icon style={styles.setting} name="settings-outline" fill="#777" />
+        </TouchableOpacity>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
             <Text style={styles.label}>Balance</Text>
@@ -120,19 +133,21 @@ class PaymentScreen extends React.Component {
               </TouchableOpacity>
             </View>
           </Card>
-          <Card style={styles.transaction}>
-            <Text style={styles.action}>Recent Transactions</Text>
-            <TouchableOpacity onPress={() => {}}>
-              <Text style={styles.link}>Show all</Text>
-            </TouchableOpacity>
-            <List
-              style={styles.listContainer}
-              data={this.state.transactions}
-              ItemSeparatorComponent={Divider}
-              renderItem={this.renderItem}
-            />
-          </Card>
         </ScrollView>
+        <Card style={styles.transaction}>
+          <Text style={styles.action}>Recent Transactions</Text>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('TransactionsList')}>
+            <Text style={styles.link}>Show all</Text>
+          </TouchableOpacity>
+          <List
+            keyExtractor={(item) => item.transactionId}
+            style={styles.listContainer}
+            data={this.state.transactions}
+            ItemSeparatorComponent={Divider}
+            renderItem={this.renderItem}
+          />
+        </Card>
       </Layout>
     );
   }
@@ -140,12 +155,11 @@ class PaymentScreen extends React.Component {
 
 const styles = StyleSheet.create({
   layout: {
-    flex: 1,
+    //flex: 1,
     backgroundColor: '#F5F5F5',
   },
   header: {
     marginTop: 60,
-    marginBottom: 20,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
@@ -208,8 +222,19 @@ const styles = StyleSheet.create({
   listContainer: {
     maxHeight: 200,
   },
-  listItem: {
+  listItemMinus: {
     paddingTop: 10,
+    color: '#fff',
+  },
+  listItemPlus: {
+    paddingTop: 10,
+    color: 'green',
+  },
+  setting: {
+    width: 25,
+    height: 25,
+    alignSelf: 'flex-end',
+    marginRight: 20,
   },
 });
 
