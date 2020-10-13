@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   header: {
-    marginTop: 10,
     marginBottom: 20,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',

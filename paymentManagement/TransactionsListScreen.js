@@ -1,14 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {
-  View,
-  StatusBar,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  FlatList
-} from 'react-native';
+import renderIf from '../components/renderIf';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   Text,
   Layout,
@@ -16,7 +9,7 @@ import {
   Divider,
   List,
   ListItem,
-  Button
+  Button,
 } from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
@@ -26,15 +19,19 @@ class TransactionsListScreen extends React.Component {
     super(props);
     this.state = {
       user: this.props.user,
+      filter: 'all',
+      allButtonStatus: 'primary',
+      creditButtonStatus: 'basic',
+      debitButtonStatus: 'basic',
     };
   }
 
   componentDidMount() {
-    this.getTransactions(this.state.user.userId);
+    this.getAllTransactions(this.state.user.userId);
   }
 
   //obtain the full list of transactions, credit and debit transactions
-  async getTransactions(userId) {
+  async getAllTransactions(userId) {
     try {
       const response = await axios.get(
         globalVariable.transactionApi + `by/${userId}`
@@ -44,71 +41,147 @@ class TransactionsListScreen extends React.Component {
       this.setState({
         transactions: response.data,
       });
-      getCreditTransactions()
+      console.log('getting to credit transactions');
+      this.getCreditTransactions(response.data);
+      this.getDebitTransactions(response.data);
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async getCreditTransactions(transactions) {
+    const creditTransactions = await transactions.filter(
+      (transaction) =>
+        transaction.recipientWalletId === this.state.user.Wallet.walletId
+    );
+    console.log('Credit transactions:');
+    console.log(creditTransactions);
+    this.setState({
+      creditTransactions: creditTransactions,
+    });
+  }
+
+  async getDebitTransactions(transactions) {
+    const debitTransactions = await transactions.filter(
+      (transaction) =>
+        transaction.senderWalletId === this.state.user.Wallet.walletId
+    );
+    console.log('Debit transactions:');
+    console.log(debitTransactions);
+    this.setState({
+      debitTransactions: debitTransactions,
+    });
   }
 
   //render the list of transactions
   renderItem = ({item}) => {
     if (item.senderWalletId === this.state.user.Wallet.walletId) {
       return (
-        <TouchableOpacity onPress= {() => {}}>
-          <ListItem
-            style={styles.listItemMinus}
-            title={`- SGD ${item.amount}`}
-            description={item.description}
-          />
-        </TouchableOpacity>
+        <ListItem
+          onPress={() =>
+            this.props.navigation.navigate('MakePayment', {
+              transactionId: item.transactionId,
+            })
+          }
+          title={`- SGD ${item.amount}`}
+          description={item.description}
+        />
       );
     } else {
       return (
-        <TouchableOpacity onPress= {() => {}}>
-          <ListItem
-            style={styles.listItemPlus}
-            title={`+ SGD ${item.amount}`}
-            description={item.description}
-          />
-        </TouchableOpacity>
-      )
+        <ListItem
+          onPress={() =>
+            this.props.navigation.navigate('MakePayment', {
+              transactionId: item.transactionId,
+            })
+          }
+          title={`+ SGD ${item.amount}`}
+          description={item.description}
+        />
+      );
     }
+  };
+
+  viewAll = () => {
+    this.setState({
+      filter: 'all',
+      allButtonStatus: 'primary',
+      creditButtonStatus: 'basic',
+      debitButtonStatus: 'basic',
+    });
+  };
+
+  viewCredit = () => {
+    this.setState({
+      filter: 'credit',
+      allButtonStatus: 'basic',
+      creditButtonStatus: 'primary',
+      debitButtonStatus: 'basic',
+    });
+  };
+
+  viewDebit = () => {
+    this.setState({
+      filter: 'debit',
+      allButtonStatus: 'basic',
+      creditButtonStatus: 'basic',
+      debitButtonStatus: 'primary',
+    });
   };
 
   render() {
     return (
       <Layout style={styles.layout}>
         <Text style={styles.header} category="h4">
-          Transactions
+          Transaction History
         </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginTop: 20,
-            marginBottom: 20,
-            alignSelf: 'center',
-          }}>
+        <View style={styles.transactionTab}>
           <Button
-            style={{width: 150}}
-            onPress={() => this.viewAllTime()}>
-            All-Time
+            status={this.state.allButtonStatus}
+            style={styles.buttonItem}
+            onPress={this.viewAll}>
+            All
           </Button>
           <Button
-            style={{width: 150}}
-            onPress={() => this.viewMonthly()}>
-            Monthly
+            status={this.state.creditButtonStatus}
+            style={styles.buttonItem}
+            onPress={this.viewCredit}>
+            Incoming
           </Button>
-          </View>
-          <Card style={styles.transaction}>
-            <Text style={styles.action}>Recent Transactions</Text>
+          <Button
+            status={this.state.debitButtonStatus}
+            style={styles.buttonItem}
+            onPress={this.viewDebit}>
+            Outgoing
+          </Button>
+        </View>
+        <Card style={styles.transactionList}>
+          <Text style={styles.action}>Recent Transactions</Text>
+          {renderIf(
+            this.state.filter === 'all',
             <List
-              Key
-              style={styles.listContainer}
               data={this.state.transactions}
               ItemSeparatorComponent={Divider}
               renderItem={this.renderItem}
             />
-          </Card>
+          )}
+          {renderIf(
+            this.state.filter === 'credit',
+            <List
+              data={this.state.creditTransactions}
+              ItemSeparatorComponent={Divider}
+              renderItem={this.renderItem}
+            />
+          )}
+          {renderIf(
+            this.state.filter === 'debit',
+            <List
+              data={this.state.debitTransactions}
+              ItemSeparatorComponent={Divider}
+              renderItem={this.renderItem}
+            />
+          )}
+        </Card>
       </Layout>
     );
   }
@@ -120,7 +193,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
   },
   header: {
-    marginTop: 20,
     marginBottom: 20,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
@@ -143,35 +215,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonItem: {
-    paddingTop: 20,
-    marginLeft: 20,
-    marginRight: 10,
-    alignItems: 'center',
+    width: 110,
   },
-  imageContainer: {
-    width: 60,
-    height: 60,
-  },
-  link: {
-    textAlign: 'right',
-    marginTop: 10,
-  },
-  transaction: {
+  transactionList: {
     marginTop: 20,
     marginBottom: 20,
     flex: 1,
   },
-  listContainer: {
-    maxHeight: 200,
+  transactionTab: {
+    flexDirection: 'row',
+    marginTop: 20,
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    justifyContent: 'center',
   },
-  listItemMinus: {
-    paddingTop: 10,
-    color: '#fff'
-  },
-  listItemPlus: {
-    paddingTop: 10,
-    color: 'green'
-  }
 });
 
 function mapStateToProps(state) {
