@@ -23,6 +23,8 @@ import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 
 import TabNavigator from './tabs';
 import WalletLimit from './paymentManagement/WalletLimit';
+import AddWalletLimit from './paymentManagement/AddWalletLimit';
+import EditWalletLimit from './paymentManagement/EditWalletLimit';
 
 const Stack = createStackNavigator();
 
@@ -129,6 +131,28 @@ const HomeNavigator = () => (
       component={WalletLimit}
       options={({navigation}) => ({
         title: 'Wallet Limit',
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      })}
+    />
+    <Stack.Screen
+      name="AddWalletLimit"
+      component={AddWalletLimit}
+      options={({navigation}) => ({
+        title: 'Add Wallet Limit',
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+      })}
+    />
+    <Stack.Screen
+      name="EditWalletLimit"
+      component={EditWalletLimit}
+      options={({navigation}) => ({
+        title: 'Edit Wallet Limit',
         headerShown: true,
         gestureEnabled: true,
         gestureDirection: 'horizontal',

@@ -4,7 +4,7 @@ import {View, StatusBar, Alert, StyleSheet} from 'react-native';
 import {Text, Layout, Button, Card} from '@ui-kitten/components';
 import renderIf from '../components/renderIf';
 import {ScrollView} from 'react-native-gesture-handler';
-import {updateAddressArr, setUser, updateWallet} from '../redux/actions';
+import {setUser, updateWallet} from '../redux/actions';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
@@ -12,7 +12,6 @@ class WalletLimit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      noWalletLimit: this.props.user.Wallet.walletLimit == null,
       walletLimit: this.props.user.Wallet.walletLimit,
     };
   }
@@ -21,14 +20,7 @@ class WalletLimit extends React.Component {
     Alert.alert(
       'OpenJio',
       message,
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ],
+      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
       {cancelable: false}
     );
 
@@ -42,11 +34,10 @@ class WalletLimit extends React.Component {
         }
       );
       console.log(response.data);
-      this.props.updateWallet;
+      this.props.updateWallet(response.data);
       this.setState({
         message: 'Wallet Limit Removed.',
       });
-      console.log(this.state.noWalletLimit);
       console.log(this.state.message);
       this.createTwoButtonAlert(this.state.message);
     } catch (error) {
@@ -58,26 +49,11 @@ class WalletLimit extends React.Component {
   }
 
   async handleAddLimit() {
-    try {
-      const response = await axios.put(
-        globalVariable.walletApi + 'update-wallet-limit',
-        {
-          walletId: this.props.user.Wallet.walletId,
-          walletLimit: this.props.walletLimit,
-        }
-      );
-      console.log(response.data);
-      this.props.updateWallet;
-      this.setState({
-        message: 'Wallet Limit Added',
-      });
-      this.createTwoButtonAlert(this.state.message);
-    } catch (error) {
-      this.setState({
-        message: 'Wallet Limit Addition Failed.',
-      });
-      console.log(error);
-    }
+    this.props.navigation.navigate('AddWalletLimit');
+  }
+
+  async handleEditLimit() {
+    this.props.navigation.navigate('EditWalletLimit');
   }
 
   render() {
@@ -97,7 +73,7 @@ class WalletLimit extends React.Component {
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
             <Text>
-              {this.state.noWalletLimit
+              {this.props.user.Wallet.walletLimit == null
                 ? 'No Wallet Limit'
                 : this.props.user.Wallet.walletLimit}
             </Text>
@@ -111,7 +87,7 @@ class WalletLimit extends React.Component {
 
         <View style={styles.buttons}>
           {renderIf(
-            this.state.noWalletLimit,
+            this.props.user.Wallet.walletLimit == null,
             <Button
               size="small"
               style={styles.button}
@@ -122,13 +98,18 @@ class WalletLimit extends React.Component {
             </Button>
           )}
           {renderIf(
-            !this.state.noWalletLimit,
-            <Button size="small" style={styles.button} onPress={() => {}}>
+            !(this.props.user.Wallet.walletLimit == null),
+            <Button
+              size="small"
+              style={styles.button}
+              onPress={() => {
+                this.handleEditLimit();
+              }}>
               Edit Wallet Limit
             </Button>
           )}
           {renderIf(
-            !this.state.noWalletLimit,
+            !(this.props.user.Wallet.walletLimit == null),
             <Button
               size="small"
               style={styles.button}
