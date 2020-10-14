@@ -25,11 +25,12 @@ import TopUpScreen from './paymentManagement/TopUpScreen.js';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
 
-
 import TabNavigator from './tabs';
 import WalletLimit from './paymentManagement/WalletLimit';
 import AddWalletLimit from './paymentManagement/AddWalletLimit';
 import EditWalletLimit from './paymentManagement/EditWalletLimit';
+import Donate from './paymentManagement/Donate';
+import Withdraw from './paymentManagement/Withdraw';
 
 const Stack = createStackNavigator();
 
@@ -272,6 +273,28 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="TopUp"
       component={TopUpScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="Donate"
+      component={Donate}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="Withdraw"
+      component={Withdraw}
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,

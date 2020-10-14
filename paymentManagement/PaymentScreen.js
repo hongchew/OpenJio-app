@@ -187,7 +187,7 @@ class PaymentScreen extends React.Component {
               <Text style={styles.subtitle}>Send</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('WalletLimit')}
+              onPress={() => this.props.navigation.navigate('Withdraw')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/withdraw.png')}
@@ -195,7 +195,11 @@ class PaymentScreen extends React.Component {
               />
               <Text style={styles.subtitle}>Withdraw</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('Donate');
+              }}
+              style={styles.buttonItem}>
               <Image
                 source={require('../img/donate.png')}
                 style={styles.imageContainer}
