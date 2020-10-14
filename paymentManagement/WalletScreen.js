@@ -26,7 +26,7 @@ function FocusAwareStatusBar(props) {
   return isFocused ? <StatusBar {...props} /> : null;
 }
 
-class PaymentScreen extends React.Component {
+class WalletScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -42,12 +42,10 @@ class PaymentScreen extends React.Component {
   //obtain the list of transactions
   async getTransactions(userId) {
     try {
-      console.log('trying get transactions');
       const response = await axios.get(
         `${globalVariable.transactionApi}by/${userId}`
       );
       const transactions = response.data;
-      console.log(transactions);
       const sortedTransactions = transactions.sort(
         (a, b) => b.createdAt - a.createdAt
       );
@@ -65,7 +63,6 @@ class PaymentScreen extends React.Component {
       const response = await axios.get(
         `${globalVariable.userApi}${userId}`
       );
-      console.log('completed getuserbyuserId');
       this.setState({
         user: response.data,
       });
@@ -88,9 +85,8 @@ class PaymentScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              style={styles.listItemMinus}
-              title={`- SGD ${item.amount}`}
-              description={item.description}
+              title={<Text style={styles.amount}>- SGD ${item.amount}</Text>}
+              description={<Text style={styles.description}>{item.description}</Text>}
             />
           </View>
         );
@@ -103,9 +99,8 @@ class PaymentScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              style={styles.listItemMinus}
-              title={`+ SGD ${item.amount}`}
-              description={item.description}
+              title={<Text>+ SGD ${item.amount}</Text>}
+              description={<Text style={styles.description}>{item.description}</Text>}
             />
           </View>
         );
@@ -121,8 +116,8 @@ class PaymentScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              title={`- SGD ${item.amount}`}
-              description={item.description}
+              title={<Text>- SGD ${item.amount}</Text>}
+              description={<Text style={styles.description}>{item.description}</Text>}
             />
             <Divider />
           </View>
@@ -136,8 +131,8 @@ class PaymentScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              title={`+ SGD ${item.amount}`}
-              description={item.description}
+              title={<Text>+ SGD ${item.amount}</Text>}
+              description={<Text style={styles.description}>{item.description}</Text>}
             />
             <Divider />
           </View>
@@ -173,7 +168,7 @@ class PaymentScreen extends React.Component {
         </Card>
 
         <Card>
-          <Text style={styles.action}>Quick Actions</Text>
+          <Text style={styles.recentTransactionsTitle}>Quick Actions</Text>
           <View style={styles.quickActionContainer}>
             <TouchableOpacity
               onPress={() => this.props.navigation.replace('TopUpScreen')}
@@ -227,9 +222,8 @@ class PaymentScreen extends React.Component {
               <Text style={styles.showAllLink}>Show all</Text>
             </TouchableOpacity>
           </View>
-          <List
+          <List        
             keyExtractor={(item) => item.transactionId}
-            style={styles.listContainer}
             data={this.state.transactions}
             renderItem={this.renderItem}
           />
@@ -289,7 +283,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonItem: {
-    paddingTop: 20,
+    marginTop: 20,
     marginLeft: 20,
     marginRight: 10,
     alignItems: 'center',
@@ -304,6 +298,7 @@ const styles = StyleSheet.create({
   transaction: {
     marginTop: 20,
     marginBottom: 20,
+    flex: 1
   },
   setting: {
     width: 25,
@@ -319,6 +314,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
+  amount: {
+    fontSize: 16,
+  },
+  description: {
+    fontSize: 14, 
+    color: '#888888'
+  }
 });
 
 function mapStateToProps(state) {
@@ -335,4 +337,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(WalletScreen);

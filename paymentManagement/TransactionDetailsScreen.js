@@ -1,238 +1,121 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {
-  View,
-  StatusBar,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import renderIf from '../components/renderIf';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {
   Text,
   Layout,
   Card,
   Divider,
-  List,
-  ListItem,
+  MenuItem,
   Icon,
 } from '@ui-kitten/components';
-import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 
-function FocusAwareStatusBar(props) {
-  const isFocused = useIsFocused();
-  return isFocused ? <StatusBar {...props} /> : null;
-}
+const ForwardIcon = (props) => <Icon {...props} name="arrow-ios-forward" />;
 
 class TransactionDetailsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       user: this.props.user,
+      transaction: {
+        senderWalletId: '',
+        recipientWalletId: '',
+      },
     };
   }
 
   componentDidMount() {
-    this.getTransactions(this.state.user.userId);
-    this.getWalletAmount(this.state.user.userId);
+    const transactionId = this.props.route.params.transactionId;
+    this.getTransaction(transactionId);
   }
 
-  //obtain the list of transactions
-  async getTransactions(userId) {
+  //obtain the full list of transactions, credit and debit transactions
+  async getTransaction(transactionId) {
     try {
-      console.log('trying get transactions');
       const response = await axios.get(
-        `${globalVariable.transactionApi}by/${userId}`
+        `${globalVariable.transactionApi}${transactionId}`
       );
-      const transactions = response.data;
-      console.log(transactions);
-      const sortedTransactions = transactions.sort(
-        (a, b) => b.createdAt - a.createdAt
-      );
+      console.log(response.data);
+      //set state of full list of transactions
       this.setState({
-        transactions: sortedTransactions,
+        transaction: response.data,
       });
     } catch (error) {
       console.log(error);
     }
   }
-
-  //update the wallet state whenever a transaction happens
-  async getWalletAmount(userId) {
-    try {
-      const response = await axios.get(
-        `${globalVariable.userApi}${userId}`
-      );
-      console.log('completed getuserbyuserId');
-      this.setState({
-        user: response.data,
-      });
-      this.props.setUser(this.state.user);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  //render the list of transactions
-  renderItem = ({item, index}) => {
-    const counter = 5;
-    if (counter === index + 1) {
-      if (item.senderWalletId === this.state.user.Wallet.walletId) {
-        return (
-          <View>
-            <ListItem
-              onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
-                  transactionId: item.transactionId,
-                })
-              }
-              style={styles.listItemMinus}
-              title={`- SGD ${item.amount}`}
-              description={item.description}
-            />
-          </View>
-        );
-      } else {
-        return (
-          <View>
-            <ListItem
-              onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
-                  transactionId: item.transactionId,
-                })
-              }
-              style={styles.listItemMinus}
-              title={`+ SGD ${item.amount}`}
-              description={item.description}
-            />
-          </View>
-        );
-      }
-    }
-    if (counter > index) {
-      if (item.senderWalletId === this.state.user.Wallet.walletId) {
-        return (
-          <View>
-            <ListItem
-              onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
-                  transactionId: item.transactionId,
-                })
-              }
-              title={`- SGD ${item.amount}`}
-              description={item.description}
-            />
-            <Divider />
-          </View>
-        );
-      } else {
-        return (
-          <View>
-            <ListItem
-              onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
-                  transactionId: item.transactionId,
-                })
-              }
-              title={`+ SGD ${item.amount}`}
-              description={item.description}
-            />
-            <Divider />
-          </View>
-        );
-      }
-    }
-  };
 
   render() {
     return (
       <Layout style={styles.layout}>
-        <FocusAwareStatusBar
-          barStyle="dark-content"
-          hidden={false}
-          backgroundColor="transparent"
-          translucent={true}
-        />
-        <View style={styles.headerRow}>
-          <Text style={styles.header} category="h4">
-            Wallet
-          </Text>
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('PaymentSettings')}>
-            <Icon style={styles.setting} name="settings-outline" fill="#777" />
-          </TouchableOpacity>
+        <Text style={styles.header} category="h4">
+          Transaction Details
+        </Text>
+        <View style={styles.moreinfobox}>
+          <Card style={styles.card}>
+            <Text style={styles.amountlabel}>Amount</Text>
+            <View style={{flexDirection: 'row'}}>
+              {renderIf(
+                this.state.user.Wallet.walletId ===
+                  this.state.transaction.senderWalletId,
+                <Text style={{marginTop: 5}}>- SGD</Text>
+              )}
+              {renderIf(
+                this.state.user.Wallet.walletId ===
+                  this.state.transaction.recipientWalletId,
+                <Text style={{marginTop: 5}}>+ SGD</Text>
+              )}
+              <Text style={styles.money}>{this.state.transaction.amount}</Text>
+              {renderIf(
+                this.state.transaction.transactionType === 'USER',
+                <View style={styles.UserTransactionType}>
+                  <Text style={{color: 'white'}}>User</Text>
+                </View>
+              )}
+              {renderIf(
+                this.state.transaction.transactionType === 'TOP_UP',
+                <View style={styles.TopUpTransactionType}>
+                  <Text style={{color: 'white'}}>Top Up</Text>
+                </View>
+              )}
+              {renderIf(
+                this.state.transaction.transactionType === 'WITHDRAW',
+                <View style={styles.WithdrawTransactionType}>
+                  <Text style={{color: 'white'}}>Withdraw</Text>
+                </View>
+              )}
+              {renderIf(
+                this.state.transaction.transactionType === 'DONATE',
+                <View style={styles.DonateTransactionType}>
+                  <Text style={{color: 'white'}}>Donate</Text>
+                </View>
+              )}
+            </View>
+          </Card>
+          <Card style={styles.body}>
+            <View style={styles.moreinfosubbox}>
+              <Text style={styles.moreinfotext}>Transaction ID</Text>
+              <Text>{this.state.transaction.transactionId}</Text>
+            </View>
+            <View style={styles.moreinfosubbox}>
+              <Text style={styles.moreinfotext}>Date and time</Text>
+              <Text>{this.state.transaction.createdAt}</Text>
+            </View>
+            <View style={styles.moreinfosubbox}>
+              <Text style={styles.moreinfotext}>Message (optional)</Text>
+              <Text>{this.state.transaction.description}</Text>
+            </View>
+          </Card>
+          <MenuItem style={styles.report}
+          title="Report an issue" 
+          accessoryRight={ForwardIcon}
+          onPress={() =>
+            this.props.navigation.replace('Tabs', {screen:'Wallet'})
+          }/>
         </View>
-        <Card style={styles.card}>
-          <Text style={styles.label}>Balance</Text>
-          <View style={{flexDirection: 'row'}}>
-            <Text style={{marginTop: 5}}>SGD</Text>
-            <Text style={styles.money}>{this.state.user.Wallet.balance}</Text>
-          </View>
-        </Card>
-
-        <Card>
-          <Text style={styles.action}>Quick Actions</Text>
-          <View style={styles.quickActionContainer}>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.replace('TopUpScreen')}
-              style={styles.buttonItem}>
-              <Image
-                source={require('../img/topUp.png')}
-                style={styles.imageContainer}
-              />
-              <Text style={styles.subtitle}>Top-Up</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.replace('MakePayment')}
-              style={styles.buttonItem}>
-              <Image
-                source={require('../img/sendMoney.png')}
-                style={styles.imageContainer}
-              />
-              <Text style={styles.subtitle}>Send</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('Withdraw')}
-              style={styles.buttonItem}>
-              <Image
-                source={require('../img/withdraw.png')}
-                style={styles.imageContainer}
-              />
-              <Text style={styles.subtitle}>Withdraw</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                this.props.navigation.navigate('Donate');
-              }}
-              style={styles.buttonItem}>
-              <Image
-                source={require('../img/donate.png')}
-                style={styles.imageContainer}
-              />
-              <Text style={styles.subtitle}>Donate</Text>
-            </TouchableOpacity>
-          </View>
-        </Card>
-        <Card style={styles.transaction}>
-          <View style={styles.transactionHeader}>
-            <Text style={styles.recentTransactionsTitle}>
-              Recent Transactions
-            </Text>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('TransactionsList')
-              }>
-              <Text style={styles.showAllLink}>Show all</Text>
-            </TouchableOpacity>
-          </View>
-          <List
-            keyExtractor={(item) => item.transactionId}
-            style={styles.listContainer}
-            data={this.state.transactions}
-            renderItem={this.renderItem}
-          />
-        </Card>
       </Layout>
     );
   }
@@ -241,18 +124,14 @@ class TransactionDetailsScreen extends React.Component {
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
-    justifyContent: 'flex-start',
   },
   header: {
-    marginTop: 60,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
   card: {
     marginLeft: 15,
     marginRight: 15,
-    backgroundColor: 'white',
     borderRadius: 15,
     elevation: 2,
     shadowOffset: {width: 0, height: 2},
@@ -261,18 +140,25 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-  quickActionContainer: {
-    justifyContent: 'center',
+  transactionList: {
+    marginBottom: 30,
+    flex: 1,
+  },
+  transactionTab: {
     flexDirection: 'row',
+    marginTop: 20,
+    marginBottom: 20,
+    marginLeft: 10,
+    marginRight: 10,
+    justifyContent: 'center',
+    backgroundColor: 'white',
   },
-  label: {
-    color: '#3366FF',
-    fontWeight: 'bold',
-    marginBottom: 5,
+  amount: {
+    fontSize: 16,
   },
-  recentTransactionsTitle: {
-    fontWeight: 'bold',
-    marginBottom: 10,
+  description: {
+    fontSize: 14,
+    color: '#888888',
   },
   money: {
     fontSize: 24,
@@ -280,44 +166,66 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginLeft: 8,
   },
-  subtitle: {
-    fontFamily: 'Karla-Regular',
-    fontSize: 16,
-    marginTop: 10,
-    paddingBottom: 30,
-    textAlign: 'center',
+  amountlabel: {
+    fontWeight: 'bold',
+    marginBottom: 5,
   },
-  buttonItem: {
-    paddingTop: 20,
-    marginLeft: 20,
-    marginRight: 10,
+  UserTransactionType: {
+    backgroundColor: '#3366FF',
+    justifyContent: 'center',
     alignItems: 'center',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginLeft: 15,
   },
-  imageContainer: {
-    width: 60,
-    height: 60,
+  TopUpTransactionType: {
+    backgroundColor: 'grey',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginLeft: 15,
   },
-  showAllLink: {
-    marginBottom: 10,
+  WithdrawTransactionType: {
+    backgroundColor: '#C8E6C9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginLeft: 15,
   },
-  transaction: {
-    marginTop: 20,
+  DonateTransactionType: {
+    backgroundColor: '#FF8A80',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginLeft: 15,
+  },
+  moreinfobox: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  moreinfosubbox: {
     marginBottom: 20,
   },
-  setting: {
-    width: 25,
-    height: 25,
-    marginTop: 65,
-    marginRight: 20,
+  moreinfotext: {
+    fontWeight: 'bold',
+    marginBottom: 10,
+    marginTop: 10,
   },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  body: {
+    marginTop: 10,
+    marginBottom: 20,
   },
-  transactionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+  report: {
+    paddingLeft: 18,
+    marginTop:10
+  }
 });
 
 function mapStateToProps(state) {

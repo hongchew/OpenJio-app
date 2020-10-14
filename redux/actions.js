@@ -9,8 +9,6 @@ export const type = {
 //getting the user after api is called
 //and set it the redux state
 export function setUser(user) {
-  console.log('coming into action');
-  console.log('what is useracc: ' + user);
   return {
     type: type.SET_USER,
     payload: user,

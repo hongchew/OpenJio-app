@@ -187,9 +187,9 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   header: {
-    marginTop: 60,
-    marginBottom: 20,
+    marginTop: 20,
     marginLeft: 15,
+    marginBottom: 10,
     fontFamily: 'Karla-Bold',
   },
   card: {

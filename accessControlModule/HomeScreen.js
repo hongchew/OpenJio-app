@@ -10,7 +10,6 @@ class HomeScreen extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
     };
-    console.log(this.props);
   }
 
   render() {
