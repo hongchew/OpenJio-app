@@ -10,47 +10,83 @@ import {
 } from 'react-native';
 import {Text, Layout, Card, Input, Button} from '@ui-kitten/components';
 import axios from 'axios';
+import {globalVariable} from '../GLOBAL_VARIABLE';
+import loginStyle from '../styles/loginStyle';
 
 class Withdraw extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
+      message: '',
+      withdrawAmount: null,
+      isUpdated: this.props.isUpdated,
       user: this.props.user,
     };
   }
 
+  async handleWithdraw() {
+    if (this.state.withdrawAmount === null) {
+      this.setState({
+        message: 'Withdraw amount field is empty.',
+      });
+    } else {
+      try {
+        console.log(globalVariable.transactionApi + 'withdraw');
+        console.log(this.props.user.Wallet.walletId);
+        console.log(this.state.withdrawAmount);
+        const response = await axios.post(
+          globalVariable.transactionApi + 'withdraw',
+          {
+            walletId: this.props.user.Wallet.walletId,
+            amount: this.state.withdrawAmount,
+          }
+        );
+        console.log(response.data);
+        this.props.navigation.replace('Tabs', {screen: 'Wallet'});
+      } catch (error) {
+        console.log(error);
+        this.setState({
+          message: 'Withdrawal Failed.',
+        });
+      }
+    }
+  }
+
   render() {
+    let responseMessage;
+    if (this.state.isUpdated) {
+      responseMessage = (
+        <Text style={loginStyle.message} status="success">
+          {this.state.message}
+        </Text>
+      );
+    } else {
+      responseMessage = (
+        <Text style={loginStyle.message} status="danger">
+          {this.state.message}
+        </Text>
+      );
+    }
+
     return (
       <Layout style={styles.layout}>
         <Text style={styles.header} category="h4">
-          Top Up
+          Withdraw
         </Text>
         <ScrollView style={styles.container}>
           <Card>
-            <Text style={styles.action}>Enter Top Up Amount:</Text>
+            <Text style={styles.action}>Enter Withdraw Amount:</Text>
             <Input
               label="Amount"
-              value={this.state.amountPayable}
-              onChangeText={(amount) => this.setState({amountPayable: amount})}
-            />
-            <Input
-              label="Email"
-              value={this.state.recipientEmail}
-              onChangeText={(email) => this.setState({recipientEmail: email})}
-            />
-            <Text>Balance: {}</Text>
-            <Input
-              label="Mobile No. (Optional)"
-              value={this.state.mobileNumber}
-              onChangeText={(text) => this.setState({mobileNumber: text})}
+              value={this.state.withdrawAmount}
+              onChangeText={(amount) => this.setState({withdrawAmount: amount})}
             />
 
-            <Button
-              style={styles.button}
-              onPress={() => this.handleEditProfile()}>
-              Top Up
+            <Button style={styles.button} onPress={() => this.handleWithdraw()}>
+              Withdraw
             </Button>
+            {responseMessage}
           </Card>
         </ScrollView>
       </Layout>
@@ -126,6 +162,10 @@ const styles = StyleSheet.create({
   transaction: {
     marginTop: 20,
     marginBottom: 20,
+  },
+  message: {
+    marginTop: 20,
+    textAlign: 'center',
   },
 });
 
