@@ -79,7 +79,7 @@ class TransactionsListScreen extends React.Component {
         <ListItem
           style={styles.listItem}
           onPress={() =>
-            this.props.navigation.navigate('MakePayment', {
+            this.props.navigation.navigate('TransactionDetails', {
               transactionId: item.transactionId,
             })
           }
@@ -92,7 +92,7 @@ class TransactionsListScreen extends React.Component {
         <ListItem
           style={styles.listItem}
           onPress={() =>
-            this.props.navigation.navigate('MakePayment', {
+            this.props.navigation.navigate('TransactionDetails', {
               transactionId: item.transactionId,
             })
           }

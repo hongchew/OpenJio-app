@@ -25,6 +25,7 @@ import WalletScreen from './paymentManagement/WalletScreen';
 import MakePayment from './paymentManagement/MakePayment';
 import TopUpScreen from './paymentManagement/TopUpScreen';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
+import TransactionDetailsScreen from './paymentManagement/TransactionDetailsScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
 import WalletLimit from './paymentManagement/WalletLimit';
 import AddWalletLimit from './paymentManagement/AddWalletLimit';
@@ -312,6 +313,17 @@ const HomeNavigator = () => (
       component={TransactionsListScreen}
       options={({navigation}) => ({
         headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="TransactionDetails"
+      component={TransactionDetailsScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />

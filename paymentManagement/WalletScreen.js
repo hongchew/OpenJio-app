@@ -81,7 +81,7 @@ class WalletScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
+                this.props.navigation.navigate('TransactionDetails', {
                   transactionId: item.transactionId,
                 })
               }
@@ -95,7 +95,7 @@ class WalletScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
+                this.props.navigation.navigate('TransactionDetails', {
                   transactionId: item.transactionId,
                 })
               }
@@ -112,7 +112,7 @@ class WalletScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
+                this.props.navigation.navigate('TransactionDetails', {
                   transactionId: item.transactionId,
                 })
               }
@@ -127,7 +127,7 @@ class WalletScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('MakePayment', {
+                this.props.navigation.navigate('TransactionDetails', {
                   transactionId: item.transactionId,
                 })
               }
