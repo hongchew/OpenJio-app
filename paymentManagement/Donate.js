@@ -1,13 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {
-  View,
-  StatusBar,
-  Image,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import {Alert, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import {Text, Layout, Card, Input, Button} from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
