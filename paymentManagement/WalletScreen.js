@@ -222,8 +222,7 @@ class WalletScreen extends React.Component {
               <Text style={styles.showAllLink}>Show all</Text>
             </TouchableOpacity>
           </View>
-          <List
-            
+          <List        
             keyExtractor={(item) => item.transactionId}
             data={this.state.transactions}
             renderItem={this.renderItem}
@@ -299,7 +298,7 @@ const styles = StyleSheet.create({
   transaction: {
     marginTop: 20,
     marginBottom: 20,
-    height: 230,
+    flex: 1
   },
   setting: {
     width: 25,
