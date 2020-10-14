@@ -46,7 +46,6 @@ class PaymentScreen extends React.Component {
       const sortedTransactions = transactions.sort(
         (a, b) => b.createdAt - a.createdAt
       );
-      console.log(sortedTransactions);
       this.setState({
         transactions: sortedTransactions,
       });
