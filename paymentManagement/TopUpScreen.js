@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {View, StyleSheet, ScrollView, TextInput, Modal} from 'react-native';
+import {View, StyleSheet, ScrollView, StatusBar, TextInput, Modal} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {
   Text,
@@ -86,6 +86,11 @@ class TopUpScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+        />
         <Text style={styles.header} category="h4">
           Top Up Wallet
         </Text>

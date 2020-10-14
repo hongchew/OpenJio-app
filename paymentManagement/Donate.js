@@ -9,7 +9,7 @@ import {
   Keyboard,
   TextInput
 } from 'react-native';
-import {Text, Layout, Card, Button} from '@ui-kitten/components';
+import {Text, Layout, Card, Button, Modal} from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
@@ -19,9 +19,10 @@ class Donate extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       message: '',
-      donationAmount: null,
+      donationAmount: 0,
       isUpdated: this.props.isUpdated,
       user: this.props.user,
+      modalVisible: false,
     };
   }
 
@@ -33,6 +34,52 @@ class Donate extends React.Component {
       {cancelable: false}
     );
 
+    showDonationModal() {
+      if (this.state.donationAmount > 0) {
+        this.setState({
+          modalVisible: true
+        })
+      } else {
+        this.setState({
+          message: 'Donation amount field is empty.',
+        })
+      }
+    }
+  
+    renderModal() {
+      return (
+        <Modal
+          backdropStyle={styles.backdrop}
+          visible={this.state.modalVisible}>
+          <Card>
+          <Text style={{textAlign: 'center'}}>Amount to donate:</Text> 
+          <Text style={{textAlign: 'center', fontWeight: 'bold'}}>SGD {this.state.donationAmount.toFixed(2)}</Text>
+          
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({modalVisible: false});
+                this.handleDonation();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({modalVisible: false, message: 'Donation was Cancelled'});
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+          </Card>
+        </Modal>
+      );
+    }
+
   async handleDonation() {
     if (this.state.donationAmount === null) {
       this.setState({
@@ -40,9 +87,9 @@ class Donate extends React.Component {
       });
     } else {
       try {
-        console.log(globalVariable.transactionApi + 'donate');
-        console.log(this.props.user.Wallet.walletId);
-        console.log(this.state.donationAmount);
+        //console.log(globalVariable.transactionApi + 'donate');
+        //console.log(this.props.user.Wallet.walletId);
+        //console.log(this.state.donationAmount);
         const response = await axios.post(
           globalVariable.transactionApi + 'donate',
           {
@@ -50,9 +97,12 @@ class Donate extends React.Component {
             amount: this.state.donationAmount,
           }
         );
-        console.log(response.data);
-        this.createTwoButtonAlert('Thank you for your kind donation!');
-        this.props.navigation.replace('Tabs', {screen: 'Wallet'});
+        //console.log(response.data);
+        //this.createTwoButtonAlert('Thank you for your kind donation!');
+        this.props.navigation.navigate('SuccessfulScreen', {
+          amount: this.state.donationAmount,
+          previousScreen: 'Donate'
+        });
       } catch (error) {
         console.log(error);
         this.setState({
@@ -80,6 +130,11 @@ class Donate extends React.Component {
 
     return (
       <Layout style={styles.layout}>
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+        />
         <Text style={styles.header} category="h4">
           Donate
         </Text>
@@ -103,10 +158,11 @@ class Donate extends React.Component {
               </View>
             </Card>
 
-            <Button style={styles.button} onPress={() => this.handleDonation()}>
+            <Button style={styles.button} onPress={() => this.showDonationModal()}>
               Donate
             </Button>
             {responseMessage}
+            {this.renderModal()}
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
@@ -125,6 +181,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   header: {
     marginTop: 20,
@@ -162,6 +221,15 @@ const styles = StyleSheet.create({
   description: {
     textAlign: 'center',
     marginTop: 10,
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 

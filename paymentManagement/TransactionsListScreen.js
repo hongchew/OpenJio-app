@@ -83,7 +83,7 @@ class TransactionsListScreen extends React.Component {
               transactionId: item.transactionId,
             })
           }
-          title={<Text style={styles.amount}>- SGD ${item.amount}</Text>}
+          title={<Text style={styles.amount}>- SGD ${item.amount.toFixed(2)}</Text>}
           description={item.description}
         />
       );
@@ -96,7 +96,7 @@ class TransactionsListScreen extends React.Component {
               transactionId: item.transactionId,
             })
           }
-          title={<Text style={styles.amount}>+ SGD ${item.amount}</Text>}
+          title={<Text style={styles.amount}>+ SGD ${item.amount.toFixed(2)}</Text>}
           description={
             <Text style={styles.description}>{item.description}</Text>
           }
