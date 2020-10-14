@@ -60,12 +60,12 @@ const HomeNavigator = () => (
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Signup" component={SignupScreen} />
     <Stack.Screen name="Wallet" component={WalletScreen} />
+    <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen}/>
     <Stack.Screen
       name="ChangePassword"
       component={ChangePassword}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -93,7 +93,6 @@ const HomeNavigator = () => (
       component={EditProfile}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -113,7 +112,6 @@ const HomeNavigator = () => (
       component={AddressScreen}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -134,7 +132,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         title: 'Wallet Limit',
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
@@ -144,7 +141,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         title: 'Add Wallet Limit',
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
@@ -154,7 +150,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         title: 'Edit Wallet Limit',
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
@@ -163,7 +158,6 @@ const HomeNavigator = () => (
       component={AddAddress}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -183,7 +177,6 @@ const HomeNavigator = () => (
       component={VerifyAccount}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -203,7 +196,6 @@ const HomeNavigator = () => (
       component={UserBadges}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -220,21 +212,10 @@ const HomeNavigator = () => (
       })}
     />
     <Stack.Screen
-      name="LeaderboardScreen"
-      component={LeaderboardScreen}
-      options={({navigation}) => ({
-        title: 'Leaderboard',
-        headerShown: true,
-        gestureEnabled: true,
-        ...TransitionPresets.FadeFromBottomAndroid,
-      })}
-    />
-    <Stack.Screen
       name="TopUpScreen"
       component={TopUpScreen}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -255,7 +236,6 @@ const HomeNavigator = () => (
       component={TopUpScreen}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -275,8 +255,18 @@ const HomeNavigator = () => (
       component={Donate}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen
@@ -284,8 +274,18 @@ const HomeNavigator = () => (
       component={Withdraw}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen
@@ -293,7 +293,6 @@ const HomeNavigator = () => (
       component={MakePayment}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -313,7 +312,6 @@ const HomeNavigator = () => (
       component={TransactionsListScreen}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
@@ -322,7 +320,6 @@ const HomeNavigator = () => (
       component={PaymentSettingsScreen}
       options={({navigation}) => ({
         headerShown: true,
-        gestureEnabled: true,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
