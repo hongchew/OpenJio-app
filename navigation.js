@@ -24,6 +24,7 @@ import PaymentScreen from './paymentManagement/MakePayment.js';
 import TopUpScreen from './paymentManagement/TopUpScreen.js';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
+import SuccessfulPayment from './paymentManagement/SuccessfulPayment';
 
 import TabNavigator from './tabs';
 import WalletLimit from './paymentManagement/WalletLimit';
@@ -240,7 +241,10 @@ const HomeNavigator = () => (
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       })}
     />
-    <Stack.Screen name="Wallet" component={PaymentScreen} />
+    <Stack.Screen 
+      name="Wallet" 
+      component={PaymentScreen} 
+    />
     <Stack.Screen
       name="TopUpScreen"
       component={TopUpScreen}
@@ -249,6 +253,7 @@ const HomeNavigator = () => (
         gestureEnabled: true,
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -279,6 +284,17 @@ const HomeNavigator = () => (
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen
@@ -312,6 +328,17 @@ const HomeNavigator = () => (
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen
@@ -345,6 +372,10 @@ const HomeNavigator = () => (
           />
         ),
       })}
+    />
+    <Stack.Screen
+      name="SuccessfulPayment"
+      component={SuccessfulPayment}
     />
   </Stack.Navigator>
 );

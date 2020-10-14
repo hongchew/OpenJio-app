@@ -31,7 +31,7 @@ class MakePayment extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
-      amountPayable: '',
+      amountPayable: 0,
       recipientEmail: '',
       description: '',
       recipient: {},
@@ -45,21 +45,28 @@ class MakePayment extends React.Component {
         globalVariable.transactionApi + 'process-payment',
         {
           walletId: this.props.user.Wallet.walletId,
-          amount: this.state.amountPayable,
-          email: this.state.email,
+          amount: this.state.amountPayable.toString(),
+          email: this.state.recipientEmail,
           description: this.state.description,
         }
       );
-      this.props.setUser(response.data);
-      this.props.navigation.navigate('Tabs', {screen: 'Profile'});
+      console.log(response.data);
+      //this.props.setUser(response.data);
+      //const recipientName = this.state.recipient.name
+      this.props.navigation.navigate('SuccessfulPayment', {
+        transactionDetails: response.data,
+        recipientName: this.state.recipient.name,
+      });
     } catch (error) {
       console.log(error);
       this.setState({
-        message: 'Unable to update profile.',
+        message: 'Unable to make payment.',
       });
     }
   }
 
+  //check whether all the fields are correct,
+  //if it is, the modal will pop up
   async getRecipient() {
     try {
       const response = await axios.get(
@@ -68,16 +75,20 @@ class MakePayment extends React.Component {
       this.setState({
         recipient: response.data,
       });
+      console.log(response.data);
     } catch (error) {
-      console.log(error);
       this.setState({
-        message: 'User does not exist.',
+        message: 'Unable to verify payment details.',
       });
     }
 
     if (this.state.recipientEmail == '' || this.state.amountPayable == '') {
       this.setState({
         message: 'Fields are empty, unable to proceed.',
+      });
+    } else if (this.state.amountPayable > this.state.user.Wallet.balance) {
+      this.setState({
+        message: 'You do not have enough balance to pay, unable to proceed.',
       });
     } else if (this.state.recipient) {
       this.setState({
@@ -86,10 +97,12 @@ class MakePayment extends React.Component {
     } else {
       this.setState({
         paymentModalVisible: false,
+        message: 'User does not exist, unable to proceed.',
       });
     }
   }
 
+  //when user clicks confirm, should trigger the handlePayment method
   renderPaymentModal() {
     const avatar = () => (
       <UserAvatar
@@ -100,8 +113,8 @@ class MakePayment extends React.Component {
         }
       />
     );
-    const amountToDisplay = `SGD $${this.state.amountPayable}`;
 
+    const amountToDisplay = `SGD $${this.state.amountPayable}`;
     return (
       <Modal
         backdropStyle={styles.backdrop}
@@ -143,7 +156,7 @@ class MakePayment extends React.Component {
               size={'small'}
               onPress={() => {
                 this.setState({paymentModalVisible: false});
-                //this.handleRemoveAvatar();
+                this.handleMakePayment();
               }}>
               Confirm
             </Button>
@@ -173,18 +186,18 @@ class MakePayment extends React.Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
             <Card style={styles.card}>
-              <Text style={styles.label}>Pay Amount</Text>
+              <Text style={styles.payLabel}>Pay Amount</Text>
               <View style={{flexDirection: 'row'}}>
                 <Text
                   style={{marginTop: 10, marginRight: 5, fontWeight: 'bold'}}>
                   SGD
                 </Text>
                 <TextInput
-                  keyboardType={'decimal-pad'}
-                  style={styles.amountInput}
-                  value={this.state.amountPayable}
+                  keyboardType={'number-pad'}
+                  style={styles.money}
+                  value={this.state.amount}
                   onChangeText={(amount) =>
-                    this.setState({amountPayable: amount})
+                    this.setState({amountPayable: parseFloat(amount)})
                   }
                 />
               </View>
@@ -265,6 +278,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 3,
   },
+  payLabel: {
+    color: '#3366FF',
+    fontSize: 14,
+    marginBottom: 3,
+    fontWeight: 'bold'
+  },
+  money: {
+    flexGrow: 1,
+    fontSize: 24,
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderColor: '#3366FF',
+  },
   amountInput: {
     marginBottom: 5,
     flex: 1,
@@ -289,7 +315,7 @@ const styles = StyleSheet.create({
   description: {
     textAlign: 'center',
     marginTop: 10,
-  }
+  },
 });
 
 function mapStateToProps(state) {

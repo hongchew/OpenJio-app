@@ -166,10 +166,10 @@ class PaymentScreen extends React.Component {
         </Card>
 
         <Card>
-          <Text style={styles.action}>Quick Actions</Text>
+          <Text style={styles.recentTransactionsTitle}>Quick Actions</Text>
           <View style={styles.quickActionContainer}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('TopUpScreen')}
+              onPress={() => this.props.navigation.replace('TopUpScreen')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/topUp.png')}
@@ -178,7 +178,7 @@ class PaymentScreen extends React.Component {
               <Text style={styles.subtitle}>Top-Up</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('MakePayment')}
+              onPress={() => this.props.navigation.replace('MakePayment')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/sendMoney.png')}
