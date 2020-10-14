@@ -11,7 +11,6 @@ const initialState = {
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case type.SET_USER:
-      console.log(action.payload);
       return {
         ...state,
         loading: false,
@@ -27,7 +26,6 @@ export default function reducer(state = initialState, action) {
         },
       };
     case type.UPDATE_ADDRESS_ARR:
-      console.log(action.payload);
       return {
         ...state,
         user: {

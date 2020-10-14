@@ -1,5 +1,4 @@
 import React from 'react';
-import {SafeAreaView} from 'react-native';
 import {Button, Icon} from '@ui-kitten/components';
 import {NavigationContainer} from '@react-navigation/native';
 import {
@@ -7,41 +6,42 @@ import {
   CardStyleInterpolators,
   TransitionPresets,
 } from '@react-navigation/stack';
-
+//screens from access control module 
 import LoginScreen from './accessControlModule/LoginScreen';
 import ProfileScreen from './accessControlModule/ProfileScreen';
 import SignupScreen from './accessControlModule/SignupScreen';
 import ChangePassword from './accessControlModule/ChangePassword';
 import ForgotPassword from './accessControlModule/ForgotPassword';
 import HomeScreen from './accessControlModule/HomeScreen';
+//screens from profile management 
 import EditProfile from './profileManagement/EditProfile';
 import AddressScreen from './profileManagement/AddressScreen';
 import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
-import PaymentScreen from './paymentManagement/MakePayment.js';
-import TopUpScreen from './paymentManagement/TopUpScreen.js';
+//screens from payment management 
+import WalletScreen from './paymentManagement/WalletScreen';
+import MakePayment from './paymentManagement/MakePayment';
+import TopUpScreen from './paymentManagement/TopUpScreen';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
 import SuccessfulPayment from './paymentManagement/SuccessfulPayment';
-
-import TabNavigator from './tabs';
 import WalletLimit from './paymentManagement/WalletLimit';
 import AddWalletLimit from './paymentManagement/AddWalletLimit';
 import EditWalletLimit from './paymentManagement/EditWalletLimit';
 import Donate from './paymentManagement/Donate';
 import Withdraw from './paymentManagement/Withdraw';
+//tab navigator 
+import TabNavigator from './tabs';
+
 
 const Stack = createStackNavigator();
 
 const BackIcon = (props) => (
-  <Icon {...props} name="close-outline" width="25" height="25" />
-);
-
-const Back = (props) => (
   <Icon {...props} name="arrow-back-outline" width="25" height="25" />
 );
+
 
 const HomeNavigator = () => (
   <Stack.Navigator
@@ -59,14 +59,13 @@ const HomeNavigator = () => (
     <Stack.Screen name="Home" component={HomeScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Signup" component={SignupScreen} />
+    <Stack.Screen name="Wallet" component={WalletScreen} />
     <Stack.Screen
       name="ChangePassword"
       component={ChangePassword}
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -95,8 +94,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -117,8 +114,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -140,8 +135,7 @@ const HomeNavigator = () => (
         title: 'Wallet Limit',
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     <Stack.Screen
@@ -151,8 +145,7 @@ const HomeNavigator = () => (
         title: 'Add Wallet Limit',
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     <Stack.Screen
@@ -162,8 +155,7 @@ const HomeNavigator = () => (
         title: 'Edit Wallet Limit',
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     <Stack.Screen
@@ -172,8 +164,7 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -193,8 +184,7 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -214,8 +204,7 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -237,13 +226,8 @@ const HomeNavigator = () => (
         title: 'Leaderboard',
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
-    />
-    <Stack.Screen 
-      name="Wallet" 
-      component={PaymentScreen} 
     />
     <Stack.Screen
       name="TopUpScreen"
@@ -251,8 +235,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -267,13 +249,6 @@ const HomeNavigator = () => (
         ),
       })}
     />
-    {/* <Stack.Screen
-      name="AddAddress"
-      component={AddAddress}
-      options={{
-        headerShown: true,
-      }}
-    /> */}
     <Stack.Screen name="Tabs" component={TabNavigator} />
     <Stack.Screen
       name="TopUp"
@@ -281,8 +256,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -303,8 +276,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
@@ -314,19 +285,15 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     <Stack.Screen
       name="MakePayment"
-      component={PaymentScreen}
+      component={MakePayment}
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
@@ -347,8 +314,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
@@ -358,8 +323,7 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
-        gestureDirection: 'horizontal',
-        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
         headerLeft: () => (
           <Button
             onPress={() => {
@@ -373,6 +337,8 @@ const HomeNavigator = () => (
         ),
       })}
     />
+    {/* doesn't include any buttons because i just want a page that shows successful payment */}
+    {/* and have a button to navigate back to the wallet screen */}
     <Stack.Screen
       name="SuccessfulPayment"
       component={SuccessfulPayment}

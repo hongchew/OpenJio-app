@@ -41,7 +41,6 @@ class TransactionsListScreen extends React.Component {
       this.setState({
         transactions: response.data,
       });
-      console.log('getting to credit transactions');
       this.getCreditTransactions(response.data);
       this.getDebitTransactions(response.data);
     } catch (error) {
@@ -78,25 +77,29 @@ class TransactionsListScreen extends React.Component {
     if (item.senderWalletId === this.state.user.Wallet.walletId) {
       return (
         <ListItem
+          style={styles.listItem}
           onPress={() =>
             this.props.navigation.navigate('MakePayment', {
               transactionId: item.transactionId,
             })
           }
-          title={`- SGD ${item.amount}`}
+          title={<Text style={styles.amount}>- SGD ${item.amount}</Text>}
           description={item.description}
         />
       );
     } else {
       return (
         <ListItem
+          style={styles.listItem}
           onPress={() =>
             this.props.navigation.navigate('MakePayment', {
               transactionId: item.transactionId,
             })
           }
-          title={`+ SGD ${item.amount}`}
-          description={item.description}
+          title={<Text style={styles.amount}>+ SGD ${item.amount}</Text>}
+          description={
+            <Text style={styles.description}>{item.description}</Text>
+          }
         />
       );
     }
@@ -155,11 +158,12 @@ class TransactionsListScreen extends React.Component {
             Outgoing
           </Button>
         </View>
-        <Card style={styles.transactionList}>
-          <Text style={styles.action}>Recent Transactions</Text>
+        <Text style={styles.action}>Recent Transactions</Text>
+        <View style={styles.transactionList}>
           {renderIf(
             this.state.filter === 'all',
             <List
+              style={styles.listContainer}
               data={this.state.transactions}
               ItemSeparatorComponent={Divider}
               renderItem={this.renderItem}
@@ -168,6 +172,7 @@ class TransactionsListScreen extends React.Component {
           {renderIf(
             this.state.filter === 'credit',
             <List
+              style={styles.listContainer}
               data={this.state.creditTransactions}
               ItemSeparatorComponent={Divider}
               renderItem={this.renderItem}
@@ -176,12 +181,13 @@ class TransactionsListScreen extends React.Component {
           {renderIf(
             this.state.filter === 'debit',
             <List
+              style={styles.listContainer}
               data={this.state.debitTransactions}
               ItemSeparatorComponent={Divider}
               renderItem={this.renderItem}
             />
           )}
-        </Card>
+        </View>
       </Layout>
     );
   }
@@ -190,37 +196,22 @@ class TransactionsListScreen extends React.Component {
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   header: {
-    marginBottom: 20,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
-  },
-  card: {
-    backgroundColor: 'white',
-    marginLeft: 20,
-    marginRight: 20,
-    marginBottom: 20,
-    marginTop: 10,
-    borderRadius: 5,
-    elevation: 5,
-    shadowColor: '#ededed',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
   },
   action: {
     fontWeight: 'bold',
     marginBottom: 10,
+    marginLeft: 20,
   },
   buttonItem: {
     width: 110,
   },
   transactionList: {
-    marginTop: 20,
-    marginBottom: 20,
-    flex: 1,
+    marginBottom: 30,
+    flex: 1
   },
   transactionTab: {
     flexDirection: 'row',
@@ -230,6 +221,20 @@ const styles = StyleSheet.create({
     marginRight: 10,
     justifyContent: 'center',
   },
+  amount: {
+    fontSize: 16,
+  },
+  description: {
+    fontSize: 14,
+    color: '#888888',
+  },
+  listItem: {
+    marginLeft: 10,
+    marginRight: 10
+  },
+  listContainer: {
+    backgroundColor: 'white',
+  }
 });
 
 function mapStateToProps(state) {
