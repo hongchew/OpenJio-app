@@ -70,7 +70,7 @@ class MakePayment extends React.Component {
   async getRecipient() {
     try {
       const response = await axios.get(
-        globalVariable.userApi + this.state.recipientEmail
+        globalVariable.userApi + 'email/' + this.state.recipientEmail
       );
       this.setState({
         recipient: response.data,
