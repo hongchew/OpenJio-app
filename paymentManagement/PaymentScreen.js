@@ -21,6 +21,11 @@ import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 import {setUser} from '../redux/actions';
 
+function FocusAwareStatusBar(props) {
+  const isFocused = useIsFocused();
+  return isFocused ? <StatusBar {...props} /> : null;
+}
+
 class PaymentScreen extends React.Component {
   constructor(props) {
     super(props);
