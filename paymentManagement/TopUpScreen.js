@@ -178,7 +178,7 @@ class TopUpScreen extends React.Component {
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
     justifyContent: 'center',
   },
   container: {

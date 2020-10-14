@@ -186,7 +186,7 @@ class MakePayment extends React.Component {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
             <Card style={styles.card}>
-              <Text style={styles.label}>Pay Amount</Text>
+              <Text style={styles.payLabel}>Pay Amount</Text>
               <View style={{flexDirection: 'row'}}>
                 <Text
                   style={{marginTop: 10, marginRight: 5, fontWeight: 'bold'}}>
@@ -277,6 +277,12 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     marginBottom: 3,
+  },
+  payLabel: {
+    color: '#3366FF',
+    fontSize: 14,
+    marginBottom: 3,
+    fontWeight: 'bold'
   },
   money: {
     flexGrow: 1,

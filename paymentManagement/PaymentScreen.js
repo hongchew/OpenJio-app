@@ -169,7 +169,7 @@ class PaymentScreen extends React.Component {
           <Text style={styles.recentTransactionsTitle}>Quick Actions</Text>
           <View style={styles.quickActionContainer}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('TopUpScreen')}
+              onPress={() => this.props.navigation.replace('TopUpScreen')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/topUp.png')}
