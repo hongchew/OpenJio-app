@@ -30,6 +30,8 @@ import TabNavigator from './tabs';
 import WalletLimit from './paymentManagement/WalletLimit';
 import AddWalletLimit from './paymentManagement/AddWalletLimit';
 import EditWalletLimit from './paymentManagement/EditWalletLimit';
+import Donate from './paymentManagement/Donate';
+import Withdraw from './paymentManagement/Withdraw';
 
 const Stack = createStackNavigator();
 
@@ -293,6 +295,28 @@ const HomeNavigator = () => (
             size="tiny"
           />
         ),
+      })}
+    />
+    <Stack.Screen
+      name="Donate"
+      component={Donate}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="Withdraw"
+      component={Withdraw}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     <Stack.Screen
