@@ -1,24 +1,22 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {
-  View,
   StatusBar,
-  Image,
+  View,
   Alert,
   StyleSheet,
-  ScrollView,
-  TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TextInput
 } from 'react-native';
-import {Text, Layout, Card, Input, Button} from '@ui-kitten/components';
+import {Text, Layout, Card, Button} from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
-import loginStyle from '../styles/loginStyle';
 
 class Withdraw extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //populate state.user because after logging out, this.props.user will cause error
       message: '',
       withdrawAmount: null,
       isUpdated: this.props.isUpdated,
@@ -41,9 +39,9 @@ class Withdraw extends React.Component {
       });
     } else {
       try {
-        console.log(globalVariable.transactionApi + 'withdraw');
-        console.log(this.props.user.Wallet.walletId);
-        console.log(this.state.withdrawAmount);
+        //console.log(globalVariable.transactionApi + 'withdraw');
+        //console.log(this.props.user.Wallet.walletId);
+        //console.log(this.state.withdrawAmount);
         const response = await axios.post(
           globalVariable.transactionApi + 'withdraw',
           {
@@ -51,13 +49,13 @@ class Withdraw extends React.Component {
             amount: this.state.withdrawAmount,
           }
         );
-        console.log(response.data);
+        //console.log(response.data);
         this.createTwoButtonAlert(
           'You have withdrawn ' + this.state.withdrawAmount
         );
         this.props.navigation.replace('Tabs', {screen: 'Wallet'});
       } catch (error) {
-        console.log(error);
+        //console.log(error);
         this.setState({
           message: 'Withdrawal Failed.',
         });
@@ -69,13 +67,13 @@ class Withdraw extends React.Component {
     let responseMessage;
     if (this.state.isUpdated) {
       responseMessage = (
-        <Text style={loginStyle.message} status="success">
+        <Text style={styles.description} status="success">
           {this.state.message}
         </Text>
       );
     } else {
       responseMessage = (
-        <Text style={loginStyle.message} status="danger">
+        <Text style={styles.description} status="danger">
           {this.state.message}
         </Text>
       );
@@ -86,21 +84,32 @@ class Withdraw extends React.Component {
         <Text style={styles.header} category="h4">
           Withdraw
         </Text>
-        <ScrollView style={styles.container}>
-          <Card>
-            <Text style={styles.action}>Enter Withdraw Amount:</Text>
-            <Input
-              label="Amount"
-              value={this.state.withdrawAmount}
-              onChangeText={(amount) => this.setState({withdrawAmount: amount})}
-            />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <Layout style={styles.container}>
+            <Card style={styles.card}>
+              <Text style={styles.payLabel}>Withdraw Amount</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={{marginTop: 10, marginRight: 5, fontWeight: 'bold'}}>
+                  SGD
+                </Text>
+                <TextInput
+                  keyboardType={'number-pad'}
+                  style={styles.money}
+                  value={this.state.amount}
+                  onChangeText={(amount) =>
+                    this.setState({withdrawAmount: parseFloat(amount)})
+                  }
+                />
+              </View>
+            </Card>
 
             <Button style={styles.button} onPress={() => this.handleWithdraw()}>
               Withdraw
             </Button>
             {responseMessage}
-          </Card>
-        </ScrollView>
+          </Layout>
+        </TouchableWithoutFeedback>
       </Layout>
     );
   }
@@ -109,23 +118,23 @@ class Withdraw extends React.Component {
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
   container: {
-    flex: 2,
+    flex: 1,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20,
   },
   header: {
-    marginTop: 60,
-    marginBottom: 20,
+    marginTop: 20,
     marginLeft: 15,
+    marginBottom: 10,
     fontFamily: 'Karla-Bold',
   },
   card: {
     backgroundColor: 'white',
-    marginLeft: 20,
-    marginRight: 20,
     marginBottom: 20,
-    marginTop: 10,
     borderRadius: 5,
     elevation: 5,
     shadowColor: '#ededed',
@@ -133,51 +142,26 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 10,
   },
-  actionContainer: {
-    justifyContent: 'flex-start',
-    flexDirection: 'row',
-  },
-  label: {
-    color: '#3366FF',
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  action: {
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  money: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  subtitle: {
-    fontFamily: 'Karla-Regular',
-    fontSize: 16,
-    marginTop: 10,
-    paddingBottom: 30,
-    textAlign: 'center',
-  },
-  buttonItem: {
-    paddingTop: 20,
-    marginLeft: 20,
-    marginRight: 10,
-    alignItems: 'center',
-  },
-  imageContainer: {
-    width: 60,
-    height: 60,
-  },
-  link: {
-    textAlign: 'right',
-    marginTop: 10,
-  },
-  transaction: {
-    marginTop: 20,
-    marginBottom: 20,
-  },
   message: {
     marginTop: 20,
     textAlign: 'center',
+  },
+  payLabel: {
+    color: '#3366FF',
+    fontSize: 14,
+    marginBottom: 3,
+    fontWeight: 'bold'
+  },
+  money: {
+    flexGrow: 1,
+    fontSize: 24,
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderColor: '#3366FF',
+  },
+  description: {
+    textAlign: 'center',
+    marginTop: 10,
   },
 });
 

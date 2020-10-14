@@ -2,10 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {
   View,
-  StatusBar,
-  Image,
   StyleSheet,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   TextInput,
@@ -19,7 +16,6 @@ import {
   Modal,
   ListItem,
   Divider,
-  Icon,
 } from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
@@ -29,7 +25,6 @@ class MakePayment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
       amountPayable: 0,
       recipientEmail: '',
@@ -50,9 +45,6 @@ class MakePayment extends React.Component {
           description: this.state.description,
         }
       );
-      console.log(response.data);
-      //this.props.setUser(response.data);
-      //const recipientName = this.state.recipient.name
       this.props.navigation.navigate('SuccessfulPayment', {
         transactionDetails: response.data,
         recipientName: this.state.recipient.name,
@@ -125,30 +117,30 @@ class MakePayment extends React.Component {
             Review Payment
           </Text>
           <ListItem
-            description={(evaProps) => (
-              <Text {...evaProps} style={{fontSize: 17, fontWeight: 'bold'}}>
+            description={
+              <Text style={{fontSize: 17, fontWeight: 'bold'}}>
                 {this.state.recipient.name}
               </Text>
-            )}
-            title={(evaProps) => (
-              <Text {...evaProps} style={styles.label}>
+            }
+            title={
+              <Text style={styles.label}>
                 Recipient
               </Text>
-            )}
+            }
             accessoryRight={avatar}
           />
           <Divider />
           <ListItem
-            description={(evaProps) => (
-              <Text {...evaProps} style={{fontSize: 17, fontWeight: 'bold'}}>
+            description={
+              <Text style={{fontSize: 17, fontWeight: 'bold'}}>
                 {amountToDisplay}
               </Text>
-            )}
-            title={(evaProps) => (
-              <Text {...evaProps} style={styles.label}>
+            }
+            title={
+              <Text style={styles.label}>
                 Pay Amount
               </Text>
-            )}
+            }
           />
           <Layout style={styles.modalButtonsContainer}>
             <Button
@@ -181,8 +173,6 @@ class MakePayment extends React.Component {
         <Text style={styles.header} category="h4">
           Payment
         </Text>
-        {/* <Text style={styles.action}>Enter payment details:</Text> */}
-
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
             <Card style={styles.card}>

@@ -10,11 +10,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
-import {Text, Button, Avatar, Card} from '@ui-kitten/components';
+import {Text, Button} from '@ui-kitten/components';
 import axios from 'axios';
 import {UserAvatar} from '../GLOBAL_VARIABLE';
 import {globalVariable} from '../GLOBAL_VARIABLE';
-import {ScrollView} from 'react-native-gesture-handler';
 
 //to make sure the status bar change to certain colour only on this page
 function FocusAwareStatusBar(props) {
@@ -39,7 +38,6 @@ class LeaderboardScreen extends React.Component {
       monthlyData: [],
       refreshing: false,
     };
-    console.log(this.props);
   }
 
   componentDidMount() {
@@ -74,7 +72,6 @@ class LeaderboardScreen extends React.Component {
       const response = await axios.get(
         globalVariable.userApi + 'monthly-leaderboard'
       );
-      //console.log(response.data);
       this.setState({
         monthlyData: response.data,
         refreshing: false,
