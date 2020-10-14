@@ -19,11 +19,7 @@ import {
 import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
-
-function FocusAwareStatusBar(props) {
-  const isFocused = useIsFocused();
-  return isFocused ? <StatusBar {...props} /> : null;
-}
+import {setUser} from '../redux/actions';
 
 class PaymentScreen extends React.Component {
   constructor(props) {
@@ -35,34 +31,40 @@ class PaymentScreen extends React.Component {
 
   componentDidMount() {
     this.getTransactions(this.state.user.userId);
-    this.getWalletAmount(this.state.user.Wallet.walletId);
+    this.getWalletAmount(this.state.user.userId);
   }
 
   //obtain the list of transactions
   async getTransactions(userId) {
     try {
+      console.log('trying get transactions');
       const response = await axios.get(
-        globalVariable.transactionApi + `by/${userId}`
+        `${globalVariable.transactionApi}by/${userId}`
+      );
+      const transactions = response.data;
+      console.log(transactions);
+      const sortedTransactions = transactions.sort(
+        (a, b) => b.createdAt - a.createdAt
       );
       this.setState({
-        transactions: response.data,
+        transactions: sortedTransactions,
       });
     } catch (error) {
       console.log(error);
     }
   }
 
-  async getWalletAmount(walletId) {
+  //update the wallet state whenever a transaction happens
+  async getWalletAmount(userId) {
     try {
-      console.log('trying to fetch api');
       const response = await axios.get(
-        `${globalVariable.walletApi}retrieve-wallet`,
-        {
-          walletId: walletId,
-        }
+        `${globalVariable.userApi}${userId}`
       );
-      console.log('completed fetch');
-      console.log(response.data);
+      console.log('completed getuserbyuserId');
+      this.setState({
+        user: response.data,
+      });
+      this.props.setUser(this.state.user);
     } catch (error) {
       console.log(error);
     }
@@ -166,7 +168,7 @@ class PaymentScreen extends React.Component {
         </Card>
 
         <Card>
-          <Text style={styles.recentTransactionsTitle}>Quick Actions</Text>
+          <Text style={styles.action}>Quick Actions</Text>
           <View style={styles.quickActionContainer}>
             <TouchableOpacity
               onPress={() => this.props.navigation.replace('TopUpScreen')}
@@ -320,4 +322,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(PaymentScreen);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => {
+      dispatch(setUser(user));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentScreen);
