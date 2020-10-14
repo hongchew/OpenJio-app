@@ -20,15 +20,18 @@ import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
-import TopUpScreen from './paymentManagement/TopUp';
-import PaymentScreen from './paymentManagement/MakePayment';
+import PaymentScreen from './paymentManagement/MakePayment.js';
+import TopUpScreen from './paymentManagement/TopUpScreen.js';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
+import SuccessfulPayment from './paymentManagement/SuccessfulPayment';
 
 import TabNavigator from './tabs';
 import WalletLimit from './paymentManagement/WalletLimit';
 import AddWalletLimit from './paymentManagement/AddWalletLimit';
 import EditWalletLimit from './paymentManagement/EditWalletLimit';
+import Donate from './paymentManagement/Donate';
+import Withdraw from './paymentManagement/Withdraw';
 
 const Stack = createStackNavigator();
 
@@ -238,6 +241,32 @@ const HomeNavigator = () => (
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       })}
     />
+    <Stack.Screen 
+      name="Wallet" 
+      component={PaymentScreen} 
+    />
+    <Stack.Screen
+      name="TopUpScreen"
+      component={TopUpScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
     {/* <Stack.Screen
       name="AddAddress"
       component={AddAddress}
@@ -255,6 +284,39 @@ const HomeNavigator = () => (
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="Donate"
+      component={Donate}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="Withdraw"
+      component={Withdraw}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     <Stack.Screen
@@ -266,6 +328,17 @@ const HomeNavigator = () => (
         gestureDirection: 'horizontal',
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Wallet'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen
@@ -299,6 +372,10 @@ const HomeNavigator = () => (
           />
         ),
       })}
+    />
+    <Stack.Screen
+      name="SuccessfulPayment"
+      component={SuccessfulPayment}
     />
   </Stack.Navigator>
 );

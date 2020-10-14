@@ -5,7 +5,6 @@ import {
   StatusBar,
   Image,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
 } from 'react-native';
 import {
@@ -17,6 +16,7 @@ import {
   ListItem,
   Icon,
 } from '@ui-kitten/components';
+import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 import {setUser} from '../redux/actions';
@@ -144,6 +144,12 @@ class PaymentScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
+        <FocusAwareStatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+          translucent={true}
+        />
         <View style={styles.headerRow}>
           <Text style={styles.header} category="h4">
             Wallet
@@ -165,7 +171,7 @@ class PaymentScreen extends React.Component {
           <Text style={styles.action}>Quick Actions</Text>
           <View style={styles.quickActionContainer}>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('TopUp')}
+              onPress={() => this.props.navigation.replace('TopUpScreen')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/topUp.png')}
@@ -174,7 +180,7 @@ class PaymentScreen extends React.Component {
               <Text style={styles.subtitle}>Top-Up</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('MakePayment')}
+              onPress={() => this.props.navigation.replace('MakePayment')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/sendMoney.png')}
@@ -183,7 +189,7 @@ class PaymentScreen extends React.Component {
               <Text style={styles.subtitle}>Send</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('WalletLimit')}
+              onPress={() => this.props.navigation.navigate('Withdraw')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/withdraw.png')}
@@ -191,7 +197,11 @@ class PaymentScreen extends React.Component {
               />
               <Text style={styles.subtitle}>Withdraw</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => {}} style={styles.buttonItem}>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.navigate('Donate');
+              }}
+              style={styles.buttonItem}>
               <Image
                 source={require('../img/donate.png')}
                 style={styles.imageContainer}
@@ -264,6 +274,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginLeft: 8,
   },
   subtitle: {
     fontFamily: 'Karla-Regular',

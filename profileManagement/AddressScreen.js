@@ -163,7 +163,7 @@ class AddressScreen extends React.Component {
         <ScrollView style={styles.container}>
           {renderIf(
             this.state.message,
-            <Text styles={styles.description} status="danger">
+            <Text style={styles.description} status="danger">
               {this.state.message}
             </Text>
           )}
