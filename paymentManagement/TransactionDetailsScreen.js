@@ -19,14 +19,13 @@ import {
 import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
-import {setUser} from '../redux/actions';
 
 function FocusAwareStatusBar(props) {
   const isFocused = useIsFocused();
   return isFocused ? <StatusBar {...props} /> : null;
 }
 
-class PaymentScreen extends React.Component {
+class TransactionDetailsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -84,7 +83,7 @@ class PaymentScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('TransactionDetails', {
+                this.props.navigation.navigate('MakePayment', {
                   transactionId: item.transactionId,
                 })
               }
@@ -99,7 +98,7 @@ class PaymentScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('TransactionDetails', {
+                this.props.navigation.navigate('MakePayment', {
                   transactionId: item.transactionId,
                 })
               }
@@ -117,7 +116,7 @@ class PaymentScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('TransactionDetails', {
+                this.props.navigation.navigate('MakePayment', {
                   transactionId: item.transactionId,
                 })
               }
@@ -132,7 +131,7 @@ class PaymentScreen extends React.Component {
           <View>
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate('TransactionDetails', {
+                this.props.navigation.navigate('MakePayment', {
                   transactionId: item.transactionId,
                 })
               }
@@ -327,12 +326,4 @@ function mapStateToProps(state) {
   };
 }
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setUser: (user) => {
-      dispatch(setUser(user));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentScreen);
+export default connect(mapStateToProps)(TransactionDetailsScreen);

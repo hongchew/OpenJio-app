@@ -23,6 +23,7 @@ import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 import PaymentScreen from './paymentManagement/MakePayment.js';
 import TopUpScreen from './paymentManagement/TopUpScreen.js';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
+import TransactionDetailsScreen from './paymentManagement/TransactionDetailsScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
 import SuccessfulPayment from './paymentManagement/SuccessfulPayment';
 
@@ -344,6 +345,17 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="TransactionsList"
       component={TransactionsListScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        gestureEnabled: true,
+        gestureDirection: 'horizontal',
+        cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="TransactionDetails"
+      component={TransactionDetailsScreen}
       options={({navigation}) => ({
         headerShown: true,
         gestureEnabled: true,
