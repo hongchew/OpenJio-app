@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TextInput,
+  StatusBar
 } from 'react-native';
 import {
   Text,
@@ -45,9 +46,10 @@ class MakePayment extends React.Component {
           description: this.state.description,
         }
       );
-      this.props.navigation.navigate('SuccessfulPayment', {
-        transactionDetails: response.data,
+      this.props.navigation.navigate('SuccessfulScreen', {
+        amount: this.state.amountPayable,
         recipientName: this.state.recipient.name,
+        previousScreen: 'MakePayment'
       });
     } catch (error) {
       console.log(error);
@@ -57,23 +59,10 @@ class MakePayment extends React.Component {
     }
   }
 
+
   //check whether all the fields are correct,
   //if it is, the modal will pop up
   async getRecipient() {
-    try {
-      const response = await axios.get(
-        globalVariable.userApi + 'email/' + this.state.recipientEmail
-      );
-      this.setState({
-        recipient: response.data,
-      });
-      console.log(response.data);
-    } catch (error) {
-      this.setState({
-        message: 'Unable to verify payment details.',
-      });
-    }
-
     if (this.state.recipientEmail == '' || this.state.amountPayable == '') {
       this.setState({
         message: 'Fields are empty, unable to proceed.',
@@ -82,16 +71,33 @@ class MakePayment extends React.Component {
       this.setState({
         message: 'You do not have enough balance to pay, unable to proceed.',
       });
-    } else if (this.state.recipient) {
-      this.setState({
-        paymentModalVisible: true,
-      });
     } else {
-      this.setState({
-        paymentModalVisible: false,
-        message: 'User does not exist, unable to proceed.',
-      });
+      try {
+        const response = await axios.get(
+          globalVariable.userApi + 'email/' + this.state.recipientEmail
+        );
+        this.setState({
+          recipient: response.data,
+        });
+        console.log(response.data);
+
+        if (this.state.recipient != null) {
+          this.setState({
+            paymentModalVisible: true,
+          });
+        } else {
+          this.setState({
+            recipient: {},
+            message: 'User not found, unable to proceed.',
+          });
+        }
+      } catch (error) {
+        this.setState({
+          message: 'Payment details not verified, unable to proceed.',
+        });
+      }
     }
+    
   }
 
   //when user clicks confirm, should trigger the handlePayment method
@@ -106,12 +112,12 @@ class MakePayment extends React.Component {
       />
     );
 
-    const amountToDisplay = `SGD $${this.state.amountPayable}`;
+    const amountToDisplay = `SGD $${this.state.amountPayable.toFixed(2)}`;
     return (
       <Modal
         backdropStyle={styles.backdrop}
         visible={this.state.paymentModalVisible}
-        onBackdropPress={() => this.setState({paymentModalVisible: false})}>
+      >
         <Card>
           <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: 10}}>
             Review Payment
@@ -119,7 +125,7 @@ class MakePayment extends React.Component {
           <ListItem
             description={
               <Text style={{fontSize: 17, fontWeight: 'bold'}}>
-                {this.state.recipient.name}
+                {this.state.recipient && this.state.recipient.name}
               </Text>
             }
             title={
@@ -157,7 +163,7 @@ class MakePayment extends React.Component {
               style={styles.modalButton}
               size={'small'}
               onPress={() => {
-                this.setState({paymentModalVisible: false});
+                this.setState({paymentModalVisible: false, message: 'Payment was Cancelled'});
               }}>
               Dismiss
             </Button>
@@ -170,6 +176,11 @@ class MakePayment extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+        />
         <Text style={styles.header} category="h4">
           Payment
         </Text>
@@ -201,14 +212,14 @@ class MakePayment extends React.Component {
               label="Description (Optional)"
               value={this.state.description}
               multiline={true}
-              textStyle={{minHeight: 64}}
+              textStyle={{minHeight: 64, textAlignVertical: 'top'}}
               onChangeText={(description) =>
                 this.setState({description: description})
               }
             />
 
             <Text style={styles.balance}>
-              Balance: SGD ${this.props.user.Wallet.balance}
+              Balance: SGD ${this.props.user.Wallet.balance.toFixed(2)}
             </Text>
             <Button style={styles.button} onPress={() => this.getRecipient()}>
               Next

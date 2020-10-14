@@ -26,12 +26,12 @@ import MakePayment from './paymentManagement/MakePayment';
 import TopUpScreen from './paymentManagement/TopUpScreen';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
-import SuccessfulPayment from './paymentManagement/SuccessfulPayment';
 import WalletLimit from './paymentManagement/WalletLimit';
 import AddWalletLimit from './paymentManagement/AddWalletLimit';
 import EditWalletLimit from './paymentManagement/EditWalletLimit';
 import Donate from './paymentManagement/Donate';
 import Withdraw from './paymentManagement/Withdraw';
+import SuccessfulScreen from './paymentManagement/SuccessfulScreen';
 //tab navigator 
 import TabNavigator from './tabs';
 
@@ -340,8 +340,8 @@ const HomeNavigator = () => (
     {/* doesn't include any buttons because i just want a page that shows successful payment */}
     {/* and have a button to navigate back to the wallet screen */}
     <Stack.Screen
-      name="SuccessfulPayment"
-      component={SuccessfulPayment}
+      name="SuccessfulScreen"
+      component={SuccessfulScreen}
     />
   </Stack.Navigator>
 );

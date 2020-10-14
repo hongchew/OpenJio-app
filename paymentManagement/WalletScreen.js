@@ -85,7 +85,7 @@ class WalletScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              title={<Text style={styles.amount}>- SGD ${item.amount}</Text>}
+              title={<Text style={styles.amount}>- SGD ${item.amount.toFixed(2)}</Text>}
               description={<Text style={styles.description}>{item.description}</Text>}
             />
           </View>
@@ -99,7 +99,7 @@ class WalletScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              title={<Text>+ SGD ${item.amount}</Text>}
+              title={<Text>+ SGD ${item.amount.toFixed(2)}</Text>}
               description={<Text style={styles.description}>{item.description}</Text>}
             />
           </View>
@@ -116,7 +116,7 @@ class WalletScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              title={<Text>- SGD ${item.amount}</Text>}
+              title={<Text>- SGD ${item.amount.toFixed(2)}</Text>}
               description={<Text style={styles.description}>{item.description}</Text>}
             />
             <Divider />
@@ -131,7 +131,7 @@ class WalletScreen extends React.Component {
                   transactionId: item.transactionId,
                 })
               }
-              title={<Text>+ SGD ${item.amount}</Text>}
+              title={<Text>+ SGD ${item.amount.toFixed(2)}</Text>}
               description={<Text style={styles.description}>{item.description}</Text>}
             />
             <Divider />
@@ -163,7 +163,7 @@ class WalletScreen extends React.Component {
           <Text style={styles.label}>Balance</Text>
           <View style={{flexDirection: 'row'}}>
             <Text style={{marginTop: 5}}>SGD</Text>
-            <Text style={styles.money}>{this.state.user.Wallet.balance}</Text>
+            <Text style={styles.money}>{this.state.user.Wallet.balance.toFixed(2)}</Text>
           </View>
         </Card>
 
@@ -189,7 +189,7 @@ class WalletScreen extends React.Component {
               <Text style={styles.subtitle}>Send</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('Withdraw')}
+              onPress={() => this.props.navigation.replace('Withdraw')}
               style={styles.buttonItem}>
               <Image
                 source={require('../img/withdraw.png')}
@@ -199,7 +199,7 @@ class WalletScreen extends React.Component {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                this.props.navigation.navigate('Donate');
+                this.props.navigation.replace('Donate');
               }}
               style={styles.buttonItem}>
               <Image

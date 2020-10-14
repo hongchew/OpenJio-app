@@ -9,7 +9,7 @@ import {
   Keyboard,
   TextInput
 } from 'react-native';
-import {Text, Layout, Card, Button} from '@ui-kitten/components';
+import {Text, Layout, Card, Button, Modal} from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
@@ -18,9 +18,10 @@ class Withdraw extends React.Component {
     super(props);
     this.state = {
       message: '',
-      withdrawAmount: null,
+      withdrawAmount: 0,
       isUpdated: this.props.isUpdated,
       user: this.props.user,
+      modalVisible: false,
     };
   }
 
@@ -31,6 +32,52 @@ class Withdraw extends React.Component {
       [{text: 'OK', onPress: () => console.log('OK Pressed')}],
       {cancelable: false}
     );
+
+    showWithdrawModal() {
+      if (this.state.withdrawAmount > 0) {
+        this.setState({
+          modalVisible: true
+        })
+      } else {
+        this.setState({
+          message: 'Withdraw amount field is empty.',
+        })
+      }
+    }
+  
+    renderModal() {
+      return (
+        <Modal
+          backdropStyle={styles.backdrop}
+          visible={this.state.modalVisible}>
+          <Card>
+          <Text style={{textAlign: 'center'}}>Amount to withdraw:</Text> 
+          <Text style={{textAlign: 'center', fontWeight: 'bold'}}>SGD {this.state.withdrawAmount.toFixed(2)}</Text>
+          
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({modalVisible: false});
+                this.handleWithdraw();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({modalVisible: false, message: 'Withdrawal was Cancelled'});
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+          </Card>
+        </Modal>
+      );
+    }
 
   async handleWithdraw() {
     if (this.state.withdrawAmount === null) {
@@ -50,10 +97,10 @@ class Withdraw extends React.Component {
           }
         );
         //console.log(response.data);
-        this.createTwoButtonAlert(
-          'You have withdrawn ' + this.state.withdrawAmount
-        );
-        this.props.navigation.replace('Tabs', {screen: 'Wallet'});
+        this.props.navigation.navigate('SuccessfulScreen', {
+          amount: this.state.withdrawAmount,
+          previousScreen: 'Withdraw'
+        });
       } catch (error) {
         //console.log(error);
         this.setState({
@@ -81,6 +128,11 @@ class Withdraw extends React.Component {
 
     return (
       <Layout style={styles.layout}>
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+        />
         <Text style={styles.header} category="h4">
           Withdraw
         </Text>
@@ -104,10 +156,11 @@ class Withdraw extends React.Component {
               </View>
             </Card>
 
-            <Button style={styles.button} onPress={() => this.handleWithdraw()}>
+            <Button style={styles.button} onPress={() => this.showWithdrawModal()}>
               Withdraw
             </Button>
             {responseMessage}
+            {this.renderModal()}
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
@@ -125,6 +178,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 20,
     marginRight: 20,
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   header: {
     marginTop: 20,
@@ -162,6 +218,15 @@ const styles = StyleSheet.create({
   description: {
     textAlign: 'center',
     marginTop: 10,
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 
