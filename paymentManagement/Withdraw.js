@@ -4,6 +4,7 @@ import {
   View,
   StatusBar,
   Image,
+  Alert,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
@@ -25,6 +26,14 @@ class Withdraw extends React.Component {
     };
   }
 
+  createTwoButtonAlert = (message) =>
+    Alert.alert(
+      'OpenJio',
+      message,
+      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+      {cancelable: false}
+    );
+
   async handleWithdraw() {
     if (this.state.withdrawAmount === null) {
       this.setState({
@@ -43,6 +52,9 @@ class Withdraw extends React.Component {
           }
         );
         console.log(response.data);
+        this.createTwoButtonAlert(
+          'You have withdrawn ' + this.state.withdrawAmount
+        );
         this.props.navigation.replace('Tabs', {screen: 'Wallet'});
       } catch (error) {
         console.log(error);

@@ -25,6 +25,14 @@ class Donate extends React.Component {
     };
   }
 
+  createTwoButtonAlert = (message) =>
+    Alert.alert(
+      'OpenJio',
+      message,
+      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+      {cancelable: false}
+    );
+
   async handleDonation() {
     if (this.state.donationAmount === null) {
       this.setState({
@@ -43,6 +51,7 @@ class Donate extends React.Component {
           }
         );
         console.log(response.data);
+        this.createTwoButtonAlert('Thank you for your kind donation!');
         this.props.navigation.replace('Tabs', {screen: 'Wallet'});
       } catch (error) {
         console.log(error);
