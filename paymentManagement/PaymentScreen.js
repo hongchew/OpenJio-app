@@ -58,9 +58,9 @@ class PaymentScreen extends React.Component {
   async getWalletAmount(userId) {
     try {
       const response = await axios.get(
-        `${globalVariable.userApi}byUserId/${userId}`
+        `${globalVariable.userApi}${userId}`
       );
-      console.log(response.data);
+      console.log('completed getuserbyuserId');
       this.setState({
         user: response.data,
       });
