@@ -62,9 +62,7 @@ class UserBadges extends React.Component {
     }
     return renderIf(
       condition,
-      <Text style={styles.message}>
-        No badges yet. Make an announcement to start collecting!
-      </Text>,
+      <Text style={styles.message}>No badges yet.</Text>,
       this.RenderBadges()
     );
   };
