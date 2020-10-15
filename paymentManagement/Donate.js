@@ -7,7 +7,7 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Keyboard,
-  TextInput
+  TextInput,
 } from 'react-native';
 import {Text, Layout, Card, Button, Modal} from '@ui-kitten/components';
 import axios from 'axios';
@@ -34,35 +34,39 @@ class Donate extends React.Component {
   //     {cancelable: false}
   //   );
 
-    showDonationModal() {
-      if (this.state.donationAmount === 0) {
-        this.setState({
-          message: 'Please enter a donation amount.'
-        })
-      } else if (this.state.donationAmount < 0) {
-        this.setState({
-          message: 'Please enter a positive amount.'
-        })
-      } else if (this.state.donationAmount > this.props.user.Wallet.walletLimit) {
-        this.setState({
-          message: 'Donation amount exceeded transaction limit.'
-        })
-      } else {
-        this.setState({
-          modalVisible: true
-        })
-      }
+  showDonationModal() {
+    if (this.state.donationAmount === 0) {
+      this.setState({
+        message: 'Please enter a donation amount.',
+      });
+    } else if (this.state.donationAmount < 0) {
+      this.setState({
+        message: 'Please enter a valid amount.',
+      });
+      // } else if (this.state.donationAmount > this.props.user.Wallet.walletLimit) {
+      //   this.setState({
+      //     message: 'Donation amount exceeded transaction limit.'
+      //   })
+    } else if (this.state.donationAmount > this.state.user.Wallet.balance) {
+      this.setState({
+        message: 'Amount exceeded balance.',
+      });
+    } else {
+      this.setState({
+        modalVisible: true,
+      });
     }
-  
-    renderModal() {
-      return (
-        <Modal
-          backdropStyle={styles.backdrop}
-          visible={this.state.modalVisible}>
-          <Card>
-          <Text style={{textAlign: 'center'}}>Amount to donate:</Text> 
-          <Text style={{textAlign: 'center', fontWeight: 'bold'}}>SGD {this.state.donationAmount.toFixed(2)}</Text>
-          
+  }
+
+  renderModal() {
+    return (
+      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+        <Card>
+          <Text style={{textAlign: 'center'}}>Amount to donate:</Text>
+          <Text style={{textAlign: 'center', fontWeight: 'bold'}}>
+            SGD {this.state.donationAmount.toFixed(2)}
+          </Text>
+
           <Layout style={styles.modalButtonsContainer}>
             <Button
               style={styles.modalButton}
@@ -78,15 +82,18 @@ class Donate extends React.Component {
               style={styles.modalButton}
               size={'small'}
               onPress={() => {
-                this.setState({modalVisible: false, message: 'Donation was Cancelled'});
+                this.setState({
+                  modalVisible: false,
+                  message: 'Donation was Cancelled',
+                });
               }}>
               Dismiss
             </Button>
           </Layout>
-          </Card>
-        </Modal>
-      );
-    }
+        </Card>
+      </Modal>
+    );
+  }
 
   async handleDonation() {
     if (this.state.donationAmount === null) {
@@ -109,7 +116,7 @@ class Donate extends React.Component {
         //this.createTwoButtonAlert('Thank you for your kind donation!');
         this.props.navigation.navigate('SuccessfulScreen', {
           amount: this.state.donationAmount,
-          previousScreen: 'Donate'
+          previousScreen: 'Donate',
         });
       } catch (error) {
         console.log(error);
@@ -166,7 +173,9 @@ class Donate extends React.Component {
               </View>
             </Card>
 
-            <Button style={styles.button} onPress={() => this.showDonationModal()}>
+            <Button
+              style={styles.button}
+              onPress={() => this.showDonationModal()}>
               Donate
             </Button>
             {responseMessage}
@@ -175,7 +184,6 @@ class Donate extends React.Component {
         </TouchableWithoutFeedback>
       </Layout>
     );
-
   }
 }
 
@@ -217,7 +225,7 @@ const styles = StyleSheet.create({
     color: '#3366FF',
     fontSize: 14,
     marginBottom: 3,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   money: {
     flexGrow: 1,

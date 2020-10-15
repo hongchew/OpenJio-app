@@ -38,6 +38,16 @@ class UserBadges extends React.Component {
     };
   }
 
+  componentDidMount() {
+    if (this.props.route.params && this.props.route.params.viewType === 'allTime') {
+      this.setState({
+        viewMonthly: false,
+        monthlyBtn: 'basic',
+        allTimeBtn: 'primary',
+      })
+    }
+  }
+
   countBadges = () => {
     this.state.userBadges.forEach((badge) => {
       //count monthly badges
