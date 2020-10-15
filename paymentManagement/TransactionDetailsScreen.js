@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import renderIf from '../components/renderIf';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {View, StyleSheet, StatusBar} from 'react-native';
 import {
   Text,
   Layout,
@@ -51,6 +51,11 @@ class TransactionDetailsScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="transparent"
+        />
         <Text style={styles.header} category="h4">
           Transaction Details
         </Text>
@@ -127,6 +132,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginLeft: 15,
+    backgroundColor: '#F5F5F5',
     fontFamily: 'Karla-Bold',
   },
   card: {

@@ -67,9 +67,17 @@ class MakePayment extends React.Component {
       this.setState({
         message: 'Fields are empty, unable to proceed.',
       });
+    } else if (this.state.amountPayable <= 0) {
+      this.setState({
+        message: 'Invalid amount.',
+      });
+    } else if (this.state.amountPayable > this.state.user.Wallet.walletLimit) {
+      this.setState({
+        message: 'Amount exceeded wallet limit.',
+      });
     } else if (this.state.amountPayable > this.state.user.Wallet.balance) {
       this.setState({
-        message: 'You do not have enough balance to pay, unable to proceed.',
+        message: 'Amount exceeded balance.',
       });
     } else {
       try {

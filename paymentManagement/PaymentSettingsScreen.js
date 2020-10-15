@@ -49,7 +49,7 @@ class PaymentSettingsScreen extends React.Component {
             <Text style={styles.label}>Balance</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD</Text>
-              <Text style={styles.money}>{this.state.user.Wallet.balance}</Text>
+              <Text style={styles.money}>{this.state.user.Wallet.balance.toFixed(2)}</Text>
             </View>
           </Card>
 

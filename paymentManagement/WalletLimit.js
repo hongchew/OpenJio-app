@@ -39,7 +39,7 @@ class WalletLimit extends React.Component {
         message: 'Wallet Limit Removed.',
       });
       console.log(this.state.message);
-      this.createTwoButtonAlert(this.state.message);
+      //this.createTwoButtonAlert(this.state.message);
     } catch (error) {
       this.setState({
         message: 'Wallet Limit Removal Failed.',
@@ -55,6 +55,7 @@ class WalletLimit extends React.Component {
   async handleEditLimit() {
     this.props.navigation.navigate('EditWalletLimit');
   }
+
 
   render() {
     return (
@@ -75,7 +76,7 @@ class WalletLimit extends React.Component {
             <Text>
               {this.props.user.Wallet.walletLimit == null
                 ? 'No Wallet Limit'
-                : this.props.user.Wallet.walletLimit}
+                : 'Limit Amount: SGD ' + this.props.user.Wallet.walletLimit.toFixed(2)}
             </Text>
             {/* {renderIf(
               this.state.noWalletLimit,
@@ -83,9 +84,7 @@ class WalletLimit extends React.Component {
               <Text>{this.props.user.Wallet.walletLimit}</Text>
             )} */}
           </Card>
-        </ScrollView>
-
-        <View style={styles.buttons}>
+          <View style={styles.buttons}>
           {renderIf(
             this.props.user.Wallet.walletLimit == null,
             <Button
@@ -112,6 +111,7 @@ class WalletLimit extends React.Component {
             !(this.props.user.Wallet.walletLimit == null),
             <Button
               size="small"
+              appearance="outline"
               style={styles.button}
               onPress={() => {
                 this.removeWalletLimit();
@@ -120,6 +120,9 @@ class WalletLimit extends React.Component {
             </Button>
           )}
         </View>
+        </ScrollView>
+
+        
       </Layout>
     );
   }
@@ -145,27 +148,6 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginBottom: -10,
   },
-  description: {
-    marginLeft: 20,
-  },
-  label: {
-    marginTop: 10,
-  },
-  word: {
-    fontSize: 16,
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  firstCard: {
-    backgroundColor: 'white',
-    borderRadius: 15,
-    elevation: 24,
-    //shadowColor doesn't work on android
-    //shadowColor: 'blue',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-  },
   card: {
     backgroundColor: 'white',
     borderRadius: 15,
@@ -184,20 +166,13 @@ const styles = StyleSheet.create({
     //marginTop: 30,
     height: 40,
   },
-  footerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-  },
-  footerControl: {
-    marginHorizontal: 2,
-  },
   buttons: {
     flexDirection: 'row',
     alignContent: 'center',
     justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,
-    marginBottom: 320,
+    marginTop: 20,
   },
 });
 

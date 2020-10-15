@@ -34,13 +34,21 @@ class Withdraw extends React.Component {
     );
 
     showWithdrawModal() {
-      if (this.state.withdrawAmount > 0) {
+      if (this.state.withdrawAmount <= 0) {
         this.setState({
-          modalVisible: true
+          message: 'Invalid withdrawal amount',
         })
+      } else if (this.state.withdrawAmount > this.state.user.Wallet.walletLimit) {
+        this.setState({
+          message: 'Amount exceeded wallet limit.',
+        });
+      } else if (this.state.withdrawAmount > this.state.user.Wallet.balance) {
+        this.setState({
+          message: 'Amount exceeded balance.',
+        });
       } else {
         this.setState({
-          message: 'Withdraw amount field is empty.',
+          modalVisible: true
         })
       }
     }

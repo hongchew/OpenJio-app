@@ -320,6 +320,9 @@ const HomeNavigator = () => (
       name="TransactionDetails"
       component={TransactionDetailsScreen}
       options={({navigation}) => ({
+        //applied header style to this screen because of the grey top layout
+        headerStyle: {backgroundColor: '#F5F5F5', elevation: 0},
+        headerTitleStyle: {color: '#F5F5F5'},
         headerShown: true,
         gestureEnabled: true,
         gestureDirection: 'horizontal',

@@ -4,9 +4,10 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   StyleSheet,
-  ScrollView,
+  TextInput,
+  View,
 } from 'react-native';
-import {Text, Layout, Input, Button} from '@ui-kitten/components';
+import {Text, Layout, Card, Button} from '@ui-kitten/components';
 import {connect} from 'react-redux';
 import loginStyle from '../styles/loginStyle';
 import axios from 'axios';
@@ -70,6 +71,8 @@ class AddWalletLimit extends React.Component {
     }
   }
 
+
+  
   render() {
     let responseMessage;
     if (this.state.isUpdated) {
@@ -91,20 +94,31 @@ class AddWalletLimit extends React.Component {
         <StatusBar
           barStyle="dark-content"
           hidden={false}
-          backgroundColor="#ffffff"
-          translucent={true}
+          backgroundColor="transparent"
         />
         <Text style={styles.header} category="h4">
           Add Wallet Limit
         </Text>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <ScrollView>
-            <Layout style={styles.container}>
-              <Input
-                label="Wallet Limit"
-                value={this.state.walletLimit}
-                onChangeText={(text) => this.setState({walletLimit: text})}
-              />
+          <Layout style={styles.container}>
+            <Card style={styles.card}>
+              <Text style={styles.payLabel}>Limit Amount</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text
+                  style={{marginTop: 10, marginRight: 5, fontWeight: 'bold'}}>
+                  SGD
+                </Text>
+                <TextInput
+                  keyboardType={'number-pad'}
+                  style={styles.money}
+                  value={this.state.walletLimit}
+                  onChangeText={(amount) =>
+                    this.setState({walletLimit: parseFloat(amount)})
+                  }
+                />
+              </View>
+            </Card>
+            
               <Button
                 style={styles.button}
                 onPress={() => this.handleAddLimit()}>
@@ -112,7 +126,6 @@ class AddWalletLimit extends React.Component {
               </Button>
               {responseMessage}
             </Layout>
-          </ScrollView>
         </TouchableWithoutFeedback>
       </Layout>
     );
@@ -137,6 +150,29 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 30,
+  },
+  card: {
+    backgroundColor: 'white',
+    marginBottom: 20,
+    borderRadius: 5,
+    elevation: 5,
+    shadowColor: '#ededed',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+  },
+  payLabel: {
+    color: '#3366FF',
+    fontSize: 14,
+    marginBottom: 3,
+    fontWeight: 'bold'
+  },
+  money: {
+    flexGrow: 1,
+    fontSize: 24,
+    fontWeight: 'bold',
+    borderBottomWidth: 1,
+    borderColor: '#3366FF',
   },
 });
 
