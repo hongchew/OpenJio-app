@@ -26,22 +26,30 @@ class Donate extends React.Component {
     };
   }
 
-  createTwoButtonAlert = (message) =>
-    Alert.alert(
-      'OpenJio',
-      message,
-      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-      {cancelable: false}
-    );
+  // createTwoButtonAlert = (message) =>
+  //   Alert.alert(
+  //     'OpenJio',
+  //     message,
+  //     [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+  //     {cancelable: false}
+  //   );
 
     showDonationModal() {
-      if (this.state.donationAmount > 0) {
+      if (this.state.donationAmount === 0) {
         this.setState({
-          modalVisible: true
+          message: 'Please enter a donation amount.'
+        })
+      } else if (this.state.donationAmount < 0) {
+        this.setState({
+          message: 'Please enter a positive amount.'
+        })
+      } else if (this.state.donationAmount > this.props.user.Wallet.walletLimit) {
+        this.setState({
+          message: 'Donation amount exceeded transaction limit.'
         })
       } else {
         this.setState({
-          message: 'Donation amount field is empty.',
+          modalVisible: true
         })
       }
     }
