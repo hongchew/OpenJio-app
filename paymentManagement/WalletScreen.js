@@ -46,8 +46,8 @@ class WalletScreen extends React.Component {
         `${globalVariable.transactionApi}by/${userId}`
       );
       const transactions = response.data;
-      const sortedTransactions = transactions.sort(
-        (a, b) => b.createdAt - a.createdAt
+      const sortedTransactions = await transactions.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
       this.setState({
         transactions: sortedTransactions,
