@@ -25,6 +25,7 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: this.props.user,
       secureTextEntry: true,
       email: '',
       password: '',
@@ -81,7 +82,7 @@ class LoginScreen extends React.Component {
       // (isPasswordReset: false, isValidated: true)
       else {
         this.props.setUser(response.data);
-        this.props.navigation.navigate('Tabs');
+        this.props.navigation.replace('Tabs');
       }
     } catch (error) {
       this.setState({
@@ -95,6 +96,7 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <Layout style={loginStyle.layout}>
+        {this.state.user.userId ? this.props.navigation.replace('Tabs') : null}
         <StatusBar
           barStyle="dark-content"
           hidden={false}
