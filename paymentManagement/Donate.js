@@ -150,9 +150,18 @@ class Donate extends React.Component {
           hidden={false}
           backgroundColor="transparent"
         />
+
         <Text style={styles.header} category="h4">
           Donate
         </Text>
+
+        <Card style={styles.donationMsg}>
+          <Text styles={styles.header} category="h7">
+            All donations will be used for the maintainence of OpenJio. Your
+            donation would go a long way in helping us improve the operations of
+            OpenJio!
+          </Text>
+        </Card>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
             <Card style={styles.card}>
@@ -246,6 +255,18 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 120,
     margin: 5,
+  },
+  donationMsg: {
+    backgroundColor: 'white',
+    marginBottom: 0,
+    borderRadius: 5,
+    elevation: 5,
+    shadowColor: '#ededed',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    marginLeft: 20,
+    marginRight: 20,
   },
 });
 
