@@ -38,10 +38,6 @@ class Withdraw extends React.Component {
         this.setState({
           message: 'Invalid withdrawal amount',
         })
-      } else if (this.state.withdrawAmount > this.state.user.Wallet.walletLimit) {
-        this.setState({
-          message: 'Amount exceeded wallet limit.',
-        });
       } else if (this.state.withdrawAmount > this.state.user.Wallet.balance) {
         this.setState({
           message: 'Amount exceeded balance.',

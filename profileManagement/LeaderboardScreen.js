@@ -30,10 +30,9 @@ class LeaderboardScreen extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
-      viewAllTime: true,
-      viewMonthly: false,
-      monthlyBtn: 'basic',
-      allTimeBtn: 'primary',
+      viewMonthly: true,
+      monthlyBtn: 'primary',
+      allTimeBtn: 'basic',
       allTimeData: [],
       monthlyData: [],
       refreshing: false,
@@ -83,7 +82,6 @@ class LeaderboardScreen extends React.Component {
 
   viewAllTime = () => {
     this.setState({
-      viewAllTime: true,
       viewMonthly: false,
       monthlyBtn: 'basic',
       allTimeBtn: 'primary',
@@ -92,27 +90,29 @@ class LeaderboardScreen extends React.Component {
 
   viewMonthly = () => {
     this.setState({
-      viewAllTime: false,
       viewMonthly: true,
       monthlyBtn: 'primary',
       allTimeBtn: 'basic',
     });
   };
 
+  
+
   renderItem = ({item, index}) => {
     const evenColor = this.props.evenRowColor || evenRowColor;
     const oddColor = this.props.oddRowColor || oddRowColor;
     const rowColor = index % 2 === 0 ? evenColor : oddColor;
+    const type = this.state.viewMonthly ? 'monthly' : 'allTime';
 
     return (
       <TouchableOpacity
         style={[styles.row, {backgroundColor: rowColor}]}
-        onPress={() => {
-          this.props.navigation.navigate('UserBadges', {
-            badges: item.Badges,
-            name: item.name,
-          });
-        }}
+        
+        onPress={() => this.props.navigation.navigate('UserBadges', {
+          badges: item.Badges,
+          name: item.name,
+          viewType: type
+        })}
         activeOpacity={0.7}>
         <View style={styles.left}>
           {index == 0 && (
@@ -149,13 +149,26 @@ class LeaderboardScreen extends React.Component {
           </Text>
         </View>
         <Text style={styles.score}>
-          {this.state.viewAllTime
-            ? item.badgeCountTotal
-            : item.badgeCountMonthly}
+          {this.state.viewMonthly
+            ? item.badgeCountMonthly
+            : item.badgeCountTotal}
         </Text>
       </TouchableOpacity>
     );
   };
+
+  renderContent = () => {
+    
+    if (!this.state.viewMonthly && this.state.allTimeData.length === 0) {
+      return (
+        <Text style={styles.message}>The all-time leaderboard is currently empty.</Text>
+      );
+    } else if (this.state.viewMonthly && this.state.monthlyData.length === 0) {
+      return (
+        <Text style={styles.message}>The monthly leaderboard is currently empty.</Text>
+      );
+    } 
+  }
 
   render() {
     return (
@@ -178,24 +191,24 @@ class LeaderboardScreen extends React.Component {
             alignSelf: 'center',
           }}>
           <Button
-            status={this.state.allTimeBtn}
-            style={{width: 150}}
-            onPress={() => this.viewAllTime()}>
-            All-Time
-          </Button>
-          <Button
             status={this.state.monthlyBtn}
             style={{width: 150}}
             onPress={() => this.viewMonthly()}>
             Monthly
           </Button>
+          <Button
+            status={this.state.allTimeBtn}
+            style={{width: 150}}
+            onPress={() => this.viewAllTime()}>
+            All-Time
+          </Button>
         </View>
-
-        <FlatList
+          {this.renderContent()}
+          <FlatList
           data={
-            this.state.viewAllTime
-              ? this.state.allTimeData
-              : this.state.monthlyData
+            this.state.viewMonthly
+              ? this.state.monthlyData
+              : this.state.allTimeData
           }
           keyExtractor={(item, index) => index.toString()}
           renderItem={(data) => this.renderItem(data)}
@@ -203,10 +216,10 @@ class LeaderboardScreen extends React.Component {
             <RefreshControl
               refreshing={this.state.refreshing}
               onRefresh={this.onRefresh}
-              title="Hello"
             />
           }
         />
+        
       </View>
     );
   }
@@ -266,6 +279,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     right: 15,
+  },
+  message: {
+    marginTop: 20,
+    textAlign: 'center',
   },
 });
 

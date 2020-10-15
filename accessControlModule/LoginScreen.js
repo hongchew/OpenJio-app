@@ -14,7 +14,6 @@ import {
   Input,
   Text,
   Layout,
-  Spinner,
 } from '@ui-kitten/components';
 import {setUser} from '../redux/actions';
 import loginStyle from '../styles/loginStyle';
@@ -30,7 +29,6 @@ class LoginScreen extends React.Component {
       password: '',
       errorMessage: '',
     };
-    console.log(this.props);
   }
 
   toggleSecureEntry = () => {
