@@ -36,13 +36,15 @@ class TransactionsListScreen extends React.Component {
       const response = await axios.get(
         globalVariable.transactionApi + `by/${userId}`
       );
-      console.log(response);
-      //set state of full list of transactions
+      const transactions = response.data
+      const sortedTransactions = await transactions.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
       this.setState({
-        transactions: response.data,
+        transactions: sortedTransactions,
       });
-      this.getCreditTransactions(response.data);
-      this.getDebitTransactions(response.data);
+      this.getCreditTransactions(sortedTransactions);
+      this.getDebitTransactions(sortedTransactions);
     } catch (error) {
       console.log(error);
     }
@@ -53,8 +55,6 @@ class TransactionsListScreen extends React.Component {
       (transaction) =>
         transaction.recipientWalletId === this.state.user.Wallet.walletId
     );
-    console.log('Credit transactions:');
-    console.log(creditTransactions);
     this.setState({
       creditTransactions: creditTransactions,
     });
@@ -65,8 +65,6 @@ class TransactionsListScreen extends React.Component {
       (transaction) =>
         transaction.senderWalletId === this.state.user.Wallet.walletId
     );
-    console.log('Debit transactions:');
-    console.log(debitTransactions);
     this.setState({
       debitTransactions: debitTransactions,
     });
