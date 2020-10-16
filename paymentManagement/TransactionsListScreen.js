@@ -36,7 +36,7 @@ class TransactionsListScreen extends React.Component {
       const response = await axios.get(
         globalVariable.transactionApi + `by/${userId}`
       );
-      const transactions = response.data
+      const transactions = response.data;
       const sortedTransactions = await transactions.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
@@ -81,8 +81,12 @@ class TransactionsListScreen extends React.Component {
               transactionId: item.transactionId,
             })
           }
-          title={<Text style={styles.amount}>- SGD ${item.amount.toFixed(2)}</Text>}
-          description={<Text style={styles.description}>{item.description}</Text>}
+          title={
+            <Text style={styles.amount}>- SGD ${item.amount.toFixed(2)}</Text>
+          }
+          description={
+            <Text style={styles.description}>{item.description}</Text>
+          }
         />
       );
     } else {
@@ -94,7 +98,9 @@ class TransactionsListScreen extends React.Component {
               transactionId: item.transactionId,
             })
           }
-          title={<Text style={styles.amount}>+ SGD ${item.amount.toFixed(2)}</Text>}
+          title={
+            <Text style={styles.amount}>+ SGD ${item.amount.toFixed(2)}</Text>
+          }
           description={
             <Text style={styles.description}>{item.description}</Text>
           }
@@ -209,7 +215,7 @@ const styles = StyleSheet.create({
   },
   transactionList: {
     marginBottom: 30,
-    flex: 1
+    flex: 1,
   },
   transactionTab: {
     flexDirection: 'row',
@@ -228,11 +234,11 @@ const styles = StyleSheet.create({
   },
   listItem: {
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   listContainer: {
     backgroundColor: 'white',
-  }
+  },
 });
 
 function mapStateToProps(state) {
