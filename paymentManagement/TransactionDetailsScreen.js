@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import renderIf from '../components/renderIf';
-import {View, StyleSheet, StatusBar} from 'react-native';
+import {View, StyleSheet, StatusBar, ScrollView} from 'react-native';
 import {
   Text,
   Layout,
@@ -73,7 +73,9 @@ class TransactionDetailsScreen extends React.Component {
                   this.state.transaction.recipientWalletId,
                 <Text style={{marginTop: 5}}>+ SGD</Text>
               )}
-              <Text style={styles.money}>{this.state.transaction.amount}</Text>
+              <Text style={styles.money}>
+                {parseFloat(this.state.transaction.amount).toFixed(2)}
+              </Text>
               {renderIf(
                 this.state.transaction.transactionType === 'USER',
                 <View style={styles.UserTransactionType}>
@@ -101,25 +103,43 @@ class TransactionDetailsScreen extends React.Component {
             </View>
           </Card>
           <Card style={styles.body}>
-            <View style={styles.moreinfosubbox}>
-              <Text style={styles.moreinfotext}>Transaction ID</Text>
-              <Text>{this.state.transaction.transactionId}</Text>
-            </View>
-            <View style={styles.moreinfosubbox}>
-              <Text style={styles.moreinfotext}>Date and time</Text>
-              <Text>{this.state.transaction.createdAt}</Text>
-            </View>
-            <View style={styles.moreinfosubbox}>
-              <Text style={styles.moreinfotext}>Message (optional)</Text>
-              <Text>{this.state.transaction.description}</Text>
-            </View>
+            <ScrollView>
+              <View style={styles.moreinfosubbox}>
+                <Text style={styles.moreinfotext}>Transaction ID</Text>
+                <Text>{this.state.transaction.transactionId}</Text>
+              </View>
+              <View style={styles.moreinfosubbox}>
+                <Text style={styles.moreinfotext}>Date and Time</Text>
+                <Text>
+                  {new Date(this.state.transaction.createdAt).toString()}
+                </Text>
+              </View>
+              <View style={styles.moreinfosubbox}>
+                <Text style={styles.moreinfotext}>Details</Text>
+                <Text>
+                  {this.state.transaction.transactionType === 'USER' &&
+                    `Sender: ${this.state.transaction.senderDetails.name} (${this.state.transaction.senderDetails.email})\nRecipient: ${this.state.transaction.recipientDetails.name} (${this.state.transaction.recipientDetails.email})`}
+                  {this.state.transaction.transactionType !== 'USER' &&
+                    this.state.transaction.description}
+                </Text>
+              </View>
+              {renderIf(
+                this.state.transaction.transactionType === 'USER',
+                <View style={styles.moreinfosubbox}>
+                  <Text style={styles.moreinfotext}>Message (optional)</Text>
+                  <Text>{this.state.transaction.description}</Text>
+                </View>
+              )}
+            </ScrollView>
           </Card>
-          <MenuItem style={styles.report}
-          title="Report an issue" 
-          accessoryRight={ForwardIcon}
-          onPress={() =>
-            this.props.navigation.replace('Tabs', {screen:'Wallet'})
-          }/>
+          <MenuItem
+            style={styles.report}
+            title="Report an issue"
+            accessoryRight={ForwardIcon}
+            onPress={() =>
+              this.props.navigation.replace('Tabs', {screen: 'Wallet'})
+            }
+          />
         </View>
       </Layout>
     );
@@ -225,13 +245,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   body: {
+    flex: 1,
     marginTop: 10,
     marginBottom: 20,
   },
   report: {
     paddingLeft: 18,
-    marginTop:10
-  }
+    marginTop: 10,
+  },
 });
 
 function mapStateToProps(state) {
