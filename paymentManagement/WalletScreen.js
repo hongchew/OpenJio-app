@@ -291,7 +291,7 @@ class WalletScreen extends React.Component {
             <View>
               {renderIf(
                 this.state.transactions.length === 0,
-                <Text>No transactions yet. Start paying you noob fella!</Text>
+                <Text>No transactions to display yet.</Text>
               )}
               {this.renderItem()}
             </View>
