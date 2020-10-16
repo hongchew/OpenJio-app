@@ -5,6 +5,7 @@ import {
   Keyboard,
   StyleSheet,
   View,
+  RefreshControl,
 } from 'react-native';
 import {
   Text,
@@ -35,6 +36,7 @@ class UserBadges extends React.Component {
       viewMonthly: true,
       monthlyBtn: 'primary',
       allTimeBtn: 'basic',
+      refreshing: false, 
     };
   }
 
@@ -47,6 +49,20 @@ class UserBadges extends React.Component {
       })
     }
   }
+
+  onRefresh = () => {
+    this.setState({
+      refreshing: true,
+    });
+    this.renderContent();
+
+    //if rendercontent returns something, off the loading spinner
+    if (this.renderContent()) {
+      this.setState({
+        refreshing: false,
+      })
+    }
+  };
 
   countBadges = () => {
     this.state.userBadges.forEach((badge) => {
@@ -70,6 +86,7 @@ class UserBadges extends React.Component {
     } else {
       condition = false;
     }
+    
     return renderIf(
       condition,
       <Text style={styles.message}>No badges yet.</Text>,
@@ -126,9 +143,11 @@ class UserBadges extends React.Component {
             }}
           />
         );
+        
       } else {
         return null;
       }
+
     };
 
     return (
@@ -136,6 +155,10 @@ class UserBadges extends React.Component {
         data={data}
         ItemSeparatorComponent={Divider}
         renderItem={renderItem}
+        refreshControl={<RefreshControl
+          refreshing={this.state.refreshing}
+          onRefresh={this.onRefresh}
+        />}
       />
     );
   };
