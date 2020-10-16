@@ -74,7 +74,9 @@ class TransactionDetailsScreen extends React.Component {
                 <Text style={{marginTop: 5}}>+ SGD</Text>
               )}
               <Text style={styles.money}>
-                {parseFloat(this.state.transaction.amount).toFixed(2)}
+                {this.state.transaction.amount
+                  ? parseFloat(this.state.transaction.amount).toFixed(2)
+                  : 'Loading...'}
               </Text>
               {renderIf(
                 this.state.transaction.transactionType === 'USER',
@@ -215,7 +217,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   WithdrawTransactionType: {
-    backgroundColor: '#C8E6C9',
+    backgroundColor: '#58d68d',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -252,7 +254,7 @@ const styles = StyleSheet.create({
   report: {
     paddingLeft: 18,
     marginTop: 10,
-    marginBottom: 30
+    marginBottom: 30,
   },
 });
 
