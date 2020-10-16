@@ -56,7 +56,6 @@ class WalletLimit extends React.Component {
     this.props.navigation.navigate('EditWalletLimit');
   }
 
-
   render() {
     return (
       <Layout style={styles.layout}>
@@ -76,7 +75,8 @@ class WalletLimit extends React.Component {
             <Text>
               {this.props.user.Wallet.walletLimit == null
                 ? 'No Wallet Limit'
-                : 'Limit Amount: SGD ' + this.props.user.Wallet.walletLimit.toFixed(2)}
+                : 'Limit Amount: SGD ' +
+                  this.props.user.Wallet.walletLimit.toFixed(2)}
             </Text>
             {/* {renderIf(
               this.state.noWalletLimit,
@@ -85,44 +85,42 @@ class WalletLimit extends React.Component {
             )} */}
           </Card>
           <View style={styles.buttons}>
-          {renderIf(
-            this.props.user.Wallet.walletLimit == null,
-            <Button
-              size="small"
-              style={styles.button}
-              onPress={() => {
-                this.handleAddLimit();
-              }}>
-              Add Wallet Limit
-            </Button>
-          )}
-          {renderIf(
-            !(this.props.user.Wallet.walletLimit == null),
-            <Button
-              size="small"
-              style={styles.button}
-              onPress={() => {
-                this.handleEditLimit();
-              }}>
-              Edit Wallet Limit
-            </Button>
-          )}
-          {renderIf(
-            !(this.props.user.Wallet.walletLimit == null),
-            <Button
-              size="small"
-              appearance="outline"
-              style={styles.button}
-              onPress={() => {
-                this.removeWalletLimit();
-              }}>
-              Remove Wallet Limit
-            </Button>
-          )}
-        </View>
+            {renderIf(
+              this.props.user.Wallet.walletLimit == null,
+              <Button
+                size="small"
+                style={styles.button}
+                onPress={() => {
+                  this.handleAddLimit();
+                }}>
+                Set Wallet Limit
+              </Button>
+            )}
+            {renderIf(
+              !(this.props.user.Wallet.walletLimit == null),
+              <Button
+                size="small"
+                style={styles.button}
+                onPress={() => {
+                  this.handleEditLimit();
+                }}>
+                Edit Wallet Limit
+              </Button>
+            )}
+            {renderIf(
+              !(this.props.user.Wallet.walletLimit == null),
+              <Button
+                size="small"
+                appearance="outline"
+                style={styles.button}
+                onPress={() => {
+                  this.removeWalletLimit();
+                }}>
+                Remove Wallet Limit
+              </Button>
+            )}
+          </View>
         </ScrollView>
-
-        
       </Layout>
     );
   }
