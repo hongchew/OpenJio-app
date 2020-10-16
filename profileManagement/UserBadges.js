@@ -5,7 +5,6 @@ import {
   Keyboard,
   StyleSheet,
   View,
-  RefreshControl,
 } from 'react-native';
 import {
   Text,
@@ -20,6 +19,8 @@ import {connect} from 'react-redux';
 import {setUser} from '../redux/actions';
 import badgesControl from '../enum/badgesControl';
 import renderIf from '../components/renderIf';
+
+
 
 class UserBadges extends React.Component {
   constructor(props) {
@@ -50,19 +51,6 @@ class UserBadges extends React.Component {
     }
   }
 
-  onRefresh = () => {
-    this.setState({
-      refreshing: true,
-    });
-    this.renderContent();
-
-    //if rendercontent returns something, off the loading spinner
-    if (this.renderContent()) {
-      this.setState({
-        refreshing: false,
-      })
-    }
-  };
 
   countBadges = () => {
     this.state.userBadges.forEach((badge) => {
@@ -155,10 +143,6 @@ class UserBadges extends React.Component {
         data={data}
         ItemSeparatorComponent={Divider}
         renderItem={renderItem}
-        refreshControl={<RefreshControl
-          refreshing={this.state.refreshing}
-          onRefresh={this.onRefresh}
-        />}
       />
     );
   };
@@ -260,4 +244,12 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, {setUser})(UserBadges);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => {
+      dispatch(setUser(user));
+    }
+  };
+}; 
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserBadges);
