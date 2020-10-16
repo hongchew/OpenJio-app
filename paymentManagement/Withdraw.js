@@ -33,6 +33,12 @@ class Withdraw extends React.Component {
       {cancelable: false}
     );
 
+    //this method prevents returning NaN when Input has empty text
+    safeParseFloat = (str) => {
+      const value = Number.parseFloat(str);
+      return Number.isNaN(value) ? 0 : value;    
+    }
+    
     showWithdrawModal() {
       if (this.state.withdrawAmount <= 0) {
         this.setState({
@@ -154,7 +160,7 @@ class Withdraw extends React.Component {
                   style={styles.money}
                   value={this.state.amount}
                   onChangeText={(amount) =>
-                    this.setState({withdrawAmount: parseFloat(amount)})
+                    this.setState({withdrawAmount: this.safeParseFloat(amount)})
                   }
                 />
               </View>

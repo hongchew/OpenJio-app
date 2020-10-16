@@ -108,6 +108,12 @@ class MakePayment extends React.Component {
     
   }
 
+   //this method prevents returning NaN when Input has empty text
+   safeParseFloat = (str) => {
+    const value = Number.parseFloat(str);
+    return Number.isNaN(value) ? 0 : value;    
+  }
+
   //when user clicks confirm, should trigger the handlePayment method
   renderPaymentModal() {
     const avatar = () => (
@@ -206,7 +212,7 @@ class MakePayment extends React.Component {
                   style={styles.money}
                   value={this.state.amount}
                   onChangeText={(amount) =>
-                    this.setState({amountPayable: parseFloat(amount)})
+                    this.setState({amountPayable: this.safeParseFloat(amount)})
                   }
                 />
               </View>

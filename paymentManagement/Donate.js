@@ -127,6 +127,12 @@ class Donate extends React.Component {
     }
   }
 
+   //this method prevents returning NaN when Input has empty text
+   safeParseFloat = (str) => {
+    const value = Number.parseFloat(str);
+    return Number.isNaN(value) ? 0 : value;    
+  }
+
   render() {
     let responseMessage;
     if (this.state.isUpdated) {
@@ -176,7 +182,7 @@ class Donate extends React.Component {
                   style={styles.money}
                   value={this.state.donationAmount}
                   onChangeText={(amount) =>
-                    this.setState({donationAmount: parseFloat(amount)})
+                    this.setState({donationAmount: this.safeParseFloat(amount)})
                   }
                 />
               </View>
