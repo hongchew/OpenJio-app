@@ -366,14 +366,17 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 16,
+    flex: 1,
   },
   transactionType: {
     fontSize: 16,
     textAlign: 'right',
+    flex: 1,
   },
   transactionRow: {
     marginTop: 10,
     marginBottom: 10,
+    flexDirection: 'row',
   },
 });
 
