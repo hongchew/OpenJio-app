@@ -88,7 +88,7 @@ class UserBadges extends React.Component {
             title={(evaProps) => (
               <Text
                 {...evaProps}
-                style={{fontSize: 18, marginLeft: 5, marginBottom: 5}}>
+                style={{fontSize: 17, marginLeft: 5, marginBottom: 5}}>
                 {item.title}
               </Text>
             )}
@@ -182,8 +182,10 @@ class UserBadges extends React.Component {
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>
-            {this.countBadges()}
-            {this.renderContent()}
+            <View>
+              {this.countBadges()}
+              {this.renderContent()}
+            </View>
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
@@ -196,6 +198,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
+    flex: 1,
     marginLeft: 10,
     marginRight: 10,
   },
