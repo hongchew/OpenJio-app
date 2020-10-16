@@ -110,7 +110,9 @@ class TransactionDetailsScreen extends React.Component {
               </View>
               <View style={styles.moreinfosubbox}>
                 <Text style={styles.moreinfotext}>Date and Time</Text>
-                <Text>{this.state.transaction.createdAt}</Text>
+                <Text>
+                  {new Date(this.state.transaction.createdAt).toString()}
+                </Text>
               </View>
               <View style={styles.moreinfosubbox}>
                 <Text style={styles.moreinfotext}>Details</Text>
