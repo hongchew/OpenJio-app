@@ -33,7 +33,7 @@ class EditWalletLimit extends React.Component {
     } else if (this.state.walletLimit <= 0) {
       this.setState({
         message:
-          'Wallet Limit cannot be zero or negative. Please change the field',
+          'Wallet Limit cannot be zero or negative. Please change the field.',
       });
     } else {
       try {
