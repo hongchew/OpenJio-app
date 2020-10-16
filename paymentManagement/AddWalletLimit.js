@@ -30,6 +30,11 @@ class AddWalletLimit extends React.Component {
       this.setState({
         message: 'Wallet Limit field is empty. Unable to add wallet limit.',
       });
+    } else if (this.state.walletLimit <= 0) {
+      this.setState({
+        message:
+          'Wallet Limit cannot be zero or negative. Please change the field',
+      });
     } else {
       try {
         const response = await axios.put(
@@ -71,8 +76,6 @@ class AddWalletLimit extends React.Component {
     }
   }
 
-
-  
   render() {
     let responseMessage;
     if (this.state.isUpdated) {
@@ -118,14 +121,12 @@ class AddWalletLimit extends React.Component {
                 />
               </View>
             </Card>
-            
-              <Button
-                style={styles.button}
-                onPress={() => this.handleAddLimit()}>
-                ADD WALLET LIMIT
-              </Button>
-              {responseMessage}
-            </Layout>
+
+            <Button style={styles.button} onPress={() => this.handleAddLimit()}>
+              ADD WALLET LIMIT
+            </Button>
+            {responseMessage}
+          </Layout>
         </TouchableWithoutFeedback>
       </Layout>
     );
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     color: '#3366FF',
     fontSize: 14,
     marginBottom: 3,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   money: {
     flexGrow: 1,

@@ -30,6 +30,11 @@ class EditWalletLimit extends React.Component {
       this.setState({
         message: 'Wallet Limit field is empty. Unable to edit wallet limit.',
       });
+    } else if (this.state.walletLimit <= 0) {
+      this.setState({
+        message:
+          'Wallet Limit cannot be zero or negative. Please change the field',
+      });
     } else {
       try {
         const response = await axios.put(
@@ -96,14 +101,14 @@ class EditWalletLimit extends React.Component {
                 />
               </View>
             </Card>
-            
-              <Button
-                style={styles.button}
-                onPress={() => this.handleEditLimit()}>
-                EDIT WALLET LIMIT
-              </Button>
-              {responseMessage}
-            </Layout>
+
+            <Button
+              style={styles.button}
+              onPress={() => this.handleEditLimit()}>
+              EDIT WALLET LIMIT
+            </Button>
+            {responseMessage}
+          </Layout>
         </TouchableWithoutFeedback>
       </Layout>
     );
@@ -143,7 +148,7 @@ const styles = StyleSheet.create({
     color: '#3366FF',
     fontSize: 14,
     marginBottom: 3,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   money: {
     flexGrow: 1,
