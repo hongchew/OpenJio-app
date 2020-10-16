@@ -84,6 +84,16 @@ class WalletScreen extends React.Component {
     return this.state.transactions.slice(0, 5).map((transaction, index) => {
       const counter = 5;
       if (counter === index + 1) {
+        let transactionType;
+        if (transaction.transactionType === 'TOP_UP') {
+          transactionType = 'Top Up';
+        } else if (transaction.transactionType === 'DONATE') {
+          transactionType = 'Donate';
+        } else if (transaction.transactionType === 'WITHDRAW') {
+          transactionType = 'Withdraw';
+        } else {
+          transactionType = 'User';
+        }
         if (transaction.senderWalletId === this.state.user.Wallet.walletId) {
           return (
             <View key={transaction.transactionId}>
@@ -97,9 +107,10 @@ class WalletScreen extends React.Component {
                 <Text style={styles.amount}>
                   - SGD ${transaction.amount.toFixed(2)}
                 </Text>
-                <Text style={styles.description}>
+                <Text style={styles.transactionType}>{transactionType}</Text>
+                {/* <Text style={styles.description}>
                   {transaction.description}
-                </Text>
+                </Text> */}
               </TouchableOpacity>
             </View>
           );
@@ -116,15 +127,26 @@ class WalletScreen extends React.Component {
                 <Text style={styles.amount}>
                   + SGD ${transaction.amount.toFixed(2)}
                 </Text>
-                <Text style={styles.description}>
+                <Text style={styles.transactionType}>{transactionType}</Text>
+                {/* <Text style={styles.description}>
                   {transaction.description}
-                </Text>
+                </Text> */}
               </TouchableOpacity>
             </View>
           );
         }
       }
       if (counter > index + 1) {
+        let transactionType;
+        if (transaction.transactionType === 'TOP_UP') {
+          transactionType = 'Top Up';
+        } else if (transaction.transactionType === 'DONATE') {
+          transactionType = 'Donate';
+        } else if (transaction.transactionType === 'WITHDRAW') {
+          transactionType = 'Withdraw';
+        } else {
+          transactionType = 'User';
+        }
         if (transaction.senderWalletId === this.state.user.Wallet.walletId) {
           return (
             <View key={transaction.transactionId}>
@@ -138,9 +160,10 @@ class WalletScreen extends React.Component {
                 <Text style={styles.amount}>
                   - SGD ${transaction.amount.toFixed(2)}
                 </Text>
-                <Text style={styles.description}>
+                <Text style={styles.transactionType}>{transactionType}</Text>
+                {/* <Text style={styles.description}>
                   {transaction.description}
-                </Text>
+                </Text> */}
               </TouchableOpacity>
               <Divider />
             </View>
@@ -158,9 +181,10 @@ class WalletScreen extends React.Component {
                 <Text style={styles.amount}>
                   + SGD ${transaction.amount.toFixed(2)}
                 </Text>
-                <Text style={styles.description}>
+                <Text style={styles.transactionType}>{transactionType}</Text>
+                {/* <Text style={styles.description}>
                   {transaction.description}
-                </Text>
+                </Text> */}
               </TouchableOpacity>
               <Divider />
             </View>
@@ -361,14 +385,21 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontSize: 16,
+    flex: 1,
   },
-  description: {
-    fontSize: 14,
-    color: '#888888',
+  transactionType: {
+    fontSize: 16,
+    textAlign: 'right',
+    flex: 1,
   },
   transactionRow: {
     marginTop: 10,
     marginBottom: 10,
+    flexDirection: 'row',
+  },
+  description: {
+    fontSize: 14,
+    color: '#888888',
   },
 });
 
