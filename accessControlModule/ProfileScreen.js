@@ -283,7 +283,9 @@ const mapDispatchToProps = (dispatch) => {
     setUser: (user) => {
       dispatch(setUser(user));
     },
-    logout
+    logout: () => {
+      dispatch(logout());
+    }
   };
 }; 
 

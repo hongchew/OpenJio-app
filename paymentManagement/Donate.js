@@ -156,7 +156,7 @@ class Donate extends React.Component {
         </Text>
 
         <Card style={styles.donationMsg}>
-          <Text styles={styles.header} category="h7">
+          <Text styles={styles.header} >
             All donations will be used for the maintainence of OpenJio. Your
             donation would go a long way in helping us improve the operations of
             OpenJio!

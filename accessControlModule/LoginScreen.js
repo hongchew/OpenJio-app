@@ -32,6 +32,10 @@ class LoginScreen extends React.Component {
     };
   }
 
+  componentDidMount() {
+    this.state.user.userId ? this.props.navigation.replace('Tabs') : null
+  }
+
   toggleSecureEntry = () => {
     if (this.state.secureTextEntry) {
       this.setState({
@@ -94,7 +98,7 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <Layout style={loginStyle.layout}>
-        {this.state.user.userId ? this.props.navigation.replace('Tabs') : null}
+        {/* {this.state.user.userId ? this.props.navigation.replace('Tabs') : null} */}
         <StatusBar
           barStyle="dark-content"
           hidden={false}
