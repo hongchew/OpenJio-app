@@ -95,7 +95,7 @@ class WalletScreen extends React.Component {
         }
         if (transaction.senderWalletId === this.state.user.Wallet.walletId) {
           return (
-            <View>
+            <View key={transaction.transactionId}>
               <TouchableOpacity
                 style={styles.transactionRow}
                 onPress={() =>
