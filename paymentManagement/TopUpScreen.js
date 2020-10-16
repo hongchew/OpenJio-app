@@ -65,6 +65,12 @@ class TopUpScreen extends React.Component {
             'Wallet Limit Reached!\nPlease enter a lower amount or increase the limit',
           messageStatus: 'danger',
         });
+      } else if (amount < 0) {
+        this.setState({
+          message:
+            'Invalid top up amount',
+          messageStatus: 'danger',
+        });
       } else {
         // no problem here, top up go through
         this.setState({

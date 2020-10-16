@@ -252,6 +252,7 @@ const styles = StyleSheet.create({
   report: {
     paddingLeft: 18,
     marginTop: 10,
+    marginBottom: 30
   },
 });
 

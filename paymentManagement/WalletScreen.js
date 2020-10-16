@@ -70,6 +70,7 @@ class WalletScreen extends React.Component {
   async getWalletAmount(userId) {
     try {
       const response = await axios.get(`${globalVariable.userApi}${userId}`);
+      console.log(`Running getWalletAmount`)
       this.setState({
         user: response.data,
       });
@@ -104,7 +105,7 @@ class WalletScreen extends React.Component {
           );
         } else {
           return (
-            <View>
+            <View key={transaction.transactionId}>
               <TouchableOpacity
                 style={styles.transactionRow}
                 onPress={() =>
@@ -126,7 +127,7 @@ class WalletScreen extends React.Component {
       if (counter > index + 1) {
         if (transaction.senderWalletId === this.state.user.Wallet.walletId) {
           return (
-            <View>
+            <View key={transaction.transactionId}>
               <TouchableOpacity
                 style={styles.transactionRow}
                 onPress={() =>
@@ -146,7 +147,7 @@ class WalletScreen extends React.Component {
           );
         } else {
           return (
-            <View>
+            <View key={transaction.transactionId}>
               <TouchableOpacity
                 style={styles.transactionRow}
                 onPress={() =>
