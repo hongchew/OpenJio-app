@@ -82,7 +82,7 @@ class TransactionsListScreen extends React.Component {
             })
           }
           title={<Text style={styles.amount}>- SGD ${item.amount.toFixed(2)}</Text>}
-          description={item.description}
+          description={<Text style={styles.description}>{item.description}</Text>}
         />
       );
     } else {
