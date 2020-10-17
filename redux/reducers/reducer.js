@@ -5,6 +5,7 @@ const initialState = {
   user: {
     Addresses: [],
     Wallet: {},
+    Badges: [],
   },
 };
 
@@ -23,6 +24,8 @@ export default function reducer(state = initialState, action) {
         loading: false,
         user: {
           Addresses: [],
+          Wallet: {},
+          Badges: [],
         },
       };
     case type.UPDATE_ADDRESS_ARR:
