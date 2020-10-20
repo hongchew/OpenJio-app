@@ -14,7 +14,6 @@ import {
   Input,
   Text,
   Layout,
-  Spinner,
 } from '@ui-kitten/components';
 import {setUser} from '../redux/actions';
 import loginStyle from '../styles/loginStyle';
@@ -25,12 +24,16 @@ class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: this.props.user,
       secureTextEntry: true,
       email: '',
       password: '',
       errorMessage: '',
     };
-    console.log(this.props);
+  }
+
+  componentDidMount() {
+    this.state.user.userId ? this.props.navigation.replace('Tabs') : null
   }
 
   toggleSecureEntry = () => {
@@ -58,8 +61,31 @@ class LoginScreen extends React.Component {
         password: this.state.password,
       });
       console.log(response.data);
-      this.props.setUser(response.data);
-      this.props.navigation.navigate('Tabs');
+
+      // 1st login, check if account is validated
+      // (isPasswordReset: false, isValidated: false)
+      if (!response.data.isValidated) {
+        this.setState({
+          email: '',
+          password: '',
+          errorMessage:
+            'Your account is not verified, please verify your account first.',
+        });
+      }
+      // subsequent logins, check if user had just reset their password
+      // (isPasswordReset: true, isValidated: true)
+      else if (response.data.isPasswordReset) {
+        this.props.navigation.navigate('ChangePassword', {
+          fromLogin: true,
+          email: this.state.email,
+          currPassword: this.state.password,
+        });
+      }
+      // (isPasswordReset: false, isValidated: true)
+      else {
+        this.props.setUser(response.data);
+        this.props.navigation.replace('Tabs');
+      }
     } catch (error) {
       this.setState({
         email: '',
@@ -72,6 +98,7 @@ class LoginScreen extends React.Component {
   render() {
     return (
       <Layout style={loginStyle.layout}>
+        {/* {this.state.user.userId ? this.props.navigation.replace('Tabs') : null} */}
         <StatusBar
           barStyle="dark-content"
           hidden={false}

@@ -4,13 +4,14 @@ const initialState = {
   loading: false,
   user: {
     Addresses: [],
+    Wallet: {},
+    Badges: [],
   },
 };
 
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case type.SET_USER:
-      console.log(action.payload);
       return {
         ...state,
         loading: false,
@@ -23,15 +24,24 @@ export default function reducer(state = initialState, action) {
         loading: false,
         user: {
           Addresses: [],
+          Wallet: {},
+          Badges: [],
         },
       };
     case type.UPDATE_ADDRESS_ARR:
-      console.log(action.payload);
       return {
         ...state,
         user: {
           ...state.user,
           Addresses: action.payload,
+        },
+      };
+    case type.SET_WALLET:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          Wallet: action.payload,
         },
       };
     default:

@@ -1,9 +1,19 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {StatusBar, View, StyleSheet} from 'react-native';
+import {
+  StatusBar,
+  View,
+  StyleSheet,
+  RefreshControl,
+  Scroll,
+} from 'react-native';
 import {Text, Layout, Menu, MenuItem, Icon, Card} from '@ui-kitten/components';
 import {logout} from '../redux/actions';
-import {DefaultAvatar} from '../GLOBAL_VARIABLE';
+import {UserAvatar} from '../GLOBAL_VARIABLE';
+import axios from 'axios';
+import {globalVariable} from '../GLOBAL_VARIABLE';
+import {setUser} from '../redux/actions';
+
 
 const PasswordIcon = (props) => (
   <Icon {...props} name="shield-outline" width="25" height="25" />
@@ -25,14 +35,27 @@ const AddressIcon = (props) => (
   <Icon {...props} name="map-outline" width="25" height="25" />
 );
 
+const BadgeIcon = (props) => (
+  <Icon {...props} name="award-outline" width="25" height="25" />
+);
+
 class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
+      refreshing: false,
     };
   }
+
+  onRefresh = () => {
+    this.setState({
+      refreshing: true,
+    });
+    //this.getAllTimeLeaderboard();
+    this.getUser(this.props.user.userId);
+  };
 
   handleLogout = () => {
     this.props.logout();
@@ -83,6 +106,23 @@ class ProfileScreen extends React.Component {
     }
   };
 
+  //update the wallet state whenever a transaction happens
+  async getUser(userId) {
+    try {
+      const response = await axios.get(`${globalVariable.userApi}${userId}`);
+      this.setState({
+        user: response.data,
+        refreshing: false,
+      });
+      this.props.setUser(this.state.user);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        refreshing: false,
+      });
+    }
+  }
+
   render() {
     return (
       <Layout style={styles.layout}>
@@ -98,7 +138,10 @@ class ProfileScreen extends React.Component {
         <Layout style={styles.container}>
           <Card style={styles.firstCard}>
             <View style={styles.headerRow}>
-              <DefaultAvatar />
+              <UserAvatar
+                source={this.props.user ? this.props.user.avatarPath : null}
+                size="giant"
+              />
               <Text style={styles.nameCardText}>
                 <Text style={{fontWeight: 'bold', fontSize: 16}}>
                   {this.props.user ? this.props.user.name : ''}
@@ -124,7 +167,15 @@ class ProfileScreen extends React.Component {
             </View>
           </Card>
 
-          <Menu style={styles.menu}>
+          <Menu
+            style={styles.menu}
+            refreshControl={
+              <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.onRefresh}
+                title="Hello"
+              />
+            }>
             <Icon name="email-outline" width="10" height="10" color="black" />
             <MenuItem
               accessoryLeft={EditIcon}
@@ -135,12 +186,21 @@ class ProfileScreen extends React.Component {
             <MenuItem
               accessoryLeft={PasswordIcon}
               title={<Text style={styles.menuItem}>Change Password</Text>}
-              onPress={() => this.props.navigation.navigate('ChangePassword')}
+              onPress={() =>
+                this.props.navigation.navigate('ChangePassword', {
+                  fromLogin: false,
+                })
+              }
             />
             <MenuItem
               accessoryLeft={AddressIcon}
               title={<Text style={styles.menuItem}>Address Book</Text>}
               onPress={() => this.props.navigation.navigate('Address')}
+            />
+            <MenuItem
+              accessoryLeft={BadgeIcon}
+              title={<Text style={styles.menuItem}>My Badges</Text>}
+              onPress={() => this.props.navigation.navigate('UserBadges')}
             />
             <MenuItem
               accessoryLeft={LogoutIcon}
@@ -218,4 +278,15 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, {logout})(ProfileScreen);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => {
+      dispatch(setUser(user));
+    },
+    logout: () => {
+      dispatch(logout());
+    }
+  };
+}; 
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
