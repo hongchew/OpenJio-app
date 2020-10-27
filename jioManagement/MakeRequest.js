@@ -12,7 +12,7 @@ import {Text, Layout, Card, Input, Button} from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
-class MakePayment extends React.Component {
+class MakeRequest extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,7 +25,7 @@ class MakePayment extends React.Component {
     };
   }
 
-  async handleMakePayment() {
+  async handleMakeRequest() {
     if (this.state.title == '' || this.state.description == '') {
       this.setState({
         message: 'Fields are empty, unable to proceed.',
@@ -102,7 +102,7 @@ class MakePayment extends React.Component {
             />
             <Button
               style={styles.button}
-              onPress={() => this.handleMakePayment()}>
+              onPress={() => this.handleMakeRequest()}>
               Next
             </Button>
             <Text style={styles.description} status="danger">
@@ -179,4 +179,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(MakePayment);
+export default connect(mapStateToProps)(MakeRequest);
