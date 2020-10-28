@@ -24,7 +24,7 @@ class StartLocation extends React.Component {
   }
 
   async handleMakeAnnouncement() {
-    if (this.state.startLocationId === null) {
+    if (!this.state.startLocationId) {
       this.setState({
         message: 'No address selected.',
       });

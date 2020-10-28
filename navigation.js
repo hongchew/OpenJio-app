@@ -36,6 +36,7 @@ import SuccessfulScreen from './paymentManagement/SuccessfulScreen';
 //screens from jio management
 import MakeRequest from './jioManagement/MakeRequest';
 import StartLocation from './jioManagement/StartLocation';
+import AnnouncementDetails from './jioManagement/AnnouncementDetails';
 //tab navigator
 import TabNavigator from './tabs';
 
@@ -362,7 +363,7 @@ const HomeNavigator = () => (
         headerLeft: () => (
           <Button
             onPress={() => {
-              // navigation.replace('Tabs', {screen: ''});
+              navigation.goBack();
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"
@@ -381,7 +382,26 @@ const HomeNavigator = () => (
         headerLeft: () => (
           <Button
             onPress={() => {
-              // navigation.replace('Tabs', {screen: ''});
+              navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="AnnouncementDetails"
+      component={AnnouncementDetails}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Home'});
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"
