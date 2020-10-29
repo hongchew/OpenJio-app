@@ -10,6 +10,8 @@ export const globalVariable = {
   paypalApi: `${serverUrl}/paypal/`,
   walletApi: `${serverUrl}/wallets/`,
   transactionApi: `${serverUrl}/transactions/`,
+  requestApi: `${serverUrl}/requests/`,
+  announcementApi: `${serverUrl}/announcements/`,
   temperatureApi: `${serverUrl}/temperatures/`
 };
 
