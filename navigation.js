@@ -37,6 +37,8 @@ import SuccessfulScreen from './paymentManagement/SuccessfulScreen';
 import MakeRequest from './jioManagement/MakeRequest';
 import StartLocation from './jioManagement/StartLocation';
 import AnnouncementDetails from './jioManagement/AnnouncementDetails';
+import HealthDeclaration from './jioManagement/HealthDeclaration';
+import CreateAnnouncement from './jioManagement/CreateAnnouncement';
 //tab navigator
 import TabNavigator from './tabs';
 
@@ -349,6 +351,22 @@ const HomeNavigator = () => (
             size="tiny"
           />
         ),
+      })}
+    />
+    <Stack.Screen
+      name="HealthDeclaration"
+      component={HealthDeclaration}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="CreateAnnouncement"
+      component={CreateAnnouncement}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     {/* doesn't include any buttons because i just want a page that shows successful payment */}
