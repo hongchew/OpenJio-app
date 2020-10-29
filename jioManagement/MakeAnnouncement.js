@@ -6,17 +6,12 @@ import {
   Layout,
   Button,
   Card,
-  RadioGroup,
-  Radio,
   Input,
   Modal,
 } from '@ui-kitten/components';
-import {UserAvatar} from '../GLOBAL_VARIABLE';
-import axios from 'axios';
-import globalVariable from '../GLOBAL_VARIABLE';
 import DatePicker from 'react-native-date-picker';
 
-class CreateAnnouncement extends React.Component {
+class MakeAnnouncement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -293,4 +288,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CreateAnnouncement);
+export default connect(mapStateToProps)(MakeAnnouncement);
