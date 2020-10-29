@@ -118,7 +118,7 @@ class HealthDeclaration extends React.Component {
           <Card style={styles.card}>
             <Text style={{marginTop: 8, marginBottom: 10}}>
               Do you have COVID-19 or any related symptoms (e.g. fever, coughing
-              or difficulty in breathing)?
+              or breathing difficulties)?
             </Text>
             <RadioGroup
               selectedIndex={this.state.selectedIndex}

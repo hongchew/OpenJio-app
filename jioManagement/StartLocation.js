@@ -12,9 +12,9 @@ class StartLocation extends React.Component {
     super(props);
     this.state = {
       //announcment
-      //   destination: this.props.routes.params.destination,
-      //   description: this.props.routes.params.description,
-      //   closeTime: this.props.routes.params.closeTime,
+      destination: this.props.route.params.destination,
+      description: this.props.route.params.description,
+      closeTime: JSON.parse(this.props.route.params.closeTime),
       startLocationId: this.props.user.defaultAddressId,
       message: '',
       //health declaration
