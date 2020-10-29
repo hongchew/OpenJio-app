@@ -6,6 +6,7 @@ import renderIf from '../components/renderIf';
 import {ScrollView} from 'react-native-gesture-handler';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
+import {UserAvatar} from '../GLOBAL_VARIABLE';
 
 class AnnouncementDetails extends React.Component {
   constructor(props) {
@@ -36,8 +37,8 @@ class AnnouncementDetails extends React.Component {
         announcementDetails: responseDetails.data,
         createdBy: {
           name: responseUser.data.name,
-          email: responseUser.data.email,
           badges: responseUser.data.Badges,
+          img: responseUser.data.avatarPath,
         },
       });
     } catch (error) {
@@ -92,43 +93,48 @@ class AnnouncementDetails extends React.Component {
             <Text style={styles.word}>
               {this.state.announcementDetails.description}
             </Text>
-
-            <Text category="label" style={styles.label}>
-              Close Time
-            </Text>
-            <Text style={styles.word}>
-              {/* {new Date(this.state.announcementDetails.closeTime).toString()} */}
-              {this.state.announcementDetails.closeTime
-                ? new Date(
-                    this.state.announcementDetails.closeTime
-                  ).toLocaleTimeString('en', {
-                    timeStyle: 'short',
-                    hour12: true,
-                    timeZone: 'Asia/Singapore',
-                  })
-                : ''}
-            </Text>
-
-            <Text category="label" style={styles.label}>
-              Submitted By
-            </Text>
-            <TouchableOpacity
-              activeOpacity={0.3}
-              onPress={() =>
-                this.props.navigation.navigate('UserBadges', {
-                  badges: this.state.createdBy.badges,
-                  name: this.state.createdBy.name,
-                })
-              }>
-              <Text style={styles.word}>
-                {this.state.createdBy.name && this.state.createdBy.email
-                  ? this.state.createdBy.name +
-                    ' (' +
-                    this.state.createdBy.email +
-                    ')'
-                  : ''}
-              </Text>
-            </TouchableOpacity>
+            <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+              <View>
+                <Text category="label" style={styles.label}>
+                  Submitted By
+                </Text>
+                <TouchableOpacity
+                  activeOpacity={0.3}
+                  onPress={() =>
+                    this.props.navigation.navigate('UserBadges', {
+                      badges: this.state.createdBy.badges,
+                      name: this.state.createdBy.name,
+                    })
+                  }
+                  style={styles.userRow}>
+                  <UserAvatar
+                    source={
+                      this.state.createdBy.img ? this.state.createdBy.img : null
+                    }
+                    size="small"></UserAvatar>
+                  <Text style={styles.name}>
+                    {this.state.createdBy.name ? this.state.createdBy.name : ''}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{marginLeft: 40}}>
+                <Text category="label" style={styles.label}>
+                  Close Time
+                </Text>
+                <Text style={styles.word}>
+                  {/* {new Date(this.state.announcementDetails.closeTime).toString()} */}
+                  {this.state.announcementDetails.closeTime
+                    ? new Date(
+                        this.state.announcementDetails.closeTime
+                      ).toLocaleTimeString('en', {
+                        timeStyle: 'short',
+                        hour12: true,
+                        timeZone: 'Asia/Singapore',
+                      })
+                    : ''}
+                </Text>
+              </View>
+            </View>
           </Card>
           {renderIf(
             this.state.userRequest,
@@ -238,11 +244,19 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     lineHeight: 22,
   },
+  userRow: {
+    marginTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   button: {
     marginTop: 30,
     marginBottom: 30,
     marginLeft: 20,
     marginRight: 20,
+  },
+  name: {
+    marginLeft: 10,
   },
 });
 
