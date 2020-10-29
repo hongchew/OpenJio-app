@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {View, StatusBar, StyleSheet} from 'react-native';
+import {View, StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
 import {Text, Layout, Button, Card} from '@ui-kitten/components';
 import renderIf from '../components/renderIf';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -12,13 +12,16 @@ class AnnouncementDetails extends React.Component {
     super(props);
     this.state = {
       //   announcementId: this.props.routes.params.announcementId,
-      announcementId: 'd3bbb953-7aa1-414c-9876-a7add8b17c78',
+      announcementId: '',
       announcementDetails: '',
       createdBy: '',
+      userRequest: '',
+      submitReqButton: true,
     };
   }
   componentDidMount() {
     this.getAnnouncementDetails();
+    this.getUserRequest();
   }
 
   async getAnnouncementDetails() {
@@ -29,8 +32,6 @@ class AnnouncementDetails extends React.Component {
       const responseUser = await axios.get(
         globalVariable.userApi + responseDetails.data.userId
       );
-      console.log(responseUser);
-      //   console.log(responseUser);
       this.setState({
         announcementDetails: responseDetails.data,
         createdBy: {
@@ -38,6 +39,24 @@ class AnnouncementDetails extends React.Component {
           email: responseUser.data.email,
           badges: responseUser.data.Badges,
         },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async getUserRequest() {
+    try {
+      const responseRequests = await axios.get(
+        globalVariable.requestApi + 'by-userId/' + this.props.user.userId
+      );
+      responseRequests.data.forEach((request) => {
+        if (request.announcementId == this.state.announcementId) {
+          this.setState({
+            userRequest: request,
+            submitReqButton: false,
+          });
+        }
       });
     } catch (error) {
       console.log(error);
@@ -79,39 +98,98 @@ class AnnouncementDetails extends React.Component {
             </Text>
             <Text style={styles.word}>
               {/* {new Date(this.state.announcementDetails.closeTime).toString()} */}
-              {new Date(
-                this.state.announcementDetails.closeTime
-              ).toLocaleTimeString('en', {
-                timeStyle: 'short',
-                hour12: true,
-                timeZone: 'UTC',
-              })}
+              {this.state.announcementDetails.closeTime
+                ? new Date(
+                    this.state.announcementDetails.closeTime
+                  ).toLocaleTimeString('en', {
+                    timeStyle: 'short',
+                    hour12: true,
+                    timeZone: 'Asia/Singapore',
+                  })
+                : ''}
             </Text>
 
             <Text category="label" style={styles.label}>
-              Submitted by
+              Submitted By
             </Text>
-            <Text
-              style={styles.word}
+            <TouchableOpacity
+              activeOpacity={0.3}
               onPress={() =>
                 this.props.navigation.navigate('UserBadges', {
                   badges: this.state.createdBy.badges,
                   name: this.state.createdBy.name,
                 })
               }>
-              {this.state.createdBy.name +
-                ' (' +
-                this.state.createdBy.email +
-                ')'}
-            </Text>
+              <Text style={styles.word}>
+                {this.state.createdBy.name && this.state.createdBy.email
+                  ? this.state.createdBy.name +
+                    ' (' +
+                    this.state.createdBy.email +
+                    ')'
+                  : ''}
+              </Text>
+            </TouchableOpacity>
           </Card>
-          <Card style={styles.card}>
-            <Text>my request</Text>
-          </Card>
+          {renderIf(
+            this.state.userRequest,
+            <Card style={styles.card}>
+              <Text
+                style={{fontWeight: 'bold', marginBottom: 10}}
+                category="h6">
+                My Request
+              </Text>
+              <Text category="label" style={styles.label}>
+                Title
+              </Text>
+              <Text style={styles.word}>{this.state.userRequest.title}</Text>
+              <Text category="label" style={styles.label}>
+                Description
+              </Text>
+              <Text style={styles.word}>
+                {this.state.userRequest.description}
+              </Text>
+              <Text category="label" style={styles.label}>
+                Amount
+              </Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={styles.word}>
+                  {this.state.userRequest.amount
+                    ? 'SGD ' +
+                      parseFloat(this.state.userRequest.amount).toFixed(2)
+                    : ''}
+                </Text>
+              </View>
+              <Text category="label" style={styles.label}>
+                Status
+              </Text>
+              <Text style={styles.word}>
+                {this.state.userRequest.requestStatus}
+              </Text>
+              <Text category="label" style={styles.label}>
+                Submitted At
+              </Text>
+              <Text style={styles.word}>
+                {this.state.userRequest.createdAt
+                  ? new Date(
+                      this.state.userRequest.createdAt
+                    ).toLocaleTimeString('en', {
+                      timeStyle: 'short',
+                      hour12: true,
+                      timeZone: 'Asia/Singapore',
+                    })
+                  : ''}
+              </Text>
+            </Card>
+          )}
+
           <Button
             style={styles.button}
-            onPress={() => this.props.navigation.navigate('MakeRequest')}>
-            Submit a Request
+            onPress={() =>
+              this.state.submitReqButton
+                ? this.props.navigation.navigate('MakeRequest')
+                : ''
+            }>
+            {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}
           </Button>
         </ScrollView>
       </Layout>
@@ -162,6 +240,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 30,
+    marginBottom: 30,
     marginLeft: 20,
     marginRight: 20,
   },
