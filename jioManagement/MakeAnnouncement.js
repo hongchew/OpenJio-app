@@ -6,27 +6,24 @@ import {
   Layout,
   Button,
   Card,
-  RadioGroup,
-  Radio,
   Input,
   Modal,
 } from '@ui-kitten/components';
-import {UserAvatar} from '../GLOBAL_VARIABLE';
-import axios from 'axios';
-import globalVariable from '../GLOBAL_VARIABLE';
 import DatePicker from 'react-native-date-picker';
 
-class CreateAnnouncement extends React.Component {
+class MakeAnnouncement extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
       temp: 0,
-      closeDate: new Date(),
+      closeTime: new Date(),
       isVisible: false,
       timeStr: '',
       dateStr: '',
+      destination: '', 
+      description: '',
       selected: false, 
       btnString: 'Set close time',
     };
@@ -57,7 +54,7 @@ class CreateAnnouncement extends React.Component {
     return formattedDate; 
   }
 
-  handleCloseDate = (selectedDate) => {
+  handleCloseTime = (selectedDate) => {
     this.setState({
       chosenDate: selectedDate,
       datePicked: true,
@@ -77,14 +74,14 @@ class CreateAnnouncement extends React.Component {
       formattedTime = this.formatTime(chosenDate);
       string = "Close Time: " + formattedDate + ', ' + formattedTime;
     } else {
-      chosenDate = this.state.closeDate; 
-      formattedDate = this.formatDate(this.state.closeDate); 
-      formattedTime = this.formatTime(this.state.closeDate); 
+      chosenDate = this.state.closeTime; 
+      formattedDate = this.formatDate(this.state.closeTime); 
+      formattedTime = this.formatTime(this.state.closeTime); 
       string = "Close Time: " + formattedDate + ', ' + formattedTime;
     }
     this.setState({
       isVisible: false, 
-      closeDate: chosenDate,
+      closeTime: chosenDate,
       btnString: string,
       selected: true, //user has set a time
       datePicked: false, //reset the date picker state
@@ -92,45 +89,22 @@ class CreateAnnouncement extends React.Component {
     
   }
 
-  async handleSubmitTemp() {
-    let hasCovid;
-
-    if (this.state.temp === 0) {
-      this.setState({
-        message: 'Invalid temperature.',
-      });
-    } else if (!this.state.selected) { 
+  handleSubmit = () => {
+    if (!this.state.selected) { 
       this.setState({
         message: 'Please set a close time.',
       });
+    } else if (this.state.destination === '' || this.state.description === '') {
+      this.setState({
+        message: 'Destination and description fields cannot be empty.',
+      });
     } else {
-      //user answered yes (has covid)
-      if (this.state.selectedIndex === 0) {
-        hasCovid = true;
-      } else {
-        hasCovid = false;
-      }
-
-      try {
-        const response = await axios.post(
-          globalVariable.temperatureApi + 'create-log',
-          {
-            userId: this.state.user.userId,
-            temperature: this.state.temp,
-            hasCovid: hasCovid,
-          }
-        );
-        this.setState({
-          temperatureLog: response.data,
-        });
-        console.log(response.data);
-        //check if user is able to proceed to make announcement or not
-        //by checking the risk level
-      } catch (error) {
-        this.setState({
-          message: 'Failed.',
-        });
-      }
+      console.log('coming here');
+      this.props.navigation.navigate('StartLocation', {
+        destination: this.state.destination, 
+        description: this.state.description, 
+        closeTime: JSON.stringify(this.state.closeTime)
+      })
     }
   }
 
@@ -169,15 +143,19 @@ class CreateAnnouncement extends React.Component {
             {this.state.btnString}
           </Button>
 
-          <Button style={styles.button} onPress={() => this.handleSubmitTemp()}>
+          <Button style={styles.button} onPress={() => this.handleSubmit()}>
             Next
           </Button>
+
+          <Text style={styles.description} status="danger">
+            {this.state.message}
+          </Text>
 
           <Modal backdropStyle={styles.backdrop} visible={this.state.isVisible}>
             <Card>
               <DatePicker
-                date={this.state.closeDate}
-                onDateChange={this.handleCloseDate}
+                date={this.state.closeTime}
+                onDateChange={this.handleCloseTime}
               />
 
               <View style={styles.modalButtonsContainer}>
@@ -192,7 +170,7 @@ class CreateAnnouncement extends React.Component {
                   style={styles.modalButton}
                   size={'small'}
                   onPress={() => {
-                    this.setState({isVisible: false, closeDate: this.state.closeDate});
+                    this.setState({isVisible: false, closeTime: this.state.closeTime});
                   }}>
                   Dismiss
                 </Button>
@@ -298,6 +276,10 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 30,
   },
+  description: {
+    textAlign: 'center',
+    marginTop: 10,
+  },
 });
 
 function mapStateToProps(state) {
@@ -306,4 +288,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(CreateAnnouncement);
+export default connect(mapStateToProps)(MakeAnnouncement);

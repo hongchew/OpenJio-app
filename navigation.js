@@ -38,7 +38,8 @@ import MakeRequest from './jioManagement/MakeRequest';
 import StartLocation from './jioManagement/StartLocation';
 import AnnouncementDetails from './jioManagement/AnnouncementDetails';
 import HealthDeclaration from './jioManagement/HealthDeclaration';
-import CreateAnnouncement from './jioManagement/CreateAnnouncement';
+import MakeAnnouncement from './jioManagement/MakeAnnouncement';
+import MyActivity from './jioManagement/MyActivity';
 //tab navigator
 import TabNavigator from './tabs';
 
@@ -66,6 +67,7 @@ const HomeNavigator = () => (
     <Stack.Screen name="Signup" component={SignupScreen} />
     <Stack.Screen name="Wallet" component={WalletScreen} />
     <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen} />
+    <Stack.Screen name="MyActivity" component={MyActivity} />
     <Stack.Screen
       name="ChangePassword"
       component={ChangePassword}
@@ -362,8 +364,8 @@ const HomeNavigator = () => (
       })}
     />
     <Stack.Screen
-      name="CreateAnnouncement"
-      component={CreateAnnouncement}
+      name="MakeAnnouncement"
+      component={MakeAnnouncement}
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
