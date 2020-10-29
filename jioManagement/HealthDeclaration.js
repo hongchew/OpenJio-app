@@ -62,7 +62,7 @@ class HealthDeclaration extends React.Component {
         //check if user is able to proceed to make announcement or not
         //by checking the risk level
         if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
-          this.props.navigation.navigate('CreateAnnouncement');
+          this.props.navigation.navigate('MakeAnnouncement');
         } else {
           this.setState({
             message: 'Your risk level is high and you are not able to make any announcements/requests.'
