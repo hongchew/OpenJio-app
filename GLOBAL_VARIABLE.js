@@ -9,7 +9,9 @@ export const globalVariable = {
   addressApi: `${serverUrl}/addresses/`,
   paypalApi: `${serverUrl}/paypal/`,
   walletApi: `${serverUrl}/wallets/`,
-  transactionApi: `${serverUrl}/transactions/`
+  transactionApi: `${serverUrl}/transactions/`,
+  requestApi: `${serverUrl}/requests/`,
+  announcementApi: `${serverUrl}/announcements/`,
 };
 
 export const UserAvatar = (props) => {

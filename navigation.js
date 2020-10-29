@@ -6,21 +6,21 @@ import {
   CardStyleInterpolators,
   TransitionPresets,
 } from '@react-navigation/stack';
-//screens from access control module 
+//screens from access control module
 import LoginScreen from './accessControlModule/LoginScreen';
 import ProfileScreen from './accessControlModule/ProfileScreen';
 import SignupScreen from './accessControlModule/SignupScreen';
 import ChangePassword from './accessControlModule/ChangePassword';
 import ForgotPassword from './accessControlModule/ForgotPassword';
 import HomeScreen from './accessControlModule/HomeScreen';
-//screens from profile management 
+//screens from profile management
 import EditProfile from './profileManagement/EditProfile';
 import AddressScreen from './profileManagement/AddressScreen';
 import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
-//screens from payment management 
+//screens from payment management
 import WalletScreen from './paymentManagement/WalletScreen';
 import MakePayment from './paymentManagement/MakePayment';
 import TopUpScreen from './paymentManagement/TopUpScreen';
@@ -33,16 +33,15 @@ import EditWalletLimit from './paymentManagement/EditWalletLimit';
 import Donate from './paymentManagement/Donate';
 import Withdraw from './paymentManagement/Withdraw';
 import SuccessfulScreen from './paymentManagement/SuccessfulScreen';
-//tab navigator 
+//tab navigator
 import TabNavigator from './tabs';
-
+import MyAnnouncement from './JioManagement/MyAnnouncement';
 
 const Stack = createStackNavigator();
 
 const BackIcon = (props) => (
   <Icon {...props} name="arrow-back-outline" width="25" height="25" />
 );
-
 
 const HomeNavigator = () => (
   <Stack.Navigator
@@ -61,7 +60,7 @@ const HomeNavigator = () => (
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Signup" component={SignupScreen} />
     <Stack.Screen name="Wallet" component={WalletScreen} />
-    <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen}/>
+    <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen} />
     <Stack.Screen
       name="ChangePassword"
       component={ChangePassword}
@@ -351,10 +350,8 @@ const HomeNavigator = () => (
     />
     {/* doesn't include any buttons because i just want a page that shows successful payment */}
     {/* and have a button to navigate back to the wallet screen */}
-    <Stack.Screen
-      name="SuccessfulScreen"
-      component={SuccessfulScreen}
-    />
+    <Stack.Screen name="SuccessfulScreen" component={SuccessfulScreen} />
+    <Stack.Screen name="MyAnnouncement" component={MyAnnouncement} />
   </Stack.Navigator>
 );
 
