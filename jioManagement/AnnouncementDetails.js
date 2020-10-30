@@ -64,6 +64,18 @@ class AnnouncementDetails extends React.Component {
     }
   }
 
+  //to show new request under announcement details after redirecting from user making a new request
+  //otherwise, only announcement details without the new request is shown after the redirect
+  static getDerivedStateFromProps(props, state) {
+    if (props.route.params) {
+      return {
+        userRequest: props.route.params.userRequest,
+        submitReqButton: false,
+      };
+    }
+    return null;
+  }
+
   render() {
     return (
       <Layout style={styles.layout}>
@@ -192,7 +204,9 @@ class AnnouncementDetails extends React.Component {
             style={styles.button}
             onPress={() =>
               this.state.submitReqButton
-                ? this.props.navigation.navigate('MakeRequest')
+                ? this.props.navigation.navigate('MakeRequest', {
+                    announcementId: this.state.announcementId,
+                  })
                 : ''
             }>
             {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}

@@ -21,7 +21,7 @@ class MakeRequest extends React.Component {
       description: '',
       amount: 0,
       message: '',
-      //   announcementId: this.props.routes.params.announcementId,
+      announcementId: this.props.route.params.announcementId,
     };
   }
 
@@ -40,9 +40,16 @@ class MakeRequest extends React.Component {
       });
     } else {
       try {
-        //   const response = await axios.post(globalVariable.requestsApi + '');
+        this.props.navigation.navigate('HealthDeclaration', {
+          newRequest: {
+            announcementId: this.state.announcementId,
+            amount: this.state.amount,
+            title: this.state.title,
+            description: this.state.description,
+          },
+        });
       } catch (error) {
-        //   console.log(error);
+        // console.log(error);
         this.setState({
           message: 'Unable to make a request.',
         });
