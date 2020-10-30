@@ -70,7 +70,6 @@ class WalletScreen extends React.Component {
   async getWalletAmount(userId) {
     try {
       const response = await axios.get(`${globalVariable.userApi}${userId}`);
-      console.log(`Running getWalletAmount`)
       this.setState({
         user: response.data,
       });
