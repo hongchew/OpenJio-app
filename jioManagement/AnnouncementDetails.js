@@ -12,8 +12,7 @@ class AnnouncementDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      announcementId: this.props.route.params.announcementId,
-      announcementDetails: '',
+      announcementDetails: this.props.route.params.announcementDetails,
       createdBy: '',
       userRequest: '',
       submitReqButton: true,
@@ -26,14 +25,10 @@ class AnnouncementDetails extends React.Component {
 
   async getAnnouncementDetails() {
     try {
-      const responseDetails = await axios.get(
-        globalVariable.announcementApi + 'by/' + this.state.announcementId
-      );
       const responseUser = await axios.get(
-        globalVariable.userApi + responseDetails.data.userId
+        globalVariable.userApi + this.state.announcementDetails.userId
       );
       this.setState({
-        announcementDetails: responseDetails.data,
         createdBy: {
           name: responseUser.data.name,
           badges: responseUser.data.Badges,
@@ -51,7 +46,10 @@ class AnnouncementDetails extends React.Component {
         globalVariable.requestApi + 'by-userId/' + this.props.user.userId
       );
       responseRequests.data.forEach((request) => {
-        if (request.announcementId == this.state.announcementId) {
+        if (
+          request.announcementId ==
+          this.state.announcementDetails.announcementId
+        ) {
           console.log(request);
           this.setState({
             userRequest: request,
@@ -211,7 +209,8 @@ class AnnouncementDetails extends React.Component {
             onPress={() =>
               this.state.submitReqButton
                 ? this.props.navigation.navigate('MakeRequest', {
-                    announcementId: this.state.announcementId,
+                    announcementId: this.state.announcementDetails
+                      .announcementId,
                   })
                 : ''
             }>

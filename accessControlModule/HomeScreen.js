@@ -102,6 +102,7 @@ class HomeScreen extends React.Component {
           onPress={() =>
             this.props.navigation.navigate('AnnouncementDetails', {
               announcementId: announcement.announcementId,
+              announcementDetails: announcement,
             })
           }>
           <Text category="label" style={styles.label}>
