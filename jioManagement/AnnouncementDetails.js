@@ -23,6 +23,23 @@ class AnnouncementDetails extends React.Component {
     this.getUserRequest();
   }
 
+  dateFormat(date) {
+    const dateFormat = new Date(date);
+    return (
+      dateFormat.getFullYear() +
+      '-' +
+      (dateFormat.getMonth() + 1) +
+      '-' +
+      dateFormat.getDate() +
+      ', ' +
+      dateFormat.toLocaleTimeString('en', {
+        timeStyle: 'short',
+        hour12: true,
+        timeZone: 'Asia/Singapore',
+      })
+    );
+  }
+
   async getAnnouncementDetails() {
     try {
       const responseUser = await axios.get(
@@ -50,7 +67,6 @@ class AnnouncementDetails extends React.Component {
           request.announcementId ==
           this.state.announcementDetails.announcementId
         ) {
-          console.log(request);
           this.setState({
             userRequest: request,
             submitReqButton: false,
@@ -64,15 +80,14 @@ class AnnouncementDetails extends React.Component {
 
   //to show new request under announcement details after redirecting from user making a new request
   //otherwise, only announcement details without the new request is shown after the redirect
-  // static getDerivedStateFromProps(props, state) {
-  //   if (props.route.params) {
-  //     return {
-  //       userRequest: props.route.params.userRequest,
-  //       submitReqButton: false,
-  //     };
-  //   }
-  //   return null;
-  // }
+  componentDidUpdate(prevProps) {
+    if (this.props.route.params != prevProps.route.params) {
+      this.setState({
+        userRequest: this.props.route.params.userRequest,
+        submitReqButton: false,
+      });
+    }
+  }
 
   render() {
     return (
@@ -132,15 +147,8 @@ class AnnouncementDetails extends React.Component {
                   Close Time
                 </Text>
                 <Text style={styles.word}>
-                  {/* {new Date(this.state.announcementDetails.closeTime).toString()} */}
                   {this.state.announcementDetails.closeTime
-                    ? new Date(
-                        this.state.announcementDetails.closeTime
-                      ).toLocaleTimeString('en', {
-                        timeStyle: 'short',
-                        hour12: true,
-                        timeZone: 'Asia/Singapore',
-                      })
+                    ? this.dateFormat(this.state.announcementDetails.closeTime)
                     : ''}
                 </Text>
               </View>
@@ -157,23 +165,19 @@ class AnnouncementDetails extends React.Component {
               <Text category="label" style={styles.label}>
                 Title
               </Text>
-              <Text style={styles.word}>
-                {this.state.userRequest ? this.state.userRequest.title : ''}
-              </Text>
+              <Text style={styles.word}>{this.state.userRequest.title}</Text>
               <Text category="label" style={styles.label}>
                 Description
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest
-                  ? this.state.userRequest.description
-                  : ''}
+                {this.state.userRequest.description}
               </Text>
               <Text category="label" style={styles.label}>
                 Amount
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.word}>
-                  {this.state.userRequest && this.state.userRequest.amount
+                  {this.state.userRequest.amount
                     ? 'SGD ' +
                       parseFloat(this.state.userRequest.amount).toFixed(2)
                     : ''}
@@ -183,39 +187,35 @@ class AnnouncementDetails extends React.Component {
                 Status
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest
-                  ? this.state.userRequest.requestStatus
-                  : ''}
+                {this.state.userRequest.requestStatus}
               </Text>
               <Text category="label" style={styles.label}>
                 Submitted At
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest && this.state.userRequest.createdAt
-                  ? new Date(
-                      this.state.userRequest.createdAt
-                    ).toLocaleTimeString('en', {
-                      timeStyle: 'short',
-                      hour12: true,
-                      timeZone: 'Asia/Singapore',
-                    })
+                {this.state.userRequest.createdAt
+                  ? this.dateFormat(this.state.userRequest.createdAt)
                   : ''}
               </Text>
             </Card>
           )}
 
-          <Button
-            style={styles.button}
-            onPress={() =>
-              this.state.submitReqButton
-                ? this.props.navigation.navigate('MakeRequest', {
-                    announcementId: this.state.announcementDetails
-                      .announcementId,
-                  })
-                : ''
-            }>
-            {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}
-          </Button>
+          {/* hide submit request button if announcement is made by the user */}
+          {renderIf(
+            this.props.user.userId != this.state.announcementDetails.userId,
+            <Button
+              style={styles.button}
+              onPress={() =>
+                this.state.submitReqButton
+                  ? this.props.navigation.navigate('MakeRequest', {
+                      announcementId: this.state.announcementDetails
+                        .announcementId,
+                    })
+                  : ''
+              }>
+              {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}
+            </Button>
+          )}
         </ScrollView>
       </Layout>
     );
