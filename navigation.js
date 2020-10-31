@@ -36,6 +36,13 @@ import EditWalletLimit from './paymentManagement/EditWalletLimit';
 import Donate from './paymentManagement/Donate';
 import Withdraw from './paymentManagement/Withdraw';
 import SuccessfulScreen from './paymentManagement/SuccessfulScreen';
+//screens from jio management
+import MakeRequest from './jioManagement/MakeRequest';
+import StartLocation from './jioManagement/StartLocation';
+import AnnouncementDetails from './jioManagement/AnnouncementDetails';
+import HealthDeclaration from './jioManagement/HealthDeclaration';
+import MakeAnnouncement from './jioManagement/MakeAnnouncement';
+import MyActivity from './jioManagement/MyActivity';
 //tab navigator
 import TabNavigator from './tabs';
 
@@ -63,6 +70,7 @@ const HomeNavigator = () => (
     <Stack.Screen name="Signup" component={SignupScreen} />
     <Stack.Screen name="Wallet" component={WalletScreen} />
     <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen} />
+    <Stack.Screen name="MyActivity" component={MyActivity} />
     <Stack.Screen
       name="ChangePassword"
       component={ChangePassword}
@@ -350,6 +358,22 @@ const HomeNavigator = () => (
         ),
       })}
     />
+    <Stack.Screen
+      name="HealthDeclaration"
+      component={HealthDeclaration}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="MakeAnnouncement"
+      component={MakeAnnouncement}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
     {/* doesn't include any buttons because i just want a page that shows successful payment */}
     {/* and have a button to navigate back to the wallet screen */}
     <Stack.Screen name="SuccessfulScreen" component={SuccessfulScreen} />
@@ -376,6 +400,62 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+     <Stack.Screen
+      name="MakeRequest"
+      component={MakeRequest}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="StartLocation"
+      component={StartLocation}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="AnnouncementDetails"
+      component={AnnouncementDetails}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
   </Stack.Navigator>
