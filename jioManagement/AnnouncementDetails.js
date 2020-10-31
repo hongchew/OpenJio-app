@@ -12,8 +12,7 @@ class AnnouncementDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //   announcementId: this.props.routes.params.announcementId,
-      announcementId: '',
+      announcementId: this.props.route.params.announcementId,
       announcementDetails: '',
       createdBy: '',
       userRequest: '',
@@ -53,6 +52,7 @@ class AnnouncementDetails extends React.Component {
       );
       responseRequests.data.forEach((request) => {
         if (request.announcementId == this.state.announcementId) {
+          console.log(request);
           this.setState({
             userRequest: request,
             submitReqButton: false,
@@ -66,15 +66,15 @@ class AnnouncementDetails extends React.Component {
 
   //to show new request under announcement details after redirecting from user making a new request
   //otherwise, only announcement details without the new request is shown after the redirect
-  static getDerivedStateFromProps(props, state) {
-    if (props.route.params) {
-      return {
-        userRequest: props.route.params.userRequest,
-        submitReqButton: false,
-      };
-    }
-    return null;
-  }
+  // static getDerivedStateFromProps(props, state) {
+  //   if (props.route.params) {
+  //     return {
+  //       userRequest: props.route.params.userRequest,
+  //       submitReqButton: false,
+  //     };
+  //   }
+  //   return null;
+  // }
 
   render() {
     return (
@@ -159,19 +159,23 @@ class AnnouncementDetails extends React.Component {
               <Text category="label" style={styles.label}>
                 Title
               </Text>
-              <Text style={styles.word}>{this.state.userRequest.title}</Text>
+              <Text style={styles.word}>
+                {this.state.userRequest ? this.state.userRequest.title : ''}
+              </Text>
               <Text category="label" style={styles.label}>
                 Description
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest.description}
+                {this.state.userRequest
+                  ? this.state.userRequest.description
+                  : ''}
               </Text>
               <Text category="label" style={styles.label}>
                 Amount
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.word}>
-                  {this.state.userRequest.amount
+                  {this.state.userRequest && this.state.userRequest.amount
                     ? 'SGD ' +
                       parseFloat(this.state.userRequest.amount).toFixed(2)
                     : ''}
@@ -181,13 +185,15 @@ class AnnouncementDetails extends React.Component {
                 Status
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest.requestStatus}
+                {this.state.userRequest
+                  ? this.state.userRequest.requestStatus
+                  : ''}
               </Text>
               <Text category="label" style={styles.label}>
                 Submitted At
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest.createdAt
+                {this.state.userRequest && this.state.userRequest.createdAt
                   ? new Date(
                       this.state.userRequest.createdAt
                     ).toLocaleTimeString('en', {
