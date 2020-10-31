@@ -401,7 +401,8 @@ const HomeNavigator = () => (
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
-     <Stack.Screen
+    />
+    <Stack.Screen
       name="MakeRequest"
       component={MakeRequest}
       options={({navigation}) => ({
