@@ -77,27 +77,34 @@ class HomeScreen extends React.Component {
     var minutes = date.getMinutes();
     minutes = minutes < 10 ? '0' + minutes : minutes;
 
-    var formattedTime = hours + ':' + minutes + ' ' + amOrPm;    
-    return formattedTime; 
+    var formattedTime = hours + ':' + minutes + ' ' + amOrPm;
+    return formattedTime;
   }
 
   formatDate(date) {
     var formattedDate =
       date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 
-    return formattedDate; 
+    return formattedDate;
   }
 
   renderAnnouncements = () =>
     this.state.announcements.map((announcement) => {
       let announcer = announcement.User;
-      //need to convert to date because its a string 
+      //need to convert to date because its a string
       var cDate = new Date(announcement.closeTime);
       var formattedDate = this.formatDate(cDate);
       var formattedTime = this.formatTime(cDate);
 
       return (
-        <Card style={styles.card}>
+        <Card
+          style={styles.card}
+          onPress={() =>
+            this.props.navigation.navigate('AnnouncementDetails', {
+              announcementId: announcement.announcementId,
+              announcementDetails: announcement,
+            })
+          }>
           <Text category="label" style={styles.label}>
             Destination
           </Text>
@@ -124,7 +131,9 @@ class HomeScreen extends React.Component {
               <Text category="label" style={styles.label}>
                 Close Time
               </Text>
-              <Text style={styles.word}>{formattedDate}, {formattedTime}</Text>
+              <Text style={styles.word}>
+                {formattedDate}, {formattedTime}
+              </Text>
             </View>
           </View>
         </Card>
@@ -171,7 +180,6 @@ class HomeScreen extends React.Component {
             Announcements
           </Text>
           {this.renderContent()}
-
         </ScrollView>
       </Layout>
     );

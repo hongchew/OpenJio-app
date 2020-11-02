@@ -11,15 +11,11 @@ class StartLocation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      //announcment
       destination: this.props.route.params.destination,
       description: this.props.route.params.description,
       closeTime: JSON.parse(this.props.route.params.closeTime),
       startLocationId: this.props.user.defaultAddressId,
       message: '',
-      //health declaration
-      //   temperature: this.props.routes.params.temperature,
-      //   hasCovid: this.props.routes.params.hasCovid
     };
   }
 
@@ -30,8 +26,19 @@ class StartLocation extends React.Component {
       });
     } else {
       try {
+        const response = await axios.post(
+          globalVariable.announcementApi + 'create-announcement',
+          {
+            userId: this.props.user.userId,
+            addressId: this.state.startLocationId,
+            description: this.state.description,
+            closeTime: this.state.closeTime,
+            destination: this.state.destination,
+          }
+        );
+        this.props.navigation.navigate('Home');
       } catch (error) {
-        //   console.log(error);
+        console.log(error);
         this.setState({
           message: 'Unable to make a announcement.',
         });
