@@ -23,6 +23,7 @@ class HomeScreen extends React.Component {
       user: this.props.user,
       refreshing: false,
       announcements: [],
+      startLocationStr: 'Select a location',
     };
   }
 
@@ -36,16 +37,22 @@ class HomeScreen extends React.Component {
 
   componentDidMount() {
     this.getAnnouncements();
-  }
-
-  async getAnnouncerName(userId) {
-    try {
-      const response = await axios.get(globalVariable.userApi + '/' + userId);
-      return Promise.resolve(response.data.name);
-    } catch (error) {
-      console.log(error);
+    if (this.props.user.defaultAddressId !== null) {
+      this.getDefaultAddress();
     }
   }
+
+  getDefaultAddress = () =>
+    this.props.user.Addresses.map((address) => {
+      let addressStr;
+      if (this.props.user.defaultAddressId === address.addressId) {
+        addressStr = address.country + ' ' + address.postalCode;
+        this.setState({
+          defaultAddress: address,
+          startLocationStr: addressStr,
+        });
+      }
+    });
 
   async getAnnouncements() {
     try {
@@ -163,10 +170,10 @@ class HomeScreen extends React.Component {
             Hey, {this.state.user.name}
           </Text>
           <Text style={styles.subtitle}>
-            Start reducing footprints by making announcements and requests.
+            Start a jio to help reduce foot traffic in your neighbourhood!
           </Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('HealthDeclaration')}>
+            onPress={() => this.props.navigation.replace('HealthDeclaration')}>
             <Image
               style={{
                 width: 400,
@@ -176,13 +183,23 @@ class HomeScreen extends React.Component {
               source={require('../img/homeImg.png')}
             />
           </TouchableOpacity>
+
           <Text style={styles.subheader} category="h6">
-            Announcements
+            Jios near
           </Text>
+          <Card
+            style={styles.locationCard}
+            onPress={() => this.props.navigation.navigate('Address')}>
+            <Text style={{fontFamily: 'Karla-Bold'}}>
+              {this.state.startLocationStr}
+            </Text>
+          </Card>
+
           {this.renderContent()}
         </ScrollView>
       </Layout>
-    );
+    )
+
   }
 }
 
@@ -220,6 +237,14 @@ const styles = StyleSheet.create({
   },
   name: {
     marginLeft: 10,
+  },
+  locationCard: {
+    backgroundColor: 'white',
+    marginLeft: 20,
+    marginRight: 20,
+    marginBottom: 20,
+    borderRadius: 15,
+    backgroundColor: '#F5F5F5',
   },
   card: {
     backgroundColor: 'white',

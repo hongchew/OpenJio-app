@@ -36,7 +36,7 @@ class StartLocation extends React.Component {
             destination: this.state.destination,
           }
         );
-        this.props.navigation.navigate('Home');
+        this.props.navigation.navigate('Tabs', {screen: 'Home'});
       } catch (error) {
         console.log(error);
         this.setState({

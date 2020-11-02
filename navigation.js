@@ -123,17 +123,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
-        headerLeft: () => (
-          <Button
-            onPress={() => {
-              navigation.replace('Tabs', {screen: 'Profile'});
-            }}
-            accessoryLeft={BackIcon}
-            appearance="ghost"
-            status="basic"
-            size="tiny"
-          />
-        ),
       })}
     />
     <Stack.Screen
@@ -364,6 +353,17 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen
