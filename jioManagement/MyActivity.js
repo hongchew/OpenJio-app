@@ -7,9 +7,10 @@ import {
   FlatList,
   RefreshControl,
   TouchableOpacity,
+  ScrollView
 } from 'react-native';
 import {useIsFocused} from '@react-navigation/native';
-import {Text, Button} from '@ui-kitten/components';
+import {Text, Button, Layout} from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
@@ -35,23 +36,52 @@ class MyActivity extends React.Component {
   }
 
   componentDidMount() {
-    //this.getAnnouncements(); 
-    //this.getRequests();
+    console.log('running componentDidMount')
+    this.getAnnouncements(this.props.user.userId); 
+    this.getRequests(this.props.user.userId);
   }
 
   onRefresh = () => {
     this.setState({
       refreshing: true,
     });
+    this.getAnnouncements(this.props.user.userId); 
+    this.getRequests(this.props.user.userId);
+    this.setState({
+      refreshing: false
+    })
   };
 
-  //placeholder methods
-  async getAnnouncements() {
-    
+  //To get all active announcements
+  async getAnnouncements(userId) {
+    try{
+      const response = await axios.get(
+        `${globalVariable.announcementApi}all-announcements/${userId}`
+      )
+      const announcements = response.data
+      const activeAnnouncements = await announcements.filter((announcement) =>
+        announcement.announcementStatus !== 'PAST'
+      )
+      this.setState({
+        announcements: activeAnnouncements
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
-  async getRequests() {
-    
+  async getRequests(userId) {
+    try {
+      const response = await axios.get(
+        `${globalVariable.requestApi}ongoing/${userId}`
+      )
+      const requests = response.data
+      this.setState({
+        requests: requests
+      })
+    } catch (error) {
+      console.log (error)
+    }
   }
 
   viewAnnouncements = () => {
@@ -87,16 +117,22 @@ class MyActivity extends React.Component {
 
   render() {
     return (
-      <View style={styles.layout}>
+      <Layout style={styles.layout}>
         <StatusBar
           barStyle="dark-content"
           hidden={false}
           backgroundColor="white"
           //translucent={true}
         />
-        <Text style={styles.header} category="h4">
-          My Activity
-        </Text>
+        <View style={styles.headerRow}>
+            <Text style={styles.header} category="h4">
+              My Activity
+            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate('PaymentSettings')}>
+              <Text style={styles.history} status='basic'>History</Text>
+            </TouchableOpacity>
+          </View>
 
         <View
           style={{
@@ -118,10 +154,18 @@ class MyActivity extends React.Component {
             Requests
           </Button>
         </View>
-          {this.renderContent()}
+        <ScrollView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }>
+        
+        </ScrollView> 
           
         
-      </View>
+      </Layout>
     );
   }
 }
@@ -135,6 +179,15 @@ const styles = StyleSheet.create({
     marginTop: 60,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  history: {
+    marginRight: 15,
+    fontSize: 16,
+    marginTop: 65
   },
   row: {
     paddingLeft: 10,
