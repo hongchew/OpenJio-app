@@ -106,6 +106,7 @@ class HomeScreen extends React.Component {
       return (
         <Card
           style={styles.card}
+          key={announcement.announcementId}
           onPress={() =>
             this.props.navigation.navigate('AnnouncementDetails', {
               announcementId: announcement.announcementId,
@@ -189,7 +190,11 @@ class HomeScreen extends React.Component {
           </Text>
           <Card
             style={styles.locationCard}
-            onPress={() => this.props.navigation.navigate('Address')}>
+            onPress={() => this.props.navigation.navigate('StartLocation', {
+              destination: '', 
+              description: '', 
+              closeTime: null
+            })}>
             <Text style={{fontFamily: 'Karla-Bold'}}>
               {this.state.startLocationStr}
             </Text>

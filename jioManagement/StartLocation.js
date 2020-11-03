@@ -1,9 +1,9 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {View, StatusBar, StyleSheet} from 'react-native';
+import {View, StatusBar, StyleSheet, ScrollView} from 'react-native';
 import {Text, Layout, Button, Card} from '@ui-kitten/components';
 import renderIf from '../components/renderIf';
-import {ScrollView} from 'react-native-gesture-handler';
+import {setUser} from '../redux/actions';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
@@ -36,13 +36,41 @@ class StartLocation extends React.Component {
             destination: this.state.destination,
           }
         );
-        this.props.navigation.navigate('Tabs', {screen: 'Home'});
+        this.props.navigation.replace('Tabs', {screen: 'Home'});
       } catch (error) {
         console.log(error);
         this.setState({
           message: 'Unable to make a announcement.',
         });
       }
+    }
+  }
+
+  async handleSetDefault(addressId) {
+    try {
+      const response = await axios.put(
+        globalVariable.userApi + 'update-user-details',
+        {
+          userId: this.props.user.userId,
+          defaultAddressId: addressId,
+        }
+      );
+      this.props.setUser(response.data);
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to set default address.',
+      });
+    }
+  }
+
+  handleOnPressLocation = (addressId) => {
+    //if its coming from healthdeclaration/make request pages
+    if (this.props.route.params.closeTime) {
+      this.setState({startLocationId: address.addressId})
+    } else {  //coming from home page
+      this.handleSetDefault(addressId);
+      this.props.navigation.replace('Tabs', {screen: 'Home'})
     }
   }
 
@@ -57,7 +85,7 @@ class StartLocation extends React.Component {
               ? {backgroundColor: '#ebebeb'}
               : '',
           ]}
-          onPress={() => this.setState({startLocationId: address.addressId})}>
+          onPress={() => this.handleOnPressLocation(address.addressId)}>
           <Text category="label" style={styles.label}>
             DESCRIPTION
           </Text>
@@ -124,11 +152,13 @@ class StartLocation extends React.Component {
             this.RenderAddress()
           )}
           {/* check for announcement closing time */}
-          <Button
-            style={styles.button}
-            onPress={() => this.handleMakeAnnouncement()}>
-            Next
-          </Button>
+          {this.props.route.params.closeTime && (
+            <Button
+              style={styles.button}
+              onPress={() => this.handleMakeAnnouncement()}>
+              Next
+            </Button>
+          )}
           <Text style={styles.description} status="danger">
             {this.state.message}
           </Text>
@@ -199,4 +229,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(StartLocation);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => {
+      dispatch(setUser(user));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(StartLocation);
