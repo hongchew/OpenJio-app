@@ -155,7 +155,7 @@ class AnnouncementDetails extends React.Component {
             </View>
           </Card>
           {renderIf(
-            this.state.userRequest,
+            this.state.userRequest !== '',
             <Card style={styles.card}>
               <Text
                 style={{fontWeight: 'bold', marginBottom: 10}}
@@ -214,7 +214,19 @@ class AnnouncementDetails extends React.Component {
                   : ''
               }>
               {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}
-            </Button>
+            </Button>,
+            <Button
+            style={styles.button}
+            onPress={() =>
+              this.state.submitReqButton
+                ? this.props.navigation.navigate('MakeAnnouncement', {
+                    announcementId: this.state.announcementDetails
+                      .announcementId,
+                  })
+                : ''
+            }>
+            Edit Announcement
+          </Button>
           )}
         </ScrollView>
       </Layout>

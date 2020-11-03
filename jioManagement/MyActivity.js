@@ -283,7 +283,7 @@ class MyActivity extends React.Component {
             status={this.state.announcementBtnStatus}
             style={{width: 150}}
             onPress={this.viewAnnouncements}>
-            Announcements
+            Jios
           </Button>
           <Button
             status={this.state.requestBtnStatus}

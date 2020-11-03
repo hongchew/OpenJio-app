@@ -46,6 +46,29 @@ class StartLocation extends React.Component {
     }
   }
 
+  async handleEditAnnouncement() {
+    if (this.props.route.params.announcementId) {
+      try {
+        const response = await axios.put(
+          globalVariable.announcementApi + 'update-announcement',
+          {
+            announcementId: this.props.route.params.announcementId,
+            userId: this.props.user.userId,
+            addressId: this.state.startLocationId,
+            description: this.state.description,
+            closeTime: this.state.closeTime,
+            destination: this.state.destination,
+          }
+        );
+        this.props.navigation.replace('Tabs', {screen: 'Home'});
+      } catch (error) {
+        console.log(error);
+        this.setState({
+          message: 'Unable to update announcement.',
+        });
+      }
+    }
+  }
 
   RenderAddress = () =>
     this.props.user.Addresses.map((address) => {
@@ -134,7 +157,11 @@ class StartLocation extends React.Component {
 
           <Button
             style={styles.button}
-            onPress={() => this.handleMakeAnnouncement()}>
+            onPress={() =>
+              this.props.route.params
+                ? this.handleEditAnnouncement()
+                : this.handleMakeAnnouncement()
+            }>
             Next
           </Button>
 
