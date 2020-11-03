@@ -71,6 +71,9 @@ class WalletLimit extends React.Component {
           </Text>
         </View>
         <ScrollView style={styles.container}>
+          <View style={styles.descriptionText}>
+            <Text>Set a limit on how much you can top up to.</Text>
+          </View>
           <Card style={styles.card}>
             <Text>
               {this.props.user.Wallet.walletLimit == null
@@ -84,6 +87,7 @@ class WalletLimit extends React.Component {
               <Text>{this.props.user.Wallet.walletLimit}</Text>
             )} */}
           </Card>
+
           <View style={styles.buttons}>
             {renderIf(
               this.props.user.Wallet.walletLimit == null,
@@ -171,6 +175,12 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     marginTop: 20,
+  },
+  descriptionText: {
+    textAlign: 'center',
+    justifyContent: 'center',
+    marginLeft: 30,
+    marginRight: 30,
   },
 });
 

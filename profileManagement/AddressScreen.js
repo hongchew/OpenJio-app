@@ -143,22 +143,13 @@ class AddressScreen extends React.Component {
           <Text style={styles.header} category="h4">
             Address Book
           </Text>
-          {renderIf(
-            this.props.user && this.props.user.Addresses.length < 3,
-            <Button
-              size="small"
-              style={styles.button}
-              onPress={() => this.props.navigation.navigate('AddAddress')}>
-              ADD ADDRESS
-            </Button>,
-            <Button
+          <Button
               size="small"
               style={styles.button}
               onPress={() => this.props.navigation.navigate('AddAddress')}
-              disabled={true}>
+              disabled={this.props.user && this.props.user.Addresses.length < 3 ? false : true}>
               ADD ADDRESS
             </Button>
-          )}
         </View>
         <ScrollView style={styles.container}>
           {renderIf(

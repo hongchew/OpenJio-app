@@ -20,6 +20,9 @@ class HealthDeclaration extends React.Component {
       user: this.props.user,
       temp: 0,
       selectedIndex: 0,
+      newRequest: this.props.route.params
+        ? this.props.route.params.newRequest
+        : null,
     };
   }
 
@@ -31,7 +34,11 @@ class HealthDeclaration extends React.Component {
   async handleSubmitTemp() {
     let hasCovid;
 
-    if (this.state.temp === 0 || this.state.temp === -1 || this.state.temp < 35) {
+    if (
+      this.state.temp === 0 ||
+      this.state.temp === -1 ||
+      this.state.temp < 35
+    ) {
       this.setState({
         message: 'Invalid temperature.',
       });
@@ -43,7 +50,7 @@ class HealthDeclaration extends React.Component {
         hasCovid = false;
       }
       console.log(hasCovid);
-      console.log(this.state.temp); 
+      console.log(this.state.temp);
 
       try {
         //this.props.navigation.navigate('CreateAnnouncement');
@@ -58,15 +65,8 @@ class HealthDeclaration extends React.Component {
         this.setState({
           temperatureLog: response.data,
         });
-        
-        //check if user is able to proceed to make announcement or not
-        //by checking the risk level
-        if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
-          this.props.navigation.navigate('MakeAnnouncement');
-        } else {
-          this.setState({
-            message: 'Your risk level is high and you are not able to make any announcements/requests.'
-          })
+        if (!this.state.newRequest) {
+          this.navigateToPage('MakeAnnouncement');
         }
       } catch (error) {
         this.setState({
@@ -76,6 +76,37 @@ class HealthDeclaration extends React.Component {
     }
   }
 
+  async handleCreateRequest() {
+    try {
+      await this.handleSubmitTemp();
+      const response = await axios.post(
+        globalVariable.requestApi + 'create-request',
+        {
+          announcementId: this.state.newRequest.announcementId,
+          userId: this.state.user.userId,
+          title: this.state.newRequest.title,
+          description: this.state.newRequest.description,
+          amount: this.state.newRequest.amount,
+        }
+      );
+      this.navigateToPage('AnnouncementDetails', {userRequest: response.data});
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  navigateToPage = (page, params) => {
+    //check if user is able to proceed to make announcement or not
+    //by checking the risk level
+    if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
+      this.props.navigation.navigate(page, params);
+    } else {
+      this.setState({
+        message:
+          'Your risk level is high and you are not able to make any announcements/requests.',
+      });
+    }
+  };
   render() {
     return (
       <Layout style={styles.layout}>
@@ -89,7 +120,7 @@ class HealthDeclaration extends React.Component {
           Health Declaration
         </Text>
         <Text style={styles.subtitle}>
-          To ensure the wellbeing of the community, it is necessary to declare
+          For covid-19 prevention purpose, it is necessary to declare
           that you are fit!
         </Text>
         <ScrollView style={styles.container}>
@@ -129,7 +160,13 @@ class HealthDeclaration extends React.Component {
               <Radio>No</Radio>
             </RadioGroup>
           </Card>
-          <Button style={styles.button} onPress={() => this.handleSubmitTemp()}>
+          <Button
+            style={styles.button}
+            onPress={() =>
+              this.state.newRequest
+                ? this.handleCreateRequest()
+                : this.handleSubmitTemp()
+            }>
             Next
           </Button>
 

@@ -54,6 +54,7 @@ class MakeAnnouncement extends React.Component {
     return formattedDate; 
   }
 
+  //handle when user scroll the datepicker
   handleCloseTime = (selectedDate) => {
     this.setState({
       chosenDate: selectedDate,
@@ -72,13 +73,12 @@ class MakeAnnouncement extends React.Component {
       chosenDate = this.state.chosenDate; 
       formattedDate = this.formatDate(chosenDate); 
       formattedTime = this.formatTime(chosenDate);
-      string = "Close Time: " + formattedDate + ', ' + formattedTime;
     } else {
       chosenDate = this.state.closeTime; 
       formattedDate = this.formatDate(this.state.closeTime); 
       formattedTime = this.formatTime(this.state.closeTime); 
-      string = "Close Time: " + formattedDate + ', ' + formattedTime;
     }
+    string = "Close Time: " + formattedDate + ', ' + formattedTime;
     this.setState({
       isVisible: false, 
       closeTime: chosenDate,
@@ -99,7 +99,6 @@ class MakeAnnouncement extends React.Component {
         message: 'Destination and description fields cannot be empty.',
       });
     } else {
-      console.log('coming here');
       this.props.navigation.navigate('StartLocation', {
         destination: this.state.destination, 
         description: this.state.description, 
