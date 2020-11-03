@@ -43,6 +43,7 @@ import AnnouncementDetails from './jioManagement/AnnouncementDetails';
 import HealthDeclaration from './jioManagement/HealthDeclaration';
 import MakeAnnouncement from './jioManagement/MakeAnnouncement';
 import MyActivity from './jioManagement/MyActivity';
+import MyHistory from './jioManagement/MyHistory';
 //tab navigator
 import TabNavigator from './tabs';
 
@@ -450,6 +451,25 @@ const HomeNavigator = () => (
           <Button
             onPress={() => {
               navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="MyHistory"
+      component={MyHistory}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'MyActivity'});
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"

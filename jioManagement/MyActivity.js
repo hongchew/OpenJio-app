@@ -61,8 +61,12 @@ class MyActivity extends React.Component {
       const activeAnnouncements = await announcements.filter(
         (announcement) => announcement.announcementStatus !== 'PAST'
       );
+      //sort array according to closeTime from closing soon to closing later
+      const sortedAnnouncements = await activeAnnouncements.sort(
+        (a,b) => new Date(a.closeTime) - new Date(b.closeTime)
+      )
       this.setState({
-        announcements: activeAnnouncements,
+        announcements: sortedAnnouncements,
       });
     } catch (error) {
       console.log(error);
@@ -75,8 +79,11 @@ class MyActivity extends React.Component {
         `${globalVariable.requestApi}ongoing/${userId}`
       );
       const requests = response.data;
+      const sortedRequests = await requests.sort(
+        (a,b) => new Date(a.closeTime) - new Date(b.closeTime)
+      )
       this.setState({
-        requests: requests,
+        requests: sortedRequests,
       });
     } catch (error) {
       console.log(error);
@@ -265,7 +272,7 @@ class MyActivity extends React.Component {
             My Activity
           </Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('Home')}>
+            onPress={() => this.props.navigation.navigate('MyHistory')}>
             <Text style={styles.history} status="basic">
               History
             </Text>
