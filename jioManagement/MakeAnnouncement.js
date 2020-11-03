@@ -44,6 +44,7 @@ class MakeAnnouncement extends React.Component {
       this.setState({
         destination: announcement.destination,
         description: announcement.description,
+        selected: true,
         closeTime: new Date(announcement.closeTime),
         btnString: string,
       });
