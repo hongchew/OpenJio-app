@@ -56,6 +56,7 @@ class StartLocation extends React.Component {
         }
       );
       this.props.setUser(response.data);
+      this.props.navigation.replace('Tabs', {screen: 'Home'})
     } catch (error) {
       console.log(error);
       this.setState({
@@ -70,7 +71,6 @@ class StartLocation extends React.Component {
       this.setState({startLocationId: address.addressId})
     } else {  //coming from home page
       this.handleSetDefault(addressId);
-      this.props.navigation.replace('Tabs', {screen: 'Home'})
     }
   }
 

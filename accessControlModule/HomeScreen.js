@@ -14,6 +14,8 @@ import {UserAvatar} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import renderIf from '../components/renderIf';
+import {setUser} from '../redux/actions';
+
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -36,10 +38,10 @@ class HomeScreen extends React.Component {
   };
 
   componentDidMount() {
-    this.getAnnouncements();
     if (this.props.user.defaultAddressId !== null) {
       this.getDefaultAddress();
     }
+    this.getAnnouncements();
   }
 
   getDefaultAddress = () =>
@@ -57,7 +59,9 @@ class HomeScreen extends React.Component {
   async getAnnouncements() {
     try {
       const response = await axios.get(
-        globalVariable.announcementApi + 'view-all-announcements'
+        globalVariable.announcementApi +
+          'nearby-announcements/' +
+          this.props.user.defaultAddressId
       );
       this.setState({
         announcements: response.data,
@@ -96,13 +100,14 @@ class HomeScreen extends React.Component {
   }
 
   renderAnnouncements = () =>
-    this.state.announcements.map((announcement) => {
-      let announcer = announcement.User;
+    this.state.announcements.map((announcementObj) => {
+      let announcer = announcementObj.announcement.User;
+      let announcement = announcementObj.announcement;
+
       //need to convert to date because its a string
       var cDate = new Date(announcement.closeTime);
       var formattedDate = this.formatDate(cDate);
       var formattedTime = this.formatTime(cDate);
-
       return (
         <Card
           style={styles.card}
@@ -190,11 +195,13 @@ class HomeScreen extends React.Component {
           </Text>
           <Card
             style={styles.locationCard}
-            onPress={() => this.props.navigation.navigate('StartLocation', {
-              destination: '', 
-              description: '', 
-              closeTime: null
-            })}>
+            onPress={() =>
+              this.props.navigation.navigate('StartLocation', {
+                destination: '',
+                description: '',
+                closeTime: null,
+              })
+            }>
             <Text style={{fontFamily: 'Karla-Bold'}}>
               {this.state.startLocationStr}
             </Text>
@@ -203,8 +210,7 @@ class HomeScreen extends React.Component {
           {this.renderContent()}
         </ScrollView>
       </Layout>
-    )
-
+    );
   }
 }
 
@@ -286,4 +292,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(HomeScreen);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setUser: (user) => {
+      dispatch(setUser(user));
+    },
+  };
+}; 
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
