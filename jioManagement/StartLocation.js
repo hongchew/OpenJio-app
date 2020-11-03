@@ -46,33 +46,6 @@ class StartLocation extends React.Component {
     }
   }
 
-  async handleSetDefault(addressId) {
-    try {
-      const response = await axios.put(
-        globalVariable.userApi + 'update-user-details',
-        {
-          userId: this.props.user.userId,
-          defaultAddressId: addressId,
-        }
-      );
-      this.props.setUser(response.data);
-      this.props.navigation.replace('Tabs', {screen: 'Home'})
-    } catch (error) {
-      console.log(error);
-      this.setState({
-        message: 'Unable to set default address.',
-      });
-    }
-  }
-
-  handleOnPressLocation = (addressId) => {
-    //if its coming from healthdeclaration/make request pages
-    if (this.props.route.params.closeTime) {
-      this.setState({startLocationId: address.addressId})
-    } else {  //coming from home page
-      this.handleSetDefault(addressId);
-    }
-  }
 
   RenderAddress = () =>
     this.props.user.Addresses.map((address) => {
@@ -82,10 +55,10 @@ class StartLocation extends React.Component {
           style={[
             styles.card,
             address.addressId === this.state.startLocationId
-              ? {backgroundColor: '#ebebeb'}
+              ? {backgroundColor: '#f9f9f9'}
               : '',
           ]}
-          onPress={() => this.handleOnPressLocation(address.addressId)}>
+          onPress={() => this.setState({startLocationId: address.addressId})}>
           <Text category="label" style={styles.label}>
             DESCRIPTION
           </Text>
@@ -109,22 +82,28 @@ class StartLocation extends React.Component {
             <Text style={styles.word}>{address.line2}</Text>,
             <Text category="s2">-</Text>
           )}
-          <Text category="label" style={styles.label}>
-            POSTAL CODE
-          </Text>
-          {renderIf(
-            address.postalCode != null,
-            <Text style={styles.word}>{address.postalCode}</Text>,
-            <Text category="s2">-</Text>
-          )}
-          <Text category="label" style={styles.label}>
-            COUNTRY
-          </Text>
-          {renderIf(
-            address.country != null,
-            <Text style={styles.word}>{address.country}</Text>,
-            <Text category="s2">-</Text>
-          )}
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+            <View>
+              <Text category="label" style={styles.label}>
+                COUNTRY
+              </Text>
+              {renderIf(
+                address.country != null,
+                <Text style={styles.word}>{address.country}</Text>,
+                <Text category="s2">-</Text>
+              )}
+            </View>
+            <View style={{marginLeft: 40}}>
+              <Text category="label" style={styles.label}>
+                POSTAL CODE
+              </Text>
+              {renderIf(
+                address.postalCode != null,
+                <Text style={styles.word}>{address.postalCode}</Text>,
+                <Text category="s2">-</Text>
+              )}
+            </View>
+          </View>
         </Card>
       );
     });
@@ -152,13 +131,13 @@ class StartLocation extends React.Component {
             this.RenderAddress()
           )}
           {/* check for announcement closing time */}
-          {this.props.route.params.closeTime && (
-            <Button
-              style={styles.button}
-              onPress={() => this.handleMakeAnnouncement()}>
-              Next
-            </Button>
-          )}
+
+          <Button
+            style={styles.button}
+            onPress={() => this.handleMakeAnnouncement()}>
+            Next
+          </Button>
+
           <Text style={styles.description} status="danger">
             {this.state.message}
           </Text>
@@ -177,16 +156,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginBottom: 30,
-    fontFamily: 'Karla-Bold',
-  },
-  headerRow: {
-    flexDirection: 'row',
-    alignContent: 'center',
-    justifyContent: 'space-between',
     marginLeft: 20,
-    marginRight: 20,
-    marginBottom: -10,
+    marginBottom: 10,
+    fontFamily: 'Karla-Bold',
   },
   description: {
     textAlign: 'center',

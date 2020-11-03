@@ -196,10 +196,8 @@ class HomeScreen extends React.Component {
           <Card
             style={styles.locationCard}
             onPress={() =>
-              this.props.navigation.navigate('StartLocation', {
-                destination: '',
-                description: '',
-                closeTime: null,
+              this.props.navigation.navigate('Address', {
+                screen: 'Home'
               })
             }>
             <Text style={{fontFamily: 'Karla-Bold'}}>
