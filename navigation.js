@@ -381,6 +381,7 @@ const HomeNavigator = () => (
     {/* and have a button to navigate back to the wallet screen */}
     <Stack.Screen name="SuccessfulScreen" component={SuccessfulScreen} />
     <Stack.Screen name="MyAnnouncement" component={MyAnnouncement} />
+    <Stack.Screen name="MyRequest" component={MyRequest} />
     <Stack.Screen
       name="SetMonthlyTopUpScreen"
       component={SetMonthlyTopUpScreen}
