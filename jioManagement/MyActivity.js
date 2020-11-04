@@ -200,8 +200,8 @@ class MyActivity extends React.Component {
             style={styles.cardlisting}
             key={request.requestId}
             onPress={() =>
-              this.props.navigation.navigate('MyActivity', {
-                request: request,
+              this.props.navigation.navigate('MyRequest', {
+                requestId: request.requestId,
               })
             }>
             <Text category="label" style={styles.cardlabel}>

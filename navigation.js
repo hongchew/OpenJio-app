@@ -48,6 +48,7 @@ import MyActivity from './jioManagement/MyActivity';
 import EditRequest from './jioManagement/EditRequest';
 import MyHistory from './jioManagement/MyHistory';
 import MyAnnouncement from './jioManagement/MyAnnouncement';
+import MyRequest from './jioManagement/MyRequest';
 
 const Stack = createStackNavigator();
 

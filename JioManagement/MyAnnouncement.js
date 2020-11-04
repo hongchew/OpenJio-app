@@ -30,6 +30,7 @@ class MyAnnouncement extends React.Component {
       requests: [],
       refreshing: false,
       startLocation: '',
+      acceptedRequest: false,
     };
   }
 
@@ -97,6 +98,19 @@ class MyAnnouncement extends React.Component {
       });
     } catch (error) {
       console.log(error);
+    }
+
+    const accepted = this.state.requests.filter(
+      (request) =>
+        request.requestStatus === 'SCHEDULED' ||
+        request.requestStatus === 'DOING' ||
+        request.requestStatus === 'COMPLETED' ||
+        request.requestStatus === 'VERIFIED'
+    );
+    if (accepted.length !== 0) {
+      this.setState({
+        acceptRequest: true,
+      });
     }
   }
 
@@ -259,14 +273,6 @@ class MyAnnouncement extends React.Component {
             <Text style={styles.header} category="h4">
               My Announcement
             </Text>
-            {/* <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('PaymentSettings')}>
-              <Icon
-                style={styles.setting}
-                name="settings-outline"
-                fill="#777"
-              />
-            </TouchableOpacity> */}
           </View>
 
           <ScrollView style={styles.container}>
