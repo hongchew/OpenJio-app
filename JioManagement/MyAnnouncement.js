@@ -10,7 +10,7 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import {Text, Layout, Card, Divider, Icon} from '@ui-kitten/components';
+import {Text, Layout, Card, Divider, Button} from '@ui-kitten/components';
 import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
@@ -26,15 +26,18 @@ class MyAnnouncement extends React.Component {
     super(props);
     this.state = {
       user: this.props.user,
-      announcement: null,
+      announcement: {},
       requests: [],
       refreshing: false,
+      startLocation: '',
     };
   }
 
   componentDidMount() {
     // AnnouncementId will be passed from My Activities page
     const announcementId = this.props.route.params.announcementId;
+
+    console.log(announcementId);
 
     this.getAnnouncement(announcementId);
     this.getRequests(announcementId);
@@ -43,16 +46,16 @@ class MyAnnouncement extends React.Component {
   }
 
   //Try if this works
-  // onRefresh = () => {
-  //   this.setState({
-  //     refreshing: true,
-  //   });
-  //   this.getAnnouncement(this.props.route.params.announcementId);
-  //   this.getWalletAmount(this.props.route.params.announcementId);
-  //   this.setState({
-  //     refreshing: false,
-  //   });
-  // };
+  onRefresh = () => {
+    this.setState({
+      refreshing: true,
+    });
+    this.getAnnouncement(this.props.route.params.announcementId);
+    this.getRequests(this.props.route.params.announcementId);
+    this.setState({
+      refreshing: false,
+    });
+  };
 
   //Retrieve Announcement details
   async getAnnouncement(announcementId) {
@@ -61,8 +64,18 @@ class MyAnnouncement extends React.Component {
         `${globalVariable.announcementApi}by/${announcementId}`
       );
 
+      // console.log(response);
+
+      const address = await axios.get(
+        `${globalVariable.addressApi}retrieve-addressId/${response.data.startLocation}`
+      );
+
+      // console.log(address);
+      // console.log(address.data.line1 + ' ' + address.data.line2);
+
       this.setState({
         announcement: response.data,
+        startLocation: address.data.line1 + ' ' + address.data.line2,
       });
     } catch (error) {
       console.log(error);
@@ -73,7 +86,7 @@ class MyAnnouncement extends React.Component {
   async getRequests(announcementId) {
     try {
       const response = await axios.get(
-        `${globalVariable.requestApi}retrieve-by-announcement/${announcementId}`
+        `${globalVariable.announcementApi}all-requests/${announcementId}`
       );
       const requests = response.data;
       const sortedRequests = await requests.sort(
@@ -87,43 +100,135 @@ class MyAnnouncement extends React.Component {
     }
   }
 
+  formatDate(date) {
+    var formattedDate =
+      date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
+    return formattedDate;
+  }
+
+  formatTime(date) {
+    //convert to 12-hour clock
+    var hours = date.getHours();
+    var amOrPm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    var minutes = date.getMinutes();
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+    var formattedTime = hours + ':' + minutes + ' ' + amOrPm;
+    return formattedTime;
+  }
+
+  handleEdit() {}
+
+  handleStop() {}
+
+  async acceptRequest(requestId) {}
+
+  async rejectRequest(requestId) {}
+
   renderItem = () => {
     return this.state.requests.slice(0, 5).map((request, index) => {
       const counter = 5;
+      const status = request.requestStatus;
+      console.log(status);
+      let displayStatus;
+      if (status === 'PENDING') {
+        displayStatus = 'Pending';
+      } else if (status === 'SCHEDULED') {
+        displayStatus = 'Scheduled';
+      } else if (status === 'REJECTED') {
+        displayStatus = 'Rejected';
+      } else if (status === 'DOING') {
+        displayStatus = 'Doing';
+      } else {
+        displayStatus = 'Completed';
+      }
+
+      console.log(displayStatus);
+
       if (counter === index + 1) {
         return (
-          <View key={request.requestId}>
-            <TouchableOpacity
-              style={styles.requestRow}
-              //Navigate to see details of request
+          <View key={request.requestId} style={styles.requestRow}>
+            <View>
+              <TouchableOpacity
               // onPress={() =>
-              //   this.props.navigation.navigate('RequestDetails', {
-              //     requestId: request.requestId,
+              //   this.props.navigation.navigate('TransactionDetails', {
+              //     transactionId: transaction.transactionId,
               //   })}
-            >
-              <Text style={styles.amount}>{request.title}</Text>
-              <Text style={styles.requestType}>{request.amount}</Text>
+              >
+                <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
-              {/* <Text style={}>{request.description}</Text> */}
-            </TouchableOpacity>
+                <Text>{request.description}</Text>
+                <Text>${request.amount}</Text>
+              </TouchableOpacity>
+            </View>
+
+            {renderIf(
+              status === 'PENDING',
+              <View style={styles.selection}>
+                <TouchableOpacity
+                  // onPress={() => this.acceptRequest(request.requestId)}
+                  style={styles.buttonItem}>
+                  <Image
+                    source={require('../img/check.png')}
+                    style={styles.imageContainer}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  // onPress={() => this.rejectRequest(request.requestId)}
+                  style={styles.buttonItem}>
+                  <Image
+                    source={require('../img/cross.png')}
+                    style={styles.imageContainer}
+                  />
+                </TouchableOpacity>
+              </View>,
+              <Text style={styles.status}>{displayStatus}</Text>
+            )}
           </View>
         );
       }
       if (counter > index + 1) {
         return (
-          <View key={request.requestId}>
-            <TouchableOpacity
-              style={styles.requestRow}
+          <View key={request.requestId} style={styles.requestRow}>
+            <View>
+              <TouchableOpacity
               // onPress={() =>
               //   this.props.navigation.navigate('TransactionDetails', {
               //     transactionId: transaction.transactionId,
               //   })}
-            >
-              <Text style={styles.amount}>{request.title}</Text>
-              <Text style={styles.requestType}>{request.amount}</Text>
-              {/* Another line for the description */}
-              {/* <Text style={}>{request.description}</Text> */}
-            </TouchableOpacity>
+              >
+                <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
+
+                <Text>{request.description}</Text>
+                <Text>${request.amount}</Text>
+              </TouchableOpacity>
+            </View>
+
+            {renderIf(
+              status === 'PENDING',
+              <View style={styles.selection}>
+                <TouchableOpacity
+                  // onPress={() => this.acceptRequest(request.requestId)}
+                  style={styles.buttonItem}>
+                  <Image
+                    source={require('../img/check.png')}
+                    style={styles.imageContainer}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  // onPress={() => this.rejectRequest(request.requestId)}
+                  style={styles.buttonItem}>
+                  <Image
+                    source={require('../img/cross.png')}
+                    style={styles.imageContainer}
+                  />
+                </TouchableOpacity>
+              </View>,
+              <Text style={styles.status}>{displayStatus}</Text>
+            )}
+
             <Divider />
           </View>
         );
@@ -132,6 +237,9 @@ class MyAnnouncement extends React.Component {
   };
 
   render() {
+    const closeDate = new Date(this.state.announcement.closeTime);
+    const formattedDate = this.formatDate(closeDate);
+    const formattedTime = this.formatTime(closeDate);
     return (
       <Layout style={styles.layout}>
         <ScrollView
@@ -181,16 +289,50 @@ class MyAnnouncement extends React.Component {
                 Close Time
               </Text>
               <Text style={styles.word}>
-                {this.state.announcement.closeTime}
+                {formattedDate}, {formattedTime}
               </Text>
 
               <Text category="label" style={styles.label}>
                 Start Location
               </Text>
-              <Text style={styles.word}>
-                {this.state.announcement.startLocation}
+              <Text style={styles.word}>{this.state.startLocation}</Text>
+
+              <Text category="label" style={styles.label}>
+                Status
               </Text>
+
+              {renderIf(
+                this.state.announcement.announcementStatus === 'ACTIVE',
+                <View>
+                  <Text style={{color: 'black'}}>Active</Text>
+                </View>
+              )}
+              {renderIf(
+                this.state.announcement.announcementStatus === 'ONGOING',
+                <View>
+                  <Text style={{color: 'black'}}>Ongoing</Text>
+                </View>
+              )}
             </Card>
+            <View style={styles.buttons}>
+              <Button
+                size="small"
+                style={styles.button}
+                onPress={() => {
+                  this.handleEdit();
+                }}>
+                Edit
+              </Button>
+              <Button
+                size="small"
+                style={styles.button}
+                onPress={() => {
+                  this.handleStop();
+                }}>
+                Stop
+              </Button>
+            </View>
+
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
                 <Text style={styles.recentRequestsTitle}>
@@ -242,18 +384,31 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
   },
-  quickActionContainer: {
-    justifyContent: 'center',
+  selection: {
     flexDirection: 'row',
+    marginLeft: 'auto',
   },
   label: {
     color: '#3366FF',
-    fontWeight: 'bold',
-    marginBottom: 5,
+    marginTop: 7,
+    marginBottom: 7,
+  },
+  button: {
+    height: 40,
+    width: '30%',
+  },
+  buttons: {
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'space-between',
+    marginLeft: 20,
+    marginRight: 20,
+    // marginTop: 20,
   },
   recentRequestsTitle: {
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     marginBottom: 10,
+    color: '#3366FF',
   },
   money: {
     fontSize: 24,
@@ -275,8 +430,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    width: 60,
-    height: 60,
+    width: 30,
+    height: 30,
   },
   showAllLink: {
     marginBottom: 10,
@@ -291,6 +446,10 @@ const styles = StyleSheet.create({
     height: 25,
     marginTop: 65,
     marginRight: 20,
+  },
+  status: {
+    marginLeft: 'auto',
+    fontStyle: 'italic',
   },
   headerRow: {
     flexDirection: 'row',
@@ -317,6 +476,9 @@ const styles = StyleSheet.create({
   description: {
     fontSize: 14,
     color: '#888888',
+  },
+  requestTitle: {
+    fontWeight: 'bold',
   },
 });
 

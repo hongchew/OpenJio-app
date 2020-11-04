@@ -1,6 +1,11 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {BottomNavigation, BottomNavigationTab, Icon, Button} from '@ui-kitten/components';
+import {
+  BottomNavigation,
+  BottomNavigationTab,
+  Icon,
+  Button,
+} from '@ui-kitten/components';
 
 import ProfileScreen from './accessControlModule/ProfileScreen';
 import HomeScreen from './accessControlModule/HomeScreen';
@@ -20,13 +25,13 @@ const BottomTabBar = ({navigation, state}) => (
   <BottomNavigation
     selectedIndex={state.index}
     onSelect={(index) => navigation.navigate(state.routeNames[index])}
-    //appearance="noIndicator"  
+    //appearance="noIndicator"
   >
-    <BottomNavigationTab title="Home" icon={HomeIcon}/>
-    <BottomNavigationTab title="Activity" icon={ActivityIcon}/>
-    <BottomNavigationTab title="Leaderboard" icon={LeaderIcon}/>
-    <BottomNavigationTab title="Wallet" icon={WalletIcon}/>
-    <BottomNavigationTab title="Profile" icon={PersonIcon}/>
+    <BottomNavigationTab title="Home" icon={HomeIcon} />
+    <BottomNavigationTab title="Activity" icon={ActivityIcon} />
+    <BottomNavigationTab title="Leaderboard" icon={LeaderIcon} />
+    <BottomNavigationTab title="Wallet" icon={WalletIcon} />
+    <BottomNavigationTab title="Profile" icon={PersonIcon} />
   </BottomNavigation>
 );
 
@@ -34,10 +39,10 @@ export const TabNavigator = () => (
   <Tab.Navigator tabBar={(props) => <BottomTabBar {...props} />}>
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="MyActivity" component={MyActivity} />
-    <Tab.Screen name="Leaderboard" component={LeaderboardScreen}/>
-    <Tab.Screen name="Wallet" component={WalletScreen}/>
+    <Tab.Screen name="Leaderboard" component={LeaderboardScreen} />
+    <Tab.Screen name="Wallet" component={WalletScreen} />
     <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>
 );
 
-export default TabNavigator; 
+export default TabNavigator;

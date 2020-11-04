@@ -63,8 +63,8 @@ class MyActivity extends React.Component {
       );
       //sort array according to closeTime from closing soon to closing later
       const sortedAnnouncements = await activeAnnouncements.sort(
-        (a,b) => new Date(a.closeTime) - new Date(b.closeTime)
-      )
+        (a, b) => new Date(a.closeTime) - new Date(b.closeTime)
+      );
       this.setState({
         announcements: sortedAnnouncements,
       });
@@ -80,8 +80,8 @@ class MyActivity extends React.Component {
       );
       const requests = response.data;
       const sortedRequests = await requests.sort(
-        (a,b) => new Date(a.closeTime) - new Date(b.closeTime)
-      )
+        (a, b) => new Date(a.closeTime) - new Date(b.closeTime)
+      );
       this.setState({
         requests: sortedRequests,
       });
@@ -141,8 +141,8 @@ class MyActivity extends React.Component {
             style={styles.cardlisting}
             key={announcement.announcementId}
             onPress={() =>
-              this.props.navigation.navigate('MyActivity', {
-                announcement: announcement,
+              this.props.navigation.navigate('MyAnnouncement', {
+                announcementId: announcement.announcementId,
               })
             }>
             <Text category="label" style={styles.cardlabel}>
@@ -311,10 +311,7 @@ class MyActivity extends React.Component {
               this.state.filter === 'announcement',
               this.renderAnnouncements()
             )}
-            {renderIf(
-              this.state.filter === 'request', 
-              this.renderRequests()
-            )}
+            {renderIf(this.state.filter === 'request', this.renderRequests())}
           </View>
         </ScrollView>
       </Layout>
@@ -391,7 +388,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     lineHeight: 22,
     justifyContent: 'center',
-  }
+  },
 });
 
 function mapStateToProps(state) {

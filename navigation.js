@@ -36,11 +36,8 @@ import EditWalletLimit from './paymentManagement/EditWalletLimit';
 import Donate from './paymentManagement/Donate';
 import Withdraw from './paymentManagement/Withdraw';
 import SuccessfulScreen from './paymentManagement/SuccessfulScreen';
-<<<<<<< HEAD
 //tab navigator
 import TabNavigator from './tabs';
-import MyAnnouncement from './JioManagement/MyAnnouncement';
-=======
 //screens from jio management
 import MakeRequest from './jioManagement/MakeRequest';
 import StartLocation from './jioManagement/StartLocation';
@@ -49,9 +46,7 @@ import HealthDeclaration from './jioManagement/HealthDeclaration';
 import MakeAnnouncement from './jioManagement/MakeAnnouncement';
 import MyActivity from './jioManagement/MyActivity';
 import MyHistory from './jioManagement/MyHistory';
-//tab navigator
-import TabNavigator from './tabs';
->>>>>>> 81ee61f15b1aeb6c09f8b2d1d29f8d6b694a3e58
+import MyAnnouncement from './jioManagement/MyAnnouncement';
 
 const Stack = createStackNavigator();
 
