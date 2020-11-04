@@ -23,6 +23,8 @@ class HealthDeclaration extends React.Component {
       newRequest: this.props.route.params
         ? this.props.route.params.newRequest
         : null,
+      message: '',
+      temperatureLog: '',
     };
   }
 
@@ -33,7 +35,6 @@ class HealthDeclaration extends React.Component {
 
   async handleSubmitTemp() {
     let hasCovid;
-
     if (
       this.state.temp === 0 ||
       this.state.temp === -1 ||
@@ -64,9 +65,23 @@ class HealthDeclaration extends React.Component {
         );
         this.setState({
           temperatureLog: response.data,
+          message: '',
         });
+        //check if user is able to proceed to make announcement or not
+        //by checking the risk level
         if (!this.state.newRequest) {
-          this.navigateToPage('MakeAnnouncement');
+          if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
+            this.props.navigation.navigate('MakeAnnouncement');
+          } else {
+            this.setState({
+              message:
+                'Your risk level is high and you are not able to make any announcements/requests.',
+            });
+          }
+        }
+        //handle create request
+        else {
+          this.handleCreateRequest();
         }
       } catch (error) {
         this.setState({
@@ -78,35 +93,43 @@ class HealthDeclaration extends React.Component {
 
   async handleCreateRequest() {
     try {
-      await this.handleSubmitTemp();
-      const response = await axios.post(
-        globalVariable.requestApi + 'create-request',
-        {
-          announcementId: this.state.newRequest.announcementId,
-          userId: this.state.user.userId,
-          title: this.state.newRequest.title,
-          description: this.state.newRequest.description,
-          amount: this.state.newRequest.amount,
-        }
-      );
-      this.navigateToPage('AnnouncementDetails', {userRequest: response.data});
+      //check if user is able to proceed to make request or not
+      //by checking the risk level
+      if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
+        const response = await axios.post(
+          globalVariable.requestApi + 'create-request',
+          {
+            announcementId: this.state.newRequest.announcementId,
+            userId: this.state.user.userId,
+            title: this.state.newRequest.title,
+            description: this.state.newRequest.description,
+            amount: this.state.newRequest.amount,
+          }
+        );
+        this.props.navigation.navigate('AnnouncementDetails', {
+          userRequest: response.data,
+          announcementDetails: this.props.route.params.announcementDetails,
+        });
+      } else {
+        this.setState({
+          message:
+            'Your risk level is high and you are not able to make any announcements/requests.',
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   }
 
-  navigateToPage = (page, params) => {
-    //check if user is able to proceed to make announcement or not
-    //by checking the risk level
-    if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
-      this.props.navigation.navigate(page, params);
-    } else {
+  //Update state whenever data passed between screens is changed, so that the user will not be redirected to the wrong screen
+  componentDidUpdate(prevProps) {
+    if (this.props.route.params != prevProps.route.params) {
       this.setState({
-        message:
-          'Your risk level is high and you are not able to make any announcements/requests.',
+        newRequest: this.props.route.params.newRequest,
       });
     }
-  };
+  }
+
   render() {
     return (
       <Layout style={styles.layout}>
@@ -160,13 +183,7 @@ class HealthDeclaration extends React.Component {
               <Radio>No</Radio>
             </RadioGroup>
           </Card>
-          <Button
-            style={styles.button}
-            onPress={() =>
-              this.state.newRequest
-                ? this.handleCreateRequest()
-                : this.handleSubmitTemp()
-            }>
+          <Button style={styles.button} onPress={() => this.handleSubmitTemp()}>
             Next
           </Button>
 

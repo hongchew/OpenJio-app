@@ -40,6 +40,7 @@ import AnnouncementDetails from './jioManagement/AnnouncementDetails';
 import HealthDeclaration from './jioManagement/HealthDeclaration';
 import MakeAnnouncement from './jioManagement/MakeAnnouncement';
 import MyActivity from './jioManagement/MyActivity';
+import EditRequest from './jioManagement/EditRequest';
 //tab navigator
 import TabNavigator from './tabs';
 
@@ -422,6 +423,25 @@ const HomeNavigator = () => (
           <Button
             onPress={() => {
               navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="EditRequest"
+      component={EditRequest}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"

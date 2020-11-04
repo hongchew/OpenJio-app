@@ -26,7 +26,7 @@ class MakeRequest extends React.Component {
   }
 
   async handleMakeRequest() {
-    if (this.state.title == '' || this.state.description == '') {
+    if (this.state.title == '') {
       this.setState({
         message: 'Fields are empty, unable to proceed.',
       });
@@ -47,6 +47,7 @@ class MakeRequest extends React.Component {
             title: this.state.title,
             description: this.state.description,
           },
+          announcementDetails: this.props.route.params.announcementDetails,
         });
       } catch (error) {
         // console.log(error);
@@ -99,7 +100,7 @@ class MakeRequest extends React.Component {
               onChangeText={(title) => this.setState({title: title})}
             />
             <Input
-              label="Description"
+              label="Description (Optional)"
               value={this.state.description}
               multiline={true}
               textStyle={{minHeight: 64, textAlignVertical: 'top'}}
