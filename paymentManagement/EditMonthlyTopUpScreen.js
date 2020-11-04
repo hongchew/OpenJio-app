@@ -1,6 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {View, StyleSheet, ScrollView, StatusBar, TextInput, Modal} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  TextInput,
+  Modal,
+} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {
   Text,
@@ -15,7 +22,7 @@ import loginStyle from '../styles/loginStyle';
 import {setUser} from '../redux/actions';
 import axios from 'axios';
 
-class TopUpScreen extends React.Component {
+class EditMonthlyTopUpScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,11 +38,12 @@ class TopUpScreen extends React.Component {
     };
   }
 
-  handleTopupResponse = async (data) => {
+  handleWebviewResponse = async (data) => {
     if (data.title === 'success') {
       this.setState({
         showModal: false,
-        message: 'Topup Success!',
+        amount: 0,
+        message: 'Update Success!\n',
         messageStatus: 'success',
       });
       const response = await axios.get(
@@ -46,7 +54,7 @@ class TopUpScreen extends React.Component {
     } else if (data.title === 'cancel') {
       this.setState({
         showModal: false,
-        message: 'Topup was Cancelled',
+        message: 'Update was Cancelled',
         messageStatus: 'danger',
       });
     } else {
@@ -56,25 +64,14 @@ class TopUpScreen extends React.Component {
 
   topUpValidation = (amount) => {
     if (amount) {
-      if (
-        this.state.wallet.walletLimit && // wallet limit is not null
-        this.state.wallet.balance + amount > this.state.wallet.walletLimit // balance after top up > wallet limit
-      ) {
+      if (amount <= 0) {
         this.setState({
-          message:
-            'Wallet Limit Reached!\nPlease enter a lower amount or increase the limit',
-          messageStatus: 'danger',
-        });
-      } else if (amount <= 0) {
-        this.setState({
-          message:
-            'Invalid top up amount',
+          message: 'Invalid top up amount',
           messageStatus: 'danger',
         });
       } else if (this.state.wallet.walletLimit === 0) {
         this.setState({
-          message:
-            'Wallet limit is currently set to 0',
+          message: 'Wallet limit is currently set to 0',
           messageStatus: 'danger',
         });
       } else {
@@ -82,14 +79,16 @@ class TopUpScreen extends React.Component {
         this.setState({
           showTopUpConfirmationModal: true,
           showModal: false,
-          topUpURI: `${globalVariable.paypalApi}topup?amount=${(
+          topUpURI: `${globalVariable.paypalApi}edit-monthly-topup?amount=${(
             this.state.amount * 100
-          ).toString()}&walletId=${this.state.wallet.walletId}`,
+          ).toString()}&recurrentAgreementId=${
+            this.props.agreement.recurrentAgreementId
+          }`,
         });
       }
     } else {
       this.setState({
-        message: 'Please input amount to top up',
+        message: 'Please input new monthly top up amount',
         messageStatus: 'danger',
       });
     }
@@ -104,11 +103,20 @@ class TopUpScreen extends React.Component {
           backgroundColor="transparent"
         />
         <Text style={styles.header} category="h4">
-          Top Up Wallet
+          Edit Monthly Top Up
         </Text>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
-            <Text style={styles.label}>Top Up Amount</Text>
+            <Text style={styles.label}>Current Monthly Top Up Amount</Text>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{marginTop: 5}}>SGD </Text>
+              <Text style={styles.currentMoney}>
+                {this.props.agreement
+                  ? this.props.agreement.amount.toFixed(2)
+                  : '-'}
+              </Text>
+            </View>
+            <Text style={styles.label}>New Monthly Top Up Amount</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
               <TextInput
@@ -122,7 +130,7 @@ class TopUpScreen extends React.Component {
             </View>
           </Card>
           <Button onPress={() => this.topUpValidation(this.state.amount)}>
-            Top up with Paypal
+            Update Change with Paypal
           </Button>
           <Modal
             visible={this.state.showModal}
@@ -131,7 +139,9 @@ class TopUpScreen extends React.Component {
               source={{
                 uri: this.state.topUpURI,
               }}
-              onNavigationStateChange={(data) => this.handleTopupResponse(data)}
+              onNavigationStateChange={(data) =>
+                this.handleWebviewResponse(data)
+              }
               onMessage={() => {}}
               onError={() => {
                 this.setState({
@@ -149,7 +159,7 @@ class TopUpScreen extends React.Component {
             <Card style={styles.confirmationModal}>
               <Layout style={styles.confirmationModal}>
                 <Text>You will be redirected to Paypal shortly</Text>
-                <Text>Amount to top up:</Text>
+                <Text>New amount to top up monthly:</Text>
                 <Text style={{fontWeight: 'bold'}}>
                   SGD {this.state.amount.toFixed(2)}
                 </Text>
@@ -228,6 +238,7 @@ const styles = StyleSheet.create({
     color: '#3366FF',
     fontWeight: 'bold',
     marginBottom: 5,
+    marginTop: 10,
   },
   action: {
     fontWeight: 'bold',
@@ -239,6 +250,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     borderBottomWidth: 1,
     borderColor: '#3366FF',
+  },
+  currentMoney: {
+    flexGrow: 1,
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   subtitle: {
     fontFamily: 'Karla-Regular',
@@ -276,9 +292,13 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
+  const agreement = state.user.Wallet.RecurrentAgreements.filter(
+    (agreement) => agreement.recurrentAgreementType === 'TOP_UP'
+  )[0];
   return {
     user: state.user,
     wallet: state.user.Wallet,
+    agreement,
   };
 }
 const mapDispatchToProps = (dispatch) => {
@@ -288,4 +308,7 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(TopUpScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditMonthlyTopUpScreen);

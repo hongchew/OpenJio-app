@@ -143,7 +143,7 @@ class HealthDeclaration extends React.Component {
           Health Declaration
         </Text>
         <Text style={styles.subtitle}>
-          To ensure the wellbeing of the community, it is necessary to declare
+          For covid-19 prevention purpose, it is necessary to declare
           that you are fit!
         </Text>
         <ScrollView style={styles.container}>

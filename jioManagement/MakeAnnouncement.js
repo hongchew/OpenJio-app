@@ -1,15 +1,10 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {StatusBar, View, StyleSheet, ScrollView} from 'react-native';
-import {
-  Text,
-  Layout,
-  Button,
-  Card,
-  Input,
-  Modal,
-} from '@ui-kitten/components';
+import {Text, Layout, Button, Card, Input, Modal} from '@ui-kitten/components';
 import DatePicker from 'react-native-date-picker';
+import axios from 'axios';
+import {globalVariable} from '../GLOBAL_VARIABLE';
 
 class MakeAnnouncement extends React.Component {
   constructor(props) {
@@ -22,11 +17,40 @@ class MakeAnnouncement extends React.Component {
       isVisible: false,
       timeStr: '',
       dateStr: '',
-      destination: '', 
+      destination: '',
       description: '',
-      selected: false, 
+      selected: false,
       btnString: 'Set close time',
     };
+  }
+
+  componentDidMount() {
+    console.log(this.props.route.params);
+    if (this.props.route.params) {
+      this.retrieveAnnouncement();
+    }
+  }
+
+  async retrieveAnnouncement() {
+    try {
+      const response = await axios.get(
+        `${globalVariable.announcementApi}by/${this.props.route.params.announcementId}`
+      );
+      const announcement = response.data;
+      const formattedDate = this.formatDate(new Date(announcement.closeTime));
+      const formattedTime = this.formatTime(new Date(announcement.closeTime));
+      const string = 'Close Time: ' + formattedDate + ', ' + formattedTime;
+
+      this.setState({
+        destination: announcement.destination,
+        description: announcement.description,
+        selected: true,
+        closeTime: new Date(announcement.closeTime),
+        btnString: string,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   safeParseFloat = (str) => {
@@ -34,7 +58,6 @@ class MakeAnnouncement extends React.Component {
     return Number.isNaN(value) ? 0 : value;
   };
 
-  
   formatTime(date) {
     //convert to 12-hour clock
     var hours = date.getHours();
@@ -43,17 +66,18 @@ class MakeAnnouncement extends React.Component {
     var minutes = date.getMinutes();
     minutes = minutes < 10 ? '0' + minutes : minutes;
 
-    var formattedTime = hours + ':' + minutes + ' ' + amOrPm;    
-    return formattedTime; 
+    var formattedTime = hours + ':' + minutes + ' ' + amOrPm;
+    return formattedTime;
   }
 
   formatDate(date) {
     var formattedDate =
       date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
 
-    return formattedDate; 
+    return formattedDate;
   }
 
+  //handle when user scroll the datepicker
   handleCloseTime = (selectedDate) => {
     this.setState({
       chosenDate: selectedDate,
@@ -63,34 +87,32 @@ class MakeAnnouncement extends React.Component {
 
   handleConfirm() {
     var string;
-    var formattedDate; 
-    var formattedTime; 
-    var chosenDate; 
+    var formattedDate;
+    var formattedTime;
+    var chosenDate;
 
-    //if the user scroll the datepicker 
+    //if the user scroll the datepicker
     if (this.state.datePicked) {
-      chosenDate = this.state.chosenDate; 
-      formattedDate = this.formatDate(chosenDate); 
+      chosenDate = this.state.chosenDate;
+      formattedDate = this.formatDate(chosenDate);
       formattedTime = this.formatTime(chosenDate);
-      string = "Close Time: " + formattedDate + ', ' + formattedTime;
     } else {
-      chosenDate = this.state.closeTime; 
-      formattedDate = this.formatDate(this.state.closeTime); 
-      formattedTime = this.formatTime(this.state.closeTime); 
-      string = "Close Time: " + formattedDate + ', ' + formattedTime;
+      chosenDate = this.state.closeTime;
+      formattedDate = this.formatDate(this.state.closeTime);
+      formattedTime = this.formatTime(this.state.closeTime);
     }
+    string = 'Close Time: ' + formattedDate + ', ' + formattedTime;
     this.setState({
-      isVisible: false, 
+      isVisible: false,
       closeTime: chosenDate,
       btnString: string,
       selected: true, //user has set a time
       datePicked: false, //reset the date picker state
     });
-    
   }
 
   handleSubmit = () => {
-    if (!this.state.selected) { 
+    if (!this.state.selected) {
       this.setState({
         message: 'Please set a close time.',
       });
@@ -99,14 +121,22 @@ class MakeAnnouncement extends React.Component {
         message: 'Destination and description fields cannot be empty.',
       });
     } else {
-      console.log('coming here');
-      this.props.navigation.navigate('StartLocation', {
-        destination: this.state.destination, 
-        description: this.state.description, 
-        closeTime: JSON.stringify(this.state.closeTime)
-      })
+      if (this.props.route.params) { //if its edit 
+        this.props.navigation.navigate('StartLocation', {
+          destination: this.state.destination,
+          description: this.state.description,
+          closeTime: JSON.stringify(this.state.closeTime),
+          announcementId: this.props.route.params.announcementId
+        });
+      } else {  //if its create
+        this.props.navigation.navigate('StartLocation', {
+          destination: this.state.destination,
+          description: this.state.description,
+          closeTime: JSON.stringify(this.state.closeTime),
+        });
+      }
     }
-  }
+  };
 
   render() {
     return (
@@ -118,7 +148,7 @@ class MakeAnnouncement extends React.Component {
           translucent={true}
         />
         <Text style={styles.header} category="h4">
-          Make Announcement
+          {this.props.route.params ? 'Edit Announcement' : 'Make Announcement'}
         </Text>
         <ScrollView style={styles.container}>
           <Input
@@ -170,7 +200,10 @@ class MakeAnnouncement extends React.Component {
                   style={styles.modalButton}
                   size={'small'}
                   onPress={() => {
-                    this.setState({isVisible: false, closeTime: this.state.closeTime});
+                    this.setState({
+                      isVisible: false,
+                      closeTime: this.state.closeTime,
+                    });
                   }}>
                   Dismiss
                 </Button>

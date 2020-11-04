@@ -1,6 +1,13 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {View, StyleSheet, ScrollView, StatusBar, TextInput, Modal} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  TextInput,
+  Modal,
+} from 'react-native';
 import {WebView} from 'react-native-webview';
 import {
   Text,
@@ -15,7 +22,7 @@ import loginStyle from '../styles/loginStyle';
 import {setUser} from '../redux/actions';
 import axios from 'axios';
 
-class TopUpScreen extends React.Component {
+class SetMonthlyTopUpScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,7 +42,7 @@ class TopUpScreen extends React.Component {
     if (data.title === 'success') {
       this.setState({
         showModal: false,
-        message: 'Topup Success!',
+        message: 'Topup Success!\nRecurring Top Ups require some time to process, please refresh the wallet in a while to see your new balance!',
         messageStatus: 'success',
       });
       const response = await axios.get(
@@ -56,25 +63,14 @@ class TopUpScreen extends React.Component {
 
   topUpValidation = (amount) => {
     if (amount) {
-      if (
-        this.state.wallet.walletLimit && // wallet limit is not null
-        this.state.wallet.balance + amount > this.state.wallet.walletLimit // balance after top up > wallet limit
-      ) {
+      if (amount <= 0) {
         this.setState({
-          message:
-            'Wallet Limit Reached!\nPlease enter a lower amount or increase the limit',
-          messageStatus: 'danger',
-        });
-      } else if (amount <= 0) {
-        this.setState({
-          message:
-            'Invalid top up amount',
+          message: 'Invalid top up amount',
           messageStatus: 'danger',
         });
       } else if (this.state.wallet.walletLimit === 0) {
         this.setState({
-          message:
-            'Wallet limit is currently set to 0',
+          message: 'Wallet limit is currently set to 0',
           messageStatus: 'danger',
         });
       } else {
@@ -82,7 +78,7 @@ class TopUpScreen extends React.Component {
         this.setState({
           showTopUpConfirmationModal: true,
           showModal: false,
-          topUpURI: `${globalVariable.paypalApi}topup?amount=${(
+          topUpURI: `${globalVariable.paypalApi}monthly-topup?amount=${(
             this.state.amount * 100
           ).toString()}&walletId=${this.state.wallet.walletId}`,
         });
@@ -104,11 +100,11 @@ class TopUpScreen extends React.Component {
           backgroundColor="transparent"
         />
         <Text style={styles.header} category="h4">
-          Top Up Wallet
+          Set Monthly Top Up
         </Text>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
-            <Text style={styles.label}>Top Up Amount</Text>
+            <Text style={styles.label}>Monthly Top Up Amount</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
               <TextInput
@@ -122,7 +118,7 @@ class TopUpScreen extends React.Component {
             </View>
           </Card>
           <Button onPress={() => this.topUpValidation(this.state.amount)}>
-            Top up with Paypal
+            Subscribe with Paypal
           </Button>
           <Modal
             visible={this.state.showModal}
@@ -149,7 +145,7 @@ class TopUpScreen extends React.Component {
             <Card style={styles.confirmationModal}>
               <Layout style={styles.confirmationModal}>
                 <Text>You will be redirected to Paypal shortly</Text>
-                <Text>Amount to top up:</Text>
+                <Text>Amount to top up monthly:</Text>
                 <Text style={{fontWeight: 'bold'}}>
                   SGD {this.state.amount.toFixed(2)}
                 </Text>
@@ -288,4 +284,7 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(TopUpScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SetMonthlyTopUpScreen);
