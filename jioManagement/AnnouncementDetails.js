@@ -84,7 +84,7 @@ class AnnouncementDetails extends React.Component {
     if (this.props.route.params != prevProps.route.params) {
       this.setState({
         userRequest: this.props.route.params.userRequest,
-        submitReqButton: false,
+        submitReqButton: this.props.route.params.userRequest ? false : true,
       });
     }
   }
@@ -165,19 +165,23 @@ class AnnouncementDetails extends React.Component {
               <Text category="label" style={styles.label}>
                 Title
               </Text>
-              <Text style={styles.word}>{this.state.userRequest.title}</Text>
+              <Text style={styles.word}>
+                {this.state.userRequest ? this.state.userRequest.title : ''}
+              </Text>
               <Text category="label" style={styles.label}>
                 Description
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest.description}
+                {this.state.userRequest && this.state.userRequest.description
+                  ? this.state.userRequest.description
+                  : '-'}
               </Text>
               <Text category="label" style={styles.label}>
                 Amount
               </Text>
               <View style={{flexDirection: 'row'}}>
                 <Text style={styles.word}>
-                  {this.state.userRequest.amount
+                  {this.state.userRequest && this.state.userRequest.amount
                     ? 'SGD ' +
                       parseFloat(this.state.userRequest.amount).toFixed(2)
                     : ''}
@@ -187,13 +191,15 @@ class AnnouncementDetails extends React.Component {
                 Status
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest.requestStatus}
+                {this.state.userRequest
+                  ? this.state.userRequest.requestStatus
+                  : ''}
               </Text>
               <Text category="label" style={styles.label}>
                 Submitted At
               </Text>
               <Text style={styles.word}>
-                {this.state.userRequest.createdAt
+                {this.state.userRequest && this.state.userRequest.createdAt
                   ? this.dateFormat(this.state.userRequest.createdAt)
                   : ''}
               </Text>
@@ -210,8 +216,11 @@ class AnnouncementDetails extends React.Component {
                   ? this.props.navigation.navigate('MakeRequest', {
                       announcementId: this.state.announcementDetails
                         .announcementId,
+                      announcementDetails: this.state.announcementDetails,
                     })
-                  : ''
+                  : this.props.navigation.navigate('EditRequest', {
+                      request: this.state.userRequest,
+                    })
               }>
               {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}
             </Button>,
