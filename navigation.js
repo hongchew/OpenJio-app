@@ -36,6 +36,8 @@ import EditWalletLimit from './paymentManagement/EditWalletLimit';
 import Donate from './paymentManagement/Donate';
 import Withdraw from './paymentManagement/Withdraw';
 import SuccessfulScreen from './paymentManagement/SuccessfulScreen';
+//tab navigator
+import TabNavigator from './tabs';
 //screens from jio management
 import MakeRequest from './jioManagement/MakeRequest';
 import StartLocation from './jioManagement/StartLocation';
@@ -45,8 +47,7 @@ import MakeAnnouncement from './jioManagement/MakeAnnouncement';
 import MyActivity from './jioManagement/MyActivity';
 import EditRequest from './jioManagement/EditRequest';
 import MyHistory from './jioManagement/MyHistory';
-//tab navigator
-import TabNavigator from './tabs';
+import MyAnnouncement from './jioManagement/MyAnnouncement';
 
 const Stack = createStackNavigator();
 
@@ -379,6 +380,7 @@ const HomeNavigator = () => (
     {/* doesn't include any buttons because i just want a page that shows successful payment */}
     {/* and have a button to navigate back to the wallet screen */}
     <Stack.Screen name="SuccessfulScreen" component={SuccessfulScreen} />
+    <Stack.Screen name="MyAnnouncement" component={MyAnnouncement} />
     <Stack.Screen
       name="SetMonthlyTopUpScreen"
       component={SetMonthlyTopUpScreen}
