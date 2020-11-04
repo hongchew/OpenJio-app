@@ -213,29 +213,15 @@ class AnnouncementDetails extends React.Component {
               style={styles.button}
               onPress={() =>
                 this.state.submitReqButton
-                  ? this.props.navigation.navigate('MakeRequest', {
-                      announcementId: this.state.announcementDetails
-                        .announcementId,
-                      announcementDetails: this.state.announcementDetails,
+                  ? this.props.navigation.navigate('HealthDeclaration', {
+                      announcementId: this.state.announcementDetails.announcementId,
                     })
                   : this.props.navigation.navigate('EditRequest', {
                       request: this.state.userRequest,
                     })
               }>
               {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}
-            </Button>,
-            <Button
-            style={styles.button}
-            onPress={() =>
-              this.state.submitReqButton
-                ? this.props.navigation.navigate('MakeAnnouncement', {
-                    announcementId: this.state.announcementDetails
-                      .announcementId,
-                  })
-                : ''
-            }>
-            Edit Announcement
-          </Button>
+            </Button>
           )}
         </ScrollView>
       </Layout>

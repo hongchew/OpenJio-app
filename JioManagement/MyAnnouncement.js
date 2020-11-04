@@ -36,9 +36,6 @@ class MyAnnouncement extends React.Component {
   componentDidMount() {
     // AnnouncementId will be passed from My Activities page
     const announcementId = this.props.route.params.announcementId;
-
-    console.log(announcementId);
-
     this.getAnnouncement(announcementId);
     this.getRequests(announcementId);
 
@@ -63,19 +60,17 @@ class MyAnnouncement extends React.Component {
       const response = await axios.get(
         `${globalVariable.announcementApi}by/${announcementId}`
       );
-
-      // console.log(response);
-
+      //console.log(response.data);
+      
       const address = await axios.get(
         `${globalVariable.addressApi}retrieve-addressId/${response.data.startLocation}`
       );
 
-      // console.log(address);
       // console.log(address.data.line1 + ' ' + address.data.line2);
 
       this.setState({
         announcement: response.data,
-        startLocation: address.data.line1 + ' ' + address.data.line2,
+        startLocation: address.data.line1 + ', ' + address.data.country + ' ' + address.data.postalCode,
       });
     } catch (error) {
       console.log(error);
@@ -131,7 +126,6 @@ class MyAnnouncement extends React.Component {
     return this.state.requests.slice(0, 5).map((request, index) => {
       const counter = 5;
       const status = request.requestStatus;
-      console.log(status);
       let displayStatus;
       if (status === 'PENDING') {
         displayStatus = 'Pending';
@@ -145,7 +139,6 @@ class MyAnnouncement extends React.Component {
         displayStatus = 'Completed';
       }
 
-      console.log(displayStatus);
 
       if (counter === index + 1) {
         return (
@@ -257,7 +250,7 @@ class MyAnnouncement extends React.Component {
           />
           <View style={styles.headerRow}>
             <Text style={styles.header} category="h4">
-              My Announcement
+              My Jio
             </Text>
             {/* <TouchableOpacity
               onPress={() => this.props.navigation.navigate('PaymentSettings')}>
@@ -274,7 +267,7 @@ class MyAnnouncement extends React.Component {
               <Text category="label" style={styles.label}>
                 Destination
               </Text>
-              <Text style={{fontWeight: 'bold'}} category="h5">
+              <Text style={styles.cardtitle} category="h5">
                 {this.state.announcement.destination}
               </Text>
 
@@ -304,13 +297,13 @@ class MyAnnouncement extends React.Component {
               {renderIf(
                 this.state.announcement.announcementStatus === 'ACTIVE',
                 <View>
-                  <Text style={{color: 'black'}}>Active</Text>
+                  <Text style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>Active</Text>
                 </View>
               )}
               {renderIf(
                 this.state.announcement.announcementStatus === 'ONGOING',
                 <View>
-                  <Text style={{color: 'black'}}>Ongoing</Text>
+                  <Text style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>Ongoing</Text>
                 </View>
               )}
             </Card>
@@ -319,7 +312,9 @@ class MyAnnouncement extends React.Component {
                 size="small"
                 style={styles.button}
                 onPress={() => {
-                  this.handleEdit();
+                  this.props.navigation.navigate('MakeAnnouncement', {
+                    announcementId: this.props.route.params.announcementId,
+                  })
                 }}>
                 Edit
               </Button>
@@ -336,20 +331,20 @@ class MyAnnouncement extends React.Component {
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
                 <Text style={styles.recentRequestsTitle}>
-                  Requests under announcement
+                  Requests under Jio
                 </Text>
                 <TouchableOpacity
                 //navigate to see all the requests under the announcement in the page
                 // onPress={() =>
                 //   this.props.navigation.navigate('RequestsUnderAnnoucements')}
                 >
-                  <Text style={styles.showAllLink}>Show all</Text>
+                  <Text>Show all</Text>
                 </TouchableOpacity>
               </View>
               <View>
                 {renderIf(
                   this.state.requests.length === 0,
-                  <Text>No requests for this announcement</Text>
+                  <Text>No requests for this jio</Text>
                 )}
                 {this.renderItem()}
               </View>
@@ -368,7 +363,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   header: {
-    marginTop: 60,
     marginLeft: 15,
     fontFamily: 'Karla-Bold',
   },
@@ -389,13 +383,23 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
   },
   label: {
-    color: '#3366FF',
-    marginTop: 7,
-    marginBottom: 7,
+    marginTop: 5,
+    color: 'grey',
+  },
+  word: {
+    marginTop: 5,
+    marginBottom: 8,
+    lineHeight: 22,
+    justifyContent: 'center',
+  },
+  cardtitle: {
+    fontWeight: 'bold',
+    marginTop: 5,
+    marginBottom: 5,
   },
   button: {
     height: 40,
-    width: '30%',
+    width: '48%',
   },
   buttons: {
     flexDirection: 'row',
@@ -403,25 +407,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,
-    // marginTop: 20,
   },
   recentRequestsTitle: {
-    // fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#3366FF',
-  },
-  money: {
-    fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
-    marginLeft: 8,
-  },
-  subtitle: {
-    fontFamily: 'Karla-Regular',
-    fontSize: 16,
-    marginTop: 10,
-    paddingBottom: 30,
-    textAlign: 'center',
+    marginBottom: 14,
   },
   buttonItem: {
     marginTop: 20,
@@ -432,9 +421,6 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: 30,
     height: 30,
-  },
-  showAllLink: {
-    marginBottom: 10,
   },
   request: {
     marginTop: 20,
@@ -458,10 +444,6 @@ const styles = StyleSheet.create({
   requestHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-  },
-  amount: {
-    fontSize: 16,
-    flex: 1,
   },
   requestType: {
     fontSize: 16,
