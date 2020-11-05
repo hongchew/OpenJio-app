@@ -148,7 +148,7 @@ class MakeAnnouncement extends React.Component {
           translucent={true}
         />
         <Text style={styles.header} category="h4">
-          {this.props.route.params ? 'Edit Announcement' : 'Make Announcement'}
+          {this.props.route.params ? 'Edit Jio' : 'Start a Jio'}
         </Text>
         <ScrollView style={styles.container}>
           <Input

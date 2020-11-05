@@ -25,6 +25,36 @@ class MakeRequest extends React.Component {
     };
   }
 
+  // async handleCreateRequest() {
+  //   try {
+  //     //check if user is able to proceed to make request or not
+  //     //by checking the risk level
+  //     if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
+  //       const response = await axios.post(
+  //         globalVariable.requestApi + 'create-request',
+  //         {
+  //           announcementId: this.state.newRequest.announcementId,
+  //           userId: this.state.user.userId,
+  //           title: this.state.newRequest.title,
+  //           description: this.state.newRequest.description,
+  //           amount: this.state.newRequest.amount,
+  //         }
+  //       );
+  //       this.props.navigation.navigate('AnnouncementDetails', {
+  //         userRequest: response.data,
+  //         announcementDetails: this.props.route.params.announcementDetails,
+  //       });
+  //     } else {
+  //       this.setState({
+  //         message:
+  //           'Your risk level is high and you are not able to make any announcements/requests.',
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
+
   async handleMakeRequest() {
     if (this.state.title == '') {
       this.setState({
@@ -40,20 +70,22 @@ class MakeRequest extends React.Component {
       });
     } else {
       try {
-        this.props.navigation.navigate('HealthDeclaration', {
-          newRequest: {
+        const response = await axios.post(
+          globalVariable.requestApi + 'create-request',
+          {
             announcementId: this.state.announcementId,
-            amount: this.state.amount,
+            userId: this.state.user.userId,
             title: this.state.title,
             description: this.state.description,
-          },
+            amount: this.state.amount,
+          }
+        );
+        this.props.navigation.navigate('AnnouncementDetails', {
+          userRequest: response.data,
           announcementDetails: this.props.route.params.announcementDetails,
         });
       } catch (error) {
-        // console.log(error);
-        this.setState({
-          message: 'Unable to make a request.',
-        });
+        console.log(error);
       }
     }
   }
