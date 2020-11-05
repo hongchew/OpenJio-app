@@ -95,18 +95,6 @@ class MyAnnouncement extends React.Component {
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
 
-      const acceptedRequests = await requests.filter(
-        (request) =>
-          request.requestStatus === 'SCHEDULED' ||
-          request.requestStatus === 'DOING'
-      );
-
-      if (!acceptedRequests) {
-        console.log('there are no acceptedrequests');
-      } else {
-        console.log('there are acceptedrequests');
-      }
-
       this.setState({
         requests: sortedRequests,
       });
@@ -175,6 +163,46 @@ class MyAnnouncement extends React.Component {
     );
   };
 
+  renderActiveButton = () => {
+    //announcement is ACTIVE and has already accepted request, can only close
+    if (
+      this.state.announcement.announcementStatus === 'ACTIVE' &&
+      this.state.acceptedRequest
+    ) {
+      return (
+        <Button
+          style={{marginLeft: 15, marginRight: 15}}
+          onPress={() => {}}
+          size="small">
+          Close
+        </Button>
+      );
+    } else if (this.state.announcement.announcementStatus === 'ACTIVE') {
+      return (
+        <View style={styles.buttons}>
+          <Button
+            size="small"
+            style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate('MakeAnnouncement', {
+                announcementId: this.props.route.params.announcementId,
+              });
+            }}>
+            Edit
+          </Button>
+          <Button
+            size="small"
+            style={styles.button}
+            onPress={() => {
+              this.handleClose();
+            }}>
+            Close
+          </Button>
+        </View>
+      );
+    }
+  };
+
   renderItem = () => {
     return this.state.requests.slice(0, 5).map((request, index) => {
       const counter = 5;
@@ -195,7 +223,7 @@ class MyAnnouncement extends React.Component {
       if (counter === index + 1) {
         return (
           <View key={request.requestId} style={styles.requestRow}>
-            <View>
+            <View style={{marginRight: 50}}>
               <TouchableOpacity
               // onPress={() =>
               //   this.props.navigation.navigate('TransactionDetails', {
@@ -203,8 +231,7 @@ class MyAnnouncement extends React.Component {
               //   })}
               >
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
-
-                <Text>{request.description}</Text>
+                <Text style={{flexShrink: 1}}>{request.description}</Text>
                 <Text>${request.amount}</Text>
               </TouchableOpacity>
             </View>
@@ -247,7 +274,7 @@ class MyAnnouncement extends React.Component {
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
                 <Text>{request.description}</Text>
-                <Text>${request.amount}</Text>
+                <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
               </TouchableOpacity>
             </View>
 
@@ -325,8 +352,11 @@ class MyAnnouncement extends React.Component {
               <Text category="label" style={styles.label}>
                 Close Time
               </Text>
+
               <Text style={styles.word}>
-                {formattedDate}, {formattedTime}
+                {this.state.announcement.closeTime
+                  ? formattedDate + ', ' + formattedTime
+                  : 'Loading...'}
               </Text>
 
               <Text category="label" style={styles.label}>
@@ -356,36 +386,15 @@ class MyAnnouncement extends React.Component {
               </View>
             </Card>
 
-            {this.state.announcement.announcementStatus === 'ACTIVE' &&
-              <View style={styles.buttons}>
-                <Button
-                  size="small"
-                  style={styles.button}
-                  onPress={() => {
-                    this.props.navigation.navigate('MakeAnnouncement', {
-                      announcementId: this.props.route.params.announcementId,
-                    });
-                  }}>
-                  Edit
-                </Button>
-                <Button
-                  size="small"
-                  style={styles.button}
-                  onPress={() => {
-                    this.handleClose();
-                  }}>
-                  Close
-                </Button>
-              </View>
-            }
-
-            {this.state.announcement.announcementStatus === 'PAST' &&
+            {this.renderActiveButton()}
+            {this.state.announcement.announcementStatus === 'PAST' && (
               <Button
-              style={{marginLeft: 15, marginRight: 15}}
-              onPress={() => {}}>
-              Contact Support
-            </Button>
-            }
+                style={{marginLeft: 15, marginRight: 15}}
+                onPress={() => {}}
+                size="small">
+                Contact Support
+              </Button>
+            )}
 
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
@@ -439,7 +448,7 @@ const styles = StyleSheet.create({
   },
   selection: {
     flexDirection: 'row',
-    marginLeft: 'auto',
+    marginRight: 20,
   },
   label: {
     marginTop: 5,

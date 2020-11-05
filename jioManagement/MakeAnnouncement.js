@@ -79,14 +79,43 @@ class MakeAnnouncement extends React.Component {
     return formattedDate;
   }
 
+  async rejectRequest(requestId) {
+    console.log(requestId);
+    try {
+      const rejectedRequest = await axios.put(
+        `${globalVariable.requestApi}reject-request`, {requestId: requestId}
+      ); 
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to reject pending requests.',
+      });
+    }
+  }
+
   async handleDeleteAnnouncement() {
     try {
+      const requestsUnderThisAnnouncement = await axios.get(
+        `${globalVariable.announcementApi}all-requests/${this.props.route.params.announcementId}`
+      ); 
+
+      const requests = requestsUnderThisAnnouncement.data;
+      const pending = requests.filter(
+        (request) =>
+          request.requestStatus === 'PENDING'
+      );
+
+      await Promise.all(pending.map(async(request) => {
+        this.rejectRequest(request.requestId);
+      }));
+
       const response = await axios.delete(
         `${globalVariable.announcementApi}by/${this.props.route.params.announcementId}`
       );
+      
       this.props.navigation.replace('Tabs', {screen: 'MyActivity'});
     } catch (e) {
-      console.log(error);
+      console.log(e);
       this.setState({
         message: 'Unable to delete your announcement.',
       });

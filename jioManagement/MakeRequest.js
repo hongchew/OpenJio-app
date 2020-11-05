@@ -80,10 +80,18 @@ class MakeRequest extends React.Component {
             amount: this.state.amount,
           }
         );
-        this.props.navigation.navigate('AnnouncementDetails', {
-          userRequest: response.data,
-          announcementDetails: this.props.route.params.announcementDetails,
-        });
+        this.props.navigation.navigate('Tabs', {
+          screen: 'MyActivity',
+          params: {
+            filter: 'request',
+            announcementBtn: 'basic',
+            requestBtn: 'primary',
+          },
+        })
+        // this.props.navigation.navigate('AnnouncementDetails', {
+        //   userRequest: response.data,
+        //   announcementDetails: this.props.route.params.announcementDetails,
+        // });
       } catch (error) {
         console.log(error);
       }
@@ -143,7 +151,7 @@ class MakeRequest extends React.Component {
             <Button
               style={styles.button}
               onPress={() => this.handleMakeRequest()}>
-              Next
+              Submit Request
             </Button>
             <Text style={styles.description} status="danger">
               {this.state.message}
