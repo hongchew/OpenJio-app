@@ -128,7 +128,7 @@ class MyActivity extends React.Component {
   renderAnnouncements = () => {
     if (this.state.announcements.length === 0) {
       return (
-        <Text style={styles.message}>There are no announcements made.</Text>
+        <Text style={styles.message}>There are no active jios currently.</Text>
       );
     } else {
       return this.state.announcements.map((announcement) => {
@@ -195,6 +195,7 @@ class MyActivity extends React.Component {
       return <Text style={styles.message}>There are no requests made.</Text>;
     } else {
       return this.state.requests.map((request) => {
+        console.log(request);
         return (
           <Card
             style={styles.cardlisting}
@@ -202,6 +203,8 @@ class MyActivity extends React.Component {
             onPress={() =>
               this.props.navigation.navigate('MyRequest', {
                 requestId: request.requestId,
+              // this.props.navigation.navigate('AnnouncementDetails', {
+              //   announcementId: request.announcementId,
               })
             }>
             <Text category="label" style={styles.cardlabel}>
@@ -349,7 +352,6 @@ const styles = StyleSheet.create({
   },
   cardtitle: {
     fontWeight: 'bold',
-    marginTop: 5,
     marginBottom: 5,
   },
   cardlisting: {

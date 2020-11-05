@@ -5,6 +5,7 @@ import {Text, Layout, Button, Card, Input, Modal} from '@ui-kitten/components';
 import DatePicker from 'react-native-date-picker';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
+import renderIf from '../components/renderIf';
 
 class MakeAnnouncement extends React.Component {
   constructor(props) {
@@ -21,6 +22,7 @@ class MakeAnnouncement extends React.Component {
       description: '',
       selected: false,
       btnString: 'Set close time',
+      deleteModalVisible: false,
     };
   }
 
@@ -77,6 +79,20 @@ class MakeAnnouncement extends React.Component {
     return formattedDate;
   }
 
+  async handleDeleteAnnouncement() {
+    try {
+      const response = await axios.delete(
+        `${globalVariable.announcementApi}by/${this.props.route.params.announcementId}`
+      );
+      this.props.navigation.replace('Tabs', {screen: 'MyActivity'});
+    } catch (e) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to delete your announcement.',
+      });
+    }
+  }
+
   //handle when user scroll the datepicker
   handleCloseTime = (selectedDate) => {
     this.setState({
@@ -85,6 +101,7 @@ class MakeAnnouncement extends React.Component {
     });
   };
 
+  //when user clicks on the "Confirm button on the modal box"
   handleConfirm() {
     var string;
     var formattedDate;
@@ -121,14 +138,16 @@ class MakeAnnouncement extends React.Component {
         message: 'Destination and description fields cannot be empty.',
       });
     } else {
-      if (this.props.route.params) { //if its edit 
+      if (this.props.route.params) {
+        //if its edit
         this.props.navigation.navigate('StartLocation', {
           destination: this.state.destination,
           description: this.state.description,
           closeTime: JSON.stringify(this.state.closeTime),
-          announcementId: this.props.route.params.announcementId
+          announcementId: this.props.route.params.announcementId,
         });
-      } else {  //if its create
+      } else {
+        //if its create
         this.props.navigation.navigate('StartLocation', {
           destination: this.state.destination,
           description: this.state.description,
@@ -137,6 +156,42 @@ class MakeAnnouncement extends React.Component {
       }
     }
   };
+
+  renderDeleteModal() {
+    return (
+      <Modal
+        backdropStyle={styles.backdrop}
+        visible={this.state.deleteModalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            Are you sure you want to delete this jio?
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({deleteModalVisible: false});
+                this.handleDeleteAnnouncement();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  deleteModalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
 
   render() {
     return (
@@ -147,9 +202,24 @@ class MakeAnnouncement extends React.Component {
           backgroundColor="transparent"
           translucent={true}
         />
-        <Text style={styles.header} category="h4">
-          {this.props.route.params ? 'Edit Jio' : 'Start a Jio'}
-        </Text>
+        {renderIf(
+          this.props.route.params,
+          <View style={styles.headerRow}>
+            <Text style={styles.header} category="h4">
+              Edit Jio
+            </Text>
+            <Button
+              style={styles.deleteButton}
+              status="basic"
+              onPress={() => this.setState({deleteModalVisible: true})}>
+              Delete Jio
+            </Button>
+          </View>,
+          <Text style={styles.header} category="h4">
+            Start a Jio
+          </Text>
+        )}
+
         <ScrollView style={styles.container}>
           <Input
             label="Destination"
@@ -211,6 +281,7 @@ class MakeAnnouncement extends React.Component {
             </Card>
           </Modal>
         </ScrollView>
+        {this.renderDeleteModal()}
       </Layout>
     );
   }
@@ -266,6 +337,15 @@ const styles = StyleSheet.create({
     //shadowOffset: {width: 0, height: 2},
     //shadowOpacity: 0.2,
     //shadowRadius: 10,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginRight: 20,
+  },
+  deleteButton: {
+    marginTop: 20,
+    height: 10,
   },
   modalButtonsContainer: {
     marginTop: 10,

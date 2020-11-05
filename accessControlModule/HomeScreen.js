@@ -179,7 +179,9 @@ class HomeScreen extends React.Component {
             Start a jio to help reduce foot traffic in your neighbourhood!
           </Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.replace('HealthDeclaration')}>
+            onPress={() => this.props.navigation.replace('HealthDeclaration', {
+              startJio: 'startJio'
+            })}>
             <Image
               style={{
                 width: 400,
@@ -187,6 +189,18 @@ class HomeScreen extends React.Component {
                 alignSelf: 'center',
               }}
               source={require('../img/homeImg.png')}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => this.props.navigation.replace('HealthDeclaration')}>
+            <Image
+              style={{
+                width: 400,
+                height: 120,
+                alignSelf: 'center',
+              }}
+              source={require('../img/health.png')}
             />
           </TouchableOpacity>
 

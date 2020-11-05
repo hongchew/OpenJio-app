@@ -156,7 +156,7 @@ class AddressScreen extends React.Component {
             <Text style={styles.subtitle}>Add an address and set a default location to start finding jios near you.</Text>
           }
 
-          {this.props.route.params &&
+          {this.props.route.params && this.props.user.Addresses.length != 0 &&
             <Text style={styles.subtitle}>Set a default location to start finding jios near you.</Text>
           }
           </View>

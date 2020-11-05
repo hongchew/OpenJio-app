@@ -28,6 +28,7 @@ class EditRequest extends React.Component {
       user: this.props.user,
       title: this.props.route.params.request.title,
       description: this.props.route.params.request.description,
+      status: this.props.route.params.request.requestStatus,
       //string, so that it will be showed in <TextInput>
       amount: parseFloat(this.props.route.params.request.amount)
         .toFixed(2)
@@ -35,6 +36,7 @@ class EditRequest extends React.Component {
       message: '',
       deleteModalVisible: false,
     };
+    console.log(this.props.route.params.request.requestStatus);
   }
 
   correctAmountFormat() {
@@ -152,12 +154,15 @@ class EditRequest extends React.Component {
           <Text style={styles.header} category="h4">
             Edit Request
           </Text>
-          <Button
-            style={styles.deleteButton}
-            status="basic"
-            onPress={() => this.setState({deleteModalVisible: true})}>
-            Delete Request
-          </Button>
+          {this.state.status === 'DOING' ||
+          this.state.status === 'SCHEDULED' ? null : (
+            <Button
+              style={styles.deleteButton}
+              status="basic"
+              onPress={() => this.setState({deleteModalVisible: true})}>
+              Delete Request
+            </Button>
+          )}
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>

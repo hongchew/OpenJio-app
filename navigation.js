@@ -75,6 +75,7 @@ const HomeNavigator = () => (
     <Stack.Screen name="Wallet" component={WalletScreen} />
     <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen} />
     <Stack.Screen name="MyActivity" component={MyActivity} />
+    
     <Stack.Screen
       name="ChangePassword"
       component={ChangePassword}
@@ -381,10 +382,6 @@ const HomeNavigator = () => (
     {/* doesn't include any buttons because i just want a page that shows successful payment */}
     {/* and have a button to navigate back to the wallet screen */}
     <Stack.Screen name="SuccessfulScreen" component={SuccessfulScreen} />
-<<<<<<< HEAD
-    <Stack.Screen name="MyAnnouncement" component={MyAnnouncement} />
-    <Stack.Screen name="MyRequest" component={MyRequest} />
-=======
     <Stack.Screen
       name="MyAnnouncement"
       component={MyAnnouncement}
@@ -395,7 +392,16 @@ const HomeNavigator = () => (
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
->>>>>>> 8d2aa7007f2ca040c4d6c2d0767b05430d4e7751
+    <Stack.Screen
+      name="MyRequest"
+      component={MyRequest}
+      options={({navigation}) => ({
+        headerShown: true,
+        headerStyle: {backgroundColor: '#F5F5F5', elevation: 0},
+        headerTitleStyle: {color: '#F5F5F5'},
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
     <Stack.Screen
       name="SetMonthlyTopUpScreen"
       component={SetMonthlyTopUpScreen}

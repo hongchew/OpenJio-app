@@ -12,14 +12,17 @@ class AnnouncementDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      announcementDetails: this.props.route.params.announcementDetails,
+      announcementId: this.props.route.params 
+        ? this.props.route.params.announcementId : '',
       createdBy: '',
       userRequest: '',
+      announcementDetails: '',
       submitReqButton: true,
     };
   }
   componentDidMount() {
-    this.getAnnouncementDetails();
+    this.retrieveAnnouncementById(this.props.route.params.announcementId);
+    
     this.getUserRequest();
   }
 
@@ -39,6 +42,21 @@ class AnnouncementDetails extends React.Component {
       })
     );
   }
+  
+
+  async retrieveAnnouncementById(announcementId) {
+    try {
+      const announcement = await axios.get(
+        globalVariable.announcementApi + 'by/' + announcementId
+      );
+      this.setState({
+        announcementDetails: announcement.data
+      });
+      this.getAnnouncementDetails();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async getAnnouncementDetails() {
     try {
@@ -46,7 +64,7 @@ class AnnouncementDetails extends React.Component {
         globalVariable.userApi + this.state.announcementDetails.userId
       );
       this.setState({
-        createdBy: {
+        createdBy: { 
           name: responseUser.data.name,
           badges: responseUser.data.Badges,
           img: responseUser.data.avatarPath,
@@ -65,7 +83,7 @@ class AnnouncementDetails extends React.Component {
       responseRequests.data.forEach((request) => {
         if (
           request.announcementId ==
-          this.state.announcementDetails.announcementId
+          this.state.announcementId
         ) {
           this.setState({
             userRequest: request,
@@ -100,7 +118,7 @@ class AnnouncementDetails extends React.Component {
         />
         <View style={styles.headerRow}>
           <Text style={styles.header} category="h4">
-            Announcement Details
+            Jio Details
           </Text>
         </View>
         <ScrollView style={styles.container}>

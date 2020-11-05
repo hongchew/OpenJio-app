@@ -196,9 +196,9 @@ class MyRequest extends React.Component {
 const styles = StyleSheet.create({
   layout: {
     flex: 1,
+    backgroundColor: '#F5F5F5',
   },
   header: {
-    marginTop: 60,
     marginLeft: 15,
     backgroundColor: '#F5F5F5',
     fontFamily: 'Karla-Bold',

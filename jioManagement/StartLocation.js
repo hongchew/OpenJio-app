@@ -17,6 +17,7 @@ class StartLocation extends React.Component {
       startLocationId: this.props.user.defaultAddressId,
       message: '',
     };
+    
   }
 
   async handleMakeAnnouncement() {
@@ -158,11 +159,13 @@ class StartLocation extends React.Component {
           <Button
             style={styles.button}
             onPress={() =>
-              this.props.route.params
+              this.props.route.params.announcementId
                 ? this.handleEditAnnouncement()
                 : this.handleMakeAnnouncement()
             }>
-            Next
+            {this.props.route.params.announcementId
+                ? 'Update details of Jio'
+                : 'Start Jio'}
           </Button>
 
           <Text style={styles.description} status="danger">

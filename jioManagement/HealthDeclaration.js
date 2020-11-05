@@ -23,9 +23,12 @@ class HealthDeclaration extends React.Component {
       announcementId: this.props.route.params
         ? this.props.route.params.announcementId
         : null,
+      startJio: this.props.route.params 
+        ? this.props.route.params.startJio : null,
       message: '',
       temperatureLog: '',
     };
+    console.log(this.props.route.params);
   }
 
   safeParseFloat = (str) => {
@@ -70,10 +73,12 @@ class HealthDeclaration extends React.Component {
           //coming from home page (make announcement)
           if (!this.state.announcementId) {
             this.props.navigation.navigate('MakeAnnouncement');
-          } else {  //params passed over from AnnouncementDetails page to make request
+          } else if (this.state.announcementId || this.state.startJio) {  //params passed over from AnnouncementDetails page to make request
             this.props.navigation.navigate('MakeRequest', {
               announcementId: this.state.announcementId,
             });
+          } else {
+            this.props.navigation.replace('Tabs', {screen: 'Home'});
           }
         } else {
           this.setState({
@@ -89,35 +94,6 @@ class HealthDeclaration extends React.Component {
     }
   }
 
-  // async handleCreateRequest() {
-  //   try {
-  //     //check if user is able to proceed to make request or not
-  //     //by checking the risk level
-  //     if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
-  //       const response = await axios.post(
-  //         globalVariable.requestApi + 'create-request',
-  //         {
-  //           announcementId: this.state.newRequest.announcementId,
-  //           userId: this.state.user.userId,
-  //           title: this.state.newRequest.title,
-  //           description: this.state.newRequest.description,
-  //           amount: this.state.newRequest.amount,
-  //         }
-  //       );
-  //       this.props.navigation.navigate('AnnouncementDetails', {
-  //         userRequest: response.data,
-  //         announcementDetails: this.props.route.params.announcementDetails,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         message:
-  //           'Your risk level is high and you are not able to make any announcements/requests.',
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
 
   //Update state whenever data passed between screens is changed, so that the user will not be redirected to the wrong screen
   componentDidUpdate(prevProps) {

@@ -28,6 +28,7 @@ class MyAnnouncement extends React.Component {
       user: this.props.user,
       announcement: {},
       requests: [],
+      totalAmount: 0,
       refreshing: false,
       startLocation: '',
       acceptedRequest: false,
@@ -93,9 +94,24 @@ class MyAnnouncement extends React.Component {
       const sortedRequests = await requests.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
       );
+
+      const acceptedRequests = await requests.filter(
+        (request) =>
+          request.requestStatus === 'SCHEDULED' ||
+          request.requestStatus === 'DOING'
+      );
+
+      if (!acceptedRequests) {
+        console.log('there are no acceptedrequests');
+      } else {
+        console.log('there are acceptedrequests');
+      }
+
       this.setState({
         requests: sortedRequests,
       });
+
+      //get the total amount from the requests that this announcement has
     } catch (error) {
       console.log(error);
     }
@@ -135,11 +151,29 @@ class MyAnnouncement extends React.Component {
 
   handleEdit() {}
 
-  handleStop() {}
+  handleClose() {}
 
   async acceptRequest(requestId) {}
 
   async rejectRequest(requestId) {}
+
+  renderAmount = () => {
+    const acceptedRequests = this.state.requests.filter(
+      (request) =>
+        request.requestStatus === 'SCHEDULED' ||
+        request.requestStatus === 'DOING'
+    );
+    let totalAmount = 0;
+    acceptedRequests.map((request) => {
+      totalAmount += request.amount;
+    });
+
+    return (
+      <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 5}}>
+        SGD {totalAmount.toFixed(2)}
+      </Text>
+    );
+  };
 
   renderItem = () => {
     return this.state.requests.slice(0, 5).map((request, index) => {
@@ -301,56 +335,57 @@ class MyAnnouncement extends React.Component {
               <Text style={styles.word}>{this.state.startLocation}</Text>
 
               <Text category="label" style={styles.label}>
+                Total Amount from Accepted Requests
+              </Text>
+              {this.renderAmount()}
+
+              <Text category="label" style={styles.label}>
                 Status
               </Text>
 
-              {renderIf(
-                this.state.announcement.announcementStatus === 'ACTIVE',
-                <View>
-                  <Text
-                    style={{
-                      color: '#3366FF',
-                      marginTop: 5,
-                      fontWeight: 'bold',
-                    }}>
-                    Active
-                  </Text>
-                </View>
-              )}
-              {renderIf(
-                this.state.announcement.announcementStatus === 'ONGOING',
-                <View>
-                  <Text
-                    style={{
-                      color: '#3366FF',
-                      marginTop: 5,
-                      fontWeight: 'bold',
-                    }}>
-                    Ongoing
-                  </Text>
-                </View>
-              )}
+              <View>
+                <Text
+                  style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>
+                  {this.state.announcement.announcementStatus === 'ACTIVE' &&
+                    'Active'}
+                  {this.state.announcement.announcementStatus === 'ONGOING' &&
+                    'Ongoing'}
+                  {this.state.announcement.announcementStatus === 'PAST' &&
+                    'Past'}
+                </Text>
+              </View>
             </Card>
-            <View style={styles.buttons}>
+
+            {this.state.announcement.announcementStatus === 'ACTIVE' &&
+              <View style={styles.buttons}>
+                <Button
+                  size="small"
+                  style={styles.button}
+                  onPress={() => {
+                    this.props.navigation.navigate('MakeAnnouncement', {
+                      announcementId: this.props.route.params.announcementId,
+                    });
+                  }}>
+                  Edit
+                </Button>
+                <Button
+                  size="small"
+                  style={styles.button}
+                  onPress={() => {
+                    this.handleClose();
+                  }}>
+                  Close
+                </Button>
+              </View>
+            }
+
+            {this.state.announcement.announcementStatus === 'PAST' &&
               <Button
-                size="small"
-                style={styles.button}
-                onPress={() => {
-                  this.props.navigation.navigate('MakeAnnouncement', {
-                    announcementId: this.props.route.params.announcementId,
-                  });
-                }}>
-                Edit
-              </Button>
-              <Button
-                size="small"
-                style={styles.button}
-                onPress={() => {
-                  this.handleStop();
-                }}>
-                Stop
-              </Button>
-            </View>
+              style={{marginLeft: 15, marginRight: 15}}
+              onPress={() => {}}>
+              Contact Support
+            </Button>
+            }
 
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
