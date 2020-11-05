@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import renderIf from '../components/renderIf';
 import {
   StatusBar,
   Image,
@@ -9,13 +10,19 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {Text, Layout, Card} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  Card,
+  Icon,
+  Select,
+  SelectItem,
+  IndexPath,
+} from '@ui-kitten/components';
 import {UserAvatar} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
-import renderIf from '../components/renderIf';
 import {setUser} from '../redux/actions';
-
 
 class HomeScreen extends React.Component {
   constructor(props) {
@@ -26,6 +33,9 @@ class HomeScreen extends React.Component {
       refreshing: false,
       announcements: [],
       startLocationStr: 'Select a location',
+      selectedIndex: new IndexPath(0),
+      filterdata: ['Distance', 'Closing Time', 'Time Listed'],
+      displayValue: 'Distance',
     };
   }
 
@@ -42,6 +52,34 @@ class HomeScreen extends React.Component {
       this.getDefaultAddress();
     }
     this.getAnnouncements();
+  }
+
+  componentDidUpdate(prevProps,prevState) {
+    if (this.state.selectedIndex.row === 0 && this.state.displayValue !== prevState.displayValue) {
+      //Update announcement by distance
+      this.getAnnouncements()
+      console.log(this.state.announcements)
+    } else if (this.state.selectedIndex.row === 1 && this.state.displayValue !== prevState.displayValue) {
+      //Update announcement by close time
+      const response = this.state.announcements
+      const sortedAnnouncements = response.sort(
+        (a, b) => new Date(a.announcement.closeTime) - new Date(b.announcement.closeTime)
+      );
+      this.setState({
+        announcements: sortedAnnouncements,
+      });
+      console.log(sortedAnnouncements)
+    } else if (this.state.selectedIndex.row === 2 && this.state.displayValue !== prevState.displayValue) {
+      // Update announcement by time listed
+      const response = this.state.announcements
+      const sortedAnnouncements = response.sort(
+        (a, b) => new Date(a.announcement.createdAt) - new Date(b.announcement.createdAt)
+      );
+      this.setState({
+        announcements: sortedAnnouncements,
+      });
+      console.log(sortedAnnouncements)
+    }
   }
 
   getDefaultAddress = () =>
@@ -153,6 +191,8 @@ class HomeScreen extends React.Component {
       );
     });
 
+  renderOption = (title, index) => <SelectItem title={title} key={index}/>;
+
   render() {
     return (
       <Layout style={styles.layout}>
@@ -211,14 +251,37 @@ class HomeScreen extends React.Component {
             style={styles.locationCard}
             onPress={() =>
               this.props.navigation.navigate('Address', {
-                screen: 'Home'
+                screen: 'Home',
               })
             }>
             <Text style={{fontFamily: 'Karla-Bold'}}>
               {this.state.startLocationStr}
             </Text>
           </Card>
-
+          <View style={styles.filterrow}>
+            <Text style={styles.filterheader} category="h6">
+              Filter
+            </Text>
+            <Icon style={styles.icon} fill="#8F9BB3" name="options-2-outline" />
+            <Layout
+              style={{width: 300, backgroundColor: '#F5F5F5', marginRight: 20}}
+              level="1">
+              <Select
+                placeholder="Default"
+                value={this.state.displayValue}
+                selectedIndex={this.state.selectedIndex}
+                onSelect={(index) => {
+                  this.setState(
+                    {selectedIndex: index},
+                    this.setState({
+                      displayValue: this.state.filterdata[index - 1],
+                    })
+                  );
+                }}>
+                {this.state.filterdata.map(this.renderOption)}
+              </Select>
+            </Layout>
+          </View>
           {this.renderContent()}
         </ScrollView>
       </Layout>
@@ -296,6 +359,22 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     justifyContent: 'center',
   },
+  filterrow: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    justifyContent: 'space-between',
+  },
+  icon: {
+    width: 24,
+    height: 24,
+    marginTop: 10,
+  },
+  filterheader: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    fontFamily: 'Karla-Bold',
+  },
 });
 
 function mapStateToProps(state) {
@@ -310,6 +389,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUser(user));
     },
   };
-}; 
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomeScreen);
