@@ -26,9 +26,15 @@ class MyActivity extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
-      filter: 'announcement',
-      announcementBtnStatus: 'primary',
-      requestBtnStatus: 'basic',
+      filter: this.props.route.params
+        ? this.props.route.params.filter
+        : 'announcement',
+      announcementBtnStatus: this.props.route.params
+        ? this.props.route.params.announcementBtn
+        : 'primary',
+      requestBtnStatus: this.props.route.params
+        ? this.props.route.params.requestBtn
+        : 'basic',
       announcements: [],
       requests: [],
       refreshing: false,
@@ -203,8 +209,8 @@ class MyActivity extends React.Component {
             onPress={() =>
               this.props.navigation.navigate('MyRequest', {
                 requestId: request.requestId,
-              // this.props.navigation.navigate('AnnouncementDetails', {
-              //   announcementId: request.announcementId,
+                // this.props.navigation.navigate('AnnouncementDetails', {
+                //   announcementId: request.announcementId,
               })
             }>
             <Text category="label" style={styles.cardlabel}>
@@ -252,7 +258,7 @@ class MyActivity extends React.Component {
                   Amount
                 </Text>
                 <Text style={styles.amount}>
-                  ${parseFloat(request.amount).toFixed(2)}
+                  SGD {parseFloat(request.amount).toFixed(2)}
                 </Text>
               </View>
             </View>

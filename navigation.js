@@ -75,7 +75,7 @@ const HomeNavigator = () => (
     <Stack.Screen name="Wallet" component={WalletScreen} />
     <Stack.Screen name="LeaderboardScreen" component={LeaderboardScreen} />
     <Stack.Screen name="MyActivity" component={MyActivity} />
-    
+
     <Stack.Screen
       name="ChangePassword"
       component={ChangePassword}
@@ -390,6 +390,19 @@ const HomeNavigator = () => (
         headerStyle: {backgroundColor: '#F5F5F5', elevation: 0},
         headerTitleStyle: {color: '#F5F5F5'},
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {
+                screen: 'MyActivity',
+              });
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen
@@ -400,6 +413,24 @@ const HomeNavigator = () => (
         headerStyle: {backgroundColor: '#F5F5F5', elevation: 0},
         headerTitleStyle: {color: '#F5F5F5'},
         ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {
+                screen: 'MyActivity',
+                params: {
+                  filter: 'request',
+                  announcementBtn: 'basic',
+                  requestBtn: 'primary',
+                },
+              });
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
       })}
     />
     <Stack.Screen

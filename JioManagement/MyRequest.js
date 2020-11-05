@@ -18,6 +18,7 @@ import {
   Icon,
 } from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
+import {UserAvatar} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 
 const ForwardIcon = (props) => <Icon {...props} name="arrow-ios-forward" />;
@@ -28,7 +29,7 @@ class MyRequest extends React.Component {
     this.state = {
       user: this.props.user,
       request: {},
-      requestedUser: {},
+      announcer: {},
       announcement: {},
     };
   }
@@ -36,6 +37,27 @@ class MyRequest extends React.Component {
   componentDidMount() {
     const requestId = this.props.route.params.requestId;
     this.getRequest(requestId);
+  }
+
+  formatDate(inputDate) {
+    const date = new Date(inputDate);
+    var formattedDate =
+      date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
+
+    return formattedDate;
+  }
+
+  formatTime(inputDate) {
+    const date = new Date(inputDate);
+    //convert to 12-hour clock
+    var hours = date.getHours();
+    var amOrPm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    var minutes = date.getMinutes();
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+    var formattedTime = hours + ':' + minutes + ' ' + amOrPm;
+    return formattedTime;
   }
 
   //obtain the full list of transactions, credit and debit transactions
@@ -52,7 +74,6 @@ class MyRequest extends React.Component {
     } catch (error) {
       console.log(error);
     }
-    console.log(this.state.request.announcementId);
     // try {
     //   const response = await axios.get(
     //     `${globalVariable.userApi}/${this.state.request.userId}`
@@ -69,17 +90,48 @@ class MyRequest extends React.Component {
       const response = await axios.get(
         `${globalVariable.announcementApi}by/${this.state.request.announcementId}`
       );
-      console.log(response);
+      const responseUser = await axios.get(
+        `${globalVariable.userApi}${response.data.userId}`
+      );
       this.setState({
         announcement: response.data,
+        announcer: responseUser.data,
       });
     } catch (error) {
       console.log(error);
     }
   }
 
+  renderStatus() {
+    let status;
+    switch (this.state.request.requestStatus) {
+      case 'PENDING':
+        status = 'Pending';
+        break;
+      case 'SCHEDULED':
+        status = 'Scheduled';
+        break;
+      case 'REJECTED':
+        status = 'Rejected';
+        break;
+      case 'DOING':
+        status = 'Doing';
+        break;
+      case 'COMPLETED':
+        status = 'Completed';
+        break;
+      case 'VERIFIED':
+        status = 'Verified';
+        break;
+    }
+    return (
+      <Text style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>
+        {status}
+      </Text>
+    );
+  }
+
   render() {
-    console.log(this.state.request.status);
     return (
       <Layout style={styles.layout}>
         <ScrollView
@@ -97,7 +149,31 @@ class MyRequest extends React.Component {
           <Text style={styles.header} category="h4">
             My Request
           </Text>
+           {/* Associated announcement */}
+           <Card style={styles.jioCard}>
+            <Text category="label" style={styles.label}>
+              Jio Details
+            </Text>
+            <Text style={{fontWeight: 'bold', marginTop: 5}} category="h6">
+              {this.state.announcement.destination} 
+            </Text>
 
+            <Text style={styles.word}>
+              {this.state.announcement.description}
+            </Text>
+
+            <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+              <View>
+                <Text category="label" style={styles.label}>
+                  Submitted by
+                </Text>
+                <View style={styles.userRow}>
+                  <UserAvatar source={this.state.announcer.avatarPath} size="small" />
+                  <Text style={{marginLeft: 10}}>{this.state.announcer.name}</Text>
+                </View>
+              </View>
+            </View>
+          </Card>
           <View style={styles.moreinfobox}>
             <Card style={styles.card}>
               {/* <View style={styles.moreinfosubbox}>
@@ -105,87 +181,61 @@ class MyRequest extends React.Component {
                 <Text>{this.state.requestedUser.name}</Text>
               </View> */}
               <View style={styles.moreinfosubbox}>
-                <Text style={styles.moreinfotext}>Title</Text>
-                <Text>{this.state.request.title}</Text>
-              </View>
-              <View style={styles.moreinfosubbox}>
-                <Text style={styles.moreinfotext}>Description</Text>
-                <Text>{this.state.request.description}</Text>
-              </View>
-              <View style={styles.moreinfosubbox}>
-                <Text style={styles.moreinfotext}>Price</Text>
-                <Text>${this.state.request.amount}</Text>
-              </View>
-              <View style={styles.moreinfosubbox}>
-                <Text style={styles.moreinfotext}>Request Time</Text>
-                <Text>{new Date(this.state.request.createdAt).toString()}</Text>
-              </View>
-              <View style={styles.moreinfosubbox}>
-                <Text style={styles.moreinfotext}>
-                  Associated Announcement Description
+                <Text category="label" style={styles.label}>
+                  Request Details
                 </Text>
-                <Text>{this.state.announcement.description}</Text>
+                <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8,}}>{this.state.request.title}</Text>
               </View>
-              {renderIf(
-                this.state.request.requestStatus === 'PENDING',
+              <View style={styles.moreinfosubbox}>
+                <Text category="label" style={styles.label}>
+                  Description
+                </Text>
+                <Text style={styles.word}>
+                  {this.state.request.description}
+                </Text>
+              </View>
 
-                <View style={styles.moreinfosubbox}>
-                  <Text style={styles.moreinfotext}>Status</Text>
-                  <Text>Pending</Text>
-                </View>
-              )}
-              {renderIf(
-                this.state.request.requestStatus === 'SCHEDULED',
-                <View style={styles.moreinfosubbox}>
-                  <Text style={styles.moreinfotext}>Status</Text>
-                  <Text>Scheduled</Text>
-                </View>
-              )}
-              {renderIf(
-                this.state.request.requestStatus === 'REJECTED',
-                <View style={styles.moreinfosubbox}>
-                  <Text style={styles.moreinfotext}>Status</Text>
-                  <Text>Rejected</Text>
-                </View>
-              )}
-              {renderIf(
-                this.state.request.requestStatus === 'DOING',
-                <View style={styles.moreinfosubbox}>
-                  <Text style={styles.moreinfotext}>Status</Text>
-                  <Text>Doing</Text>
-                </View>
-              )}
-              {renderIf(
-                this.state.request.requestStatus === 'COMPLETED',
-                <View style={styles.moreinfosubbox}>
-                  <Text style={styles.moreinfotext}>Status</Text>
-                  <Text>Completed</Text>
-                </View>
-              )}
-              {renderIf(
-                this.state.request.requestStatus === 'VERIFIED',
-                <View style={styles.moreinfosubbox}>
-                  <Text style={styles.moreinfotext}>Status</Text>
-                  <Text>Verified</Text>
-                </View>
-              )}
+              <View style={styles.moreinfosubbox}>
+                <Text category="label" style={styles.label}>
+                  Request Time
+                </Text>
+                <Text style={styles.word}>
+                  {this.state.request.createdAt
+                    ? this.formatDate(this.state.request.createdAt) +
+                      ', ' +
+                      this.formatTime(this.state.request.createdAt)
+                    : 'Loading...'}
+                </Text>
+              </View>
+
+              <View style={styles.moreinfosubbox}>
+                <Text category="label" style={styles.label}>
+                  Price
+                </Text>
+                <Text style={{fontWeight: 'bold', marginBottom: 8}}>
+                  {this.state.request.amount ? `SGD ${parseFloat(this.state.request.amount).toFixed(2)}` : 'Loading...'}
+                  
+                </Text>
+              </View>
+              <View style={styles.moreinfosubbox}>
+                <Text category="label" style={styles.label}>
+                  Status
+                </Text>
+                {this.renderStatus()}
+              </View>
             </Card>
 
             {renderIf(
               this.state.request.requestStatus === 'PENDING',
-              <View style={styles.buttons}>
-                <Button
-                  style={styles.buttonItem}
-                  onPress={() => this.handleEdit()}>
-                  Edit
-                </Button>
-                <Button
-                  style={styles.buttonItem}
-                  onPress={() => this.handleDelete()}>
-                  Delete
-                </Button>
-              </View>
+              <Button
+                style={styles.button}
+                onPress={() => this.props.navigation.navigate('EditRequest', {
+                  request: this.state.request,
+                })}>
+                Edit
+              </Button>
             )}
+           
           </View>
         </ScrollView>
       </Layout>
@@ -203,103 +253,41 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     fontFamily: 'Karla-Bold',
   },
+  jioCard: {
+    marginTop: 20,
+    marginLeft: 15,
+    marginRight: 15,
+    borderRadius: 15,
+    elevation: 2,
+  },
   card: {
     marginLeft: 15,
     marginRight: 15,
     borderRadius: 15,
     elevation: 2,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
     marginTop: 20,
     marginBottom: 20,
   },
-  transactionList: {
-    marginBottom: 30,
-    flex: 1,
-  },
-  transactionTab: {
+  userRow: {
+    marginTop: 6,
     flexDirection: 'row',
-    marginTop: 20,
-    marginBottom: 20,
-    marginLeft: 10,
-    marginRight: 10,
-    justifyContent: 'center',
-    backgroundColor: 'white',
-  },
-  amount: {
-    fontSize: 16,
-  },
-  description: {
-    fontSize: 14,
-    color: '#888888',
-  },
-  money: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginLeft: 8,
-  },
-  amountlabel: {
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  UserTransactionType: {
-    backgroundColor: '#3366FF',
-    justifyContent: 'center',
     alignItems: 'center',
-    borderRadius: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginLeft: 15,
   },
-  buttonItem: {
-    paddingTop: 20,
+  button: {
+    marginTop: 20,
+    marginBottom: 30,
     marginLeft: 20,
     marginRight: 20,
-    alignItems: 'center',
-    height: 10,
-    width: 120,
-    paddingBottom: 20,
   },
-  TopUpTransactionType: {
-    backgroundColor: 'grey',
+  label: {
+    marginTop: 5,
+    color: 'grey',
+  },
+  word: {
+    marginTop: 5,
+    marginBottom: 8,
+    lineHeight: 22,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginLeft: 15,
-  },
-  WithdrawTransactionType: {
-    backgroundColor: '#58d68d',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginLeft: 15,
-  },
-  DonateTransactionType: {
-    backgroundColor: '#FF8A80',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginLeft: 15,
-  },
-  moreinfobox: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  moreinfosubbox: {
-    marginBottom: 20,
-  },
-  moreinfotext: {
-    fontWeight: 'bold',
-    marginBottom: 10,
-    marginTop: 10,
   },
   body: {
     flex: 1,

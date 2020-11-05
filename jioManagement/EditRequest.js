@@ -76,8 +76,8 @@ class EditRequest extends React.Component {
             amount: parseFloat(this.state.amount),
           }
         );
-        this.props.navigation.navigate('AnnouncementDetails', {
-          userRequest: response.data,
+        this.props.navigation.replace('MyRequest', {
+          requestId: this.props.route.params.request.requestId,
         });
       } catch (error) {
         console.log(error);
@@ -154,15 +154,14 @@ class EditRequest extends React.Component {
           <Text style={styles.header} category="h4">
             Edit Request
           </Text>
-          {this.state.status === 'DOING' ||
-          this.state.status === 'SCHEDULED' ? null : (
+          {this.state.status === 'PENDING' ? (
             <Button
               style={styles.deleteButton}
               status="basic"
               onPress={() => this.setState({deleteModalVisible: true})}>
               Delete Request
             </Button>
-          )}
+          ) : null}
         </View>
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <Layout style={styles.container}>

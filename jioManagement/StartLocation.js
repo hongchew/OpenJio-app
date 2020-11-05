@@ -17,7 +17,6 @@ class StartLocation extends React.Component {
       startLocationId: this.props.user.defaultAddressId,
       message: '',
     };
-    
   }
 
   async handleMakeAnnouncement() {
@@ -37,7 +36,7 @@ class StartLocation extends React.Component {
             destination: this.state.destination,
           }
         );
-        this.props.navigation.replace('Tabs', {screen: 'Home'});
+        this.props.navigation.replace('Tabs', {screen: 'MyActivity'});
       } catch (error) {
         console.log(error);
         this.setState({
@@ -61,7 +60,9 @@ class StartLocation extends React.Component {
             destination: this.state.destination,
           }
         );
-        this.props.navigation.replace('Tabs', {screen: 'Home'});
+        this.props.navigation.replace('MyAnnouncement', {
+          announcementId: this.props.route.params.announcementId,
+        });
       } catch (error) {
         console.log(error);
         this.setState({
@@ -164,8 +165,8 @@ class StartLocation extends React.Component {
                 : this.handleMakeAnnouncement()
             }>
             {this.props.route.params.announcementId
-                ? 'Update details of Jio'
-                : 'Start Jio'}
+              ? 'Update details of Jio'
+              : 'Start Jio'}
           </Button>
 
           <Text style={styles.description} status="danger">

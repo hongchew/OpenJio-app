@@ -12,8 +12,9 @@ class AnnouncementDetails extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      announcementId: this.props.route.params 
-        ? this.props.route.params.announcementId : '',
+      announcementId: this.props.route.params
+        ? this.props.route.params.announcementId
+        : '',
       createdBy: '',
       userRequest: '',
       announcementDetails: '',
@@ -22,35 +23,68 @@ class AnnouncementDetails extends React.Component {
   }
   componentDidMount() {
     this.retrieveAnnouncementById(this.props.route.params.announcementId);
-    
     this.getUserRequest();
   }
 
-  dateFormat(date) {
-    const dateFormat = new Date(date);
-    return (
-      dateFormat.getFullYear() +
-      '-' +
-      (dateFormat.getMonth() + 1) +
-      '-' +
-      dateFormat.getDate() +
-      ', ' +
-      dateFormat.toLocaleTimeString('en', {
-        timeStyle: 'short',
-        hour12: true,
-        timeZone: 'Asia/Singapore',
-      })
-    );
+  // dateFormat(date) {
+  //   const dateFormat = new Date(date);
+  //   return (
+  //     dateFormat.getFullYear() +
+  //     '-' +
+  //     (dateFormat.getMonth() + 1) +
+  //     '-' +
+  //     dateFormat.getDate() +
+  //     ', ' +
+  //     dateFormat.toLocaleTimeString('en', {
+  //       timeStyle: 'short',
+  //       hour12: true,
+  //       timeZone: 'Asia/Singapore',
+  //     })
+  //   );
+  // }
+
+  formatTime(date) {
+    //convert to 12-hour clock
+    const newDate = new Date(date);
+    var hours = newDate.getHours();
+    var amOrPm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    var minutes = newDate.getMinutes();
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+
+    var formattedTime = hours + ':' + minutes + ' ' + amOrPm;
+    return formattedTime;
   }
-  
+
+  formatDate(date) {
+    const newDate = new Date(date);
+    var formattedDate =
+      newDate.getFullYear() +
+      '-' +
+      (newDate.getMonth() + 1) +
+      '-' +
+      newDate.getDate();
+
+    return formattedDate;
+  }
 
   async retrieveAnnouncementById(announcementId) {
     try {
       const announcement = await axios.get(
         globalVariable.announcementApi + 'by/' + announcementId
       );
+
+      const address = await axios.get(
+        `${globalVariable.addressApi}retrieve-addressId/${announcement.data.startLocation}`
+      );
       this.setState({
-        announcementDetails: announcement.data
+        announcementDetails: announcement.data,
+        startLocation:
+          address.data.line1 +
+          ', ' +
+          address.data.country +
+          ' ' +
+          address.data.postalCode,
       });
       this.getAnnouncementDetails();
     } catch (error) {
@@ -64,7 +98,7 @@ class AnnouncementDetails extends React.Component {
         globalVariable.userApi + this.state.announcementDetails.userId
       );
       this.setState({
-        createdBy: { 
+        createdBy: {
           name: responseUser.data.name,
           badges: responseUser.data.Badges,
           img: responseUser.data.avatarPath,
@@ -81,10 +115,7 @@ class AnnouncementDetails extends React.Component {
         globalVariable.requestApi + 'by-userId/' + this.props.user.userId
       );
       responseRequests.data.forEach((request) => {
-        if (
-          request.announcementId ==
-          this.state.announcementId
-        ) {
+        if (request.announcementId == this.state.announcementId) {
           this.setState({
             userRequest: request,
             submitReqButton: false,
@@ -136,29 +167,25 @@ class AnnouncementDetails extends React.Component {
             <Text style={styles.word}>
               {this.state.announcementDetails.description}
             </Text>
+
+            <Text category="label" style={styles.label}>
+              Start Location
+            </Text>
+            <Text style={styles.word}>{this.state.startLocation}</Text>
             <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
               <View>
                 <Text category="label" style={styles.label}>
-                  Submitted By
+                  Status
                 </Text>
-                <TouchableOpacity
-                  activeOpacity={0.3}
-                  onPress={() =>
-                    this.props.navigation.navigate('UserBadges', {
-                      badges: this.state.createdBy.badges,
-                      name: this.state.createdBy.name,
-                    })
-                  }
-                  style={styles.userRow}>
-                  <UserAvatar
-                    source={
-                      this.state.createdBy.img ? this.state.createdBy.img : null
-                    }
-                    size="small"></UserAvatar>
-                  <Text style={styles.name}>
-                    {this.state.createdBy.name ? this.state.createdBy.name : ''}
-                  </Text>
-                </TouchableOpacity>
+
+                {this.state.announcementDetails.announcementStatus ===
+                  'ACTIVE' && (
+                  <View style={styles.status}>
+                    <Text style={{color: 'white', textAlign: 'center'}}>
+                      Active
+                    </Text>
+                  </View>
+                )}
               </View>
               <View style={{marginLeft: 40}}>
                 <Text category="label" style={styles.label}>
@@ -166,13 +193,41 @@ class AnnouncementDetails extends React.Component {
                 </Text>
                 <Text style={styles.word}>
                   {this.state.announcementDetails.closeTime
-                    ? this.dateFormat(this.state.announcementDetails.closeTime)
+                    ? this.formatDate(
+                        this.state.announcementDetails.closeTime
+                      ) +
+                      ', ' +
+                      this.formatTime(this.state.announcementDetails.closeTime)
                     : ''}
                 </Text>
               </View>
             </View>
+
+            <View>
+              <Text category="label" style={styles.label}>
+                Submitted By
+              </Text>
+              <TouchableOpacity
+                activeOpacity={0.3}
+                onPress={() =>
+                  this.props.navigation.navigate('UserBadges', {
+                    badges: this.state.createdBy.badges,
+                    name: this.state.createdBy.name,
+                  })
+                }
+                style={styles.userRow}>
+                <UserAvatar
+                  source={
+                    this.state.createdBy.img ? this.state.createdBy.img : null
+                  }
+                  size="small"></UserAvatar>
+                <Text style={styles.name}>
+                  {this.state.createdBy.name ? this.state.createdBy.name : ''}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </Card>
-          {renderIf(
+          {/* {renderIf(
             this.state.userRequest !== '',
             <Card style={styles.card}>
               <Text
@@ -218,11 +273,13 @@ class AnnouncementDetails extends React.Component {
               </Text>
               <Text style={styles.word}>
                 {this.state.userRequest && this.state.userRequest.createdAt
-                  ? this.dateFormat(this.state.userRequest.createdAt)
+                  ? this.formatDate(this.state.userRequest.createdAt) +
+                    ', ' +
+                    this.formatTime(this.state.userRequest.createdAt)
                   : ''}
               </Text>
             </Card>
-          )}
+          )} */}
 
           {/* hide submit request button if announcement is made by the user */}
           {renderIf(
@@ -230,15 +287,15 @@ class AnnouncementDetails extends React.Component {
             <Button
               style={styles.button}
               onPress={() =>
-                this.state.submitReqButton
-                  ? this.props.navigation.navigate('HealthDeclaration', {
-                      announcementId: this.state.announcementDetails.announcementId,
-                    })
-                  : this.props.navigation.navigate('EditRequest', {
-                      request: this.state.userRequest,
-                    })
-              }>
-              {this.state.submitReqButton ? 'Submit a Request' : 'Edit Request'}
+                this.props.navigation.navigate('HealthDeclaration', {
+                  announcementId: this.state.announcementDetails.announcementId,
+                })
+              }
+              disabled={!this.state.submitReqButton}
+              >
+              {this.state.submitReqButton
+                ? 'Submit a Request'
+                : 'Request Submitted'}
             </Button>
           )}
         </ScrollView>
@@ -278,6 +335,17 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 10,
+  },
+  status: {
+    backgroundColor: '#3366FF',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginTop: 3,
+    marginBottom: 5,
+    marginLeft: -10,
   },
   label: {
     marginTop: 10,
