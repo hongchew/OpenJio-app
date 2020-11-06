@@ -102,7 +102,7 @@ class MyHistory extends React.Component {
         <ListItem
         style={styles.listItem}
         onPress={() =>
-          this.props.navigation.navigate('MyAnnouncement', {
+          this.props.navigation.replace('MyAnnouncement', {
             announcementId: item.announcementId,
           })
         }
@@ -133,7 +133,7 @@ class MyHistory extends React.Component {
         <ListItem
         style={styles.listItem}
         onPress={() =>
-          this.props.navigation.navigate('MyRequest', {
+          this.props.navigation.replace('MyRequest', {
             requestId: item.requestId,
           })
         }
@@ -154,7 +154,7 @@ class MyHistory extends React.Component {
         <ListItem
           style={styles.listItem}
           onPress={() =>
-            this.props.navigation.navigate('MyActivity', {
+            this.props.navigation.replace('MyActivity', {
               announcement: announcement,
             })
           }
@@ -171,7 +171,7 @@ class MyHistory extends React.Component {
         <ListItem
           style={styles.listItem}
           onPress={() =>
-            this.props.navigation.navigate('TransactionDetails', {
+            this.props.navigation.replace('TransactionDetails', {
               transactionId: item.transactionId,
             })
           }

@@ -80,7 +80,7 @@ class StartLocation extends React.Component {
           style={[
             styles.card,
             address.addressId === this.state.startLocationId
-              ? {backgroundColor: '#f9f9f9'}
+              ? {backgroundColor: '#ededed'}
               : '',
           ]}
           onPress={() => this.setState({startLocationId: address.addressId})}>
@@ -144,7 +144,7 @@ class StartLocation extends React.Component {
         />
         <View style={styles.headerRow}>
           <Text style={styles.header} category="h4">
-            Start Location
+            Select a {'\n'}Start Location
           </Text>
         </View>
         <ScrollView style={styles.container}>
