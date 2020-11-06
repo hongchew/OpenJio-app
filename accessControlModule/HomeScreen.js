@@ -164,7 +164,7 @@ class HomeScreen extends React.Component {
 
   renderAnnouncements = () =>
     this.state.announcements.map((announcementObj) => {
-      let distance = announcementObj.distance;
+      let distance = Math.round(announcementObj.distance);
       let announcer = announcementObj.announcement.User;
       let announcement = announcementObj.announcement;
 
@@ -205,9 +205,7 @@ class HomeScreen extends React.Component {
           <Text category="label" style={styles.label}>
             Distance from you
           </Text>
-          <Text style={styles.word}>
-            {distance}m 
-          </Text>
+          <Text style={styles.word}>{distance}m</Text>
 
           <Text category="label" style={styles.label}>
             Submitted by
