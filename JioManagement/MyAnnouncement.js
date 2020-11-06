@@ -68,8 +68,6 @@ class MyAnnouncement extends React.Component {
         `${globalVariable.addressApi}retrieve-addressId/${response.data.startLocation}`
       );
 
-      // console.log(address.data.line1 + ' ' + address.data.line2);
-
       this.setState({
         announcement: response.data,
         startLocation:

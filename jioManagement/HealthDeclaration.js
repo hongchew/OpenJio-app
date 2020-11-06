@@ -74,10 +74,10 @@ class HealthDeclaration extends React.Component {
         if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
           //coming from home page (make announcement)
           if (this.state.startJio) {
-            this.props.navigation.navigate('MakeAnnouncement');
+            this.props.navigation.replace('MakeAnnouncement');
           } else if (this.state.announcementId) {  
             //params passed over from AnnouncementDetails page to make request
-            this.props.navigation.navigate('MakeRequest', {
+            this.props.navigation.replace('MakeRequest', {
               announcementId: this.state.announcementId,
             });
           } else {

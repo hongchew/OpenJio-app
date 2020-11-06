@@ -14,13 +14,38 @@ class StartLocation extends React.Component {
       destination: this.props.route.params.destination,
       description: this.props.route.params.description,
       closeTime: JSON.parse(this.props.route.params.closeTime),
-      startLocationId: this.props.user.defaultAddressId,
+      addressId: this.props.user.defaultAddressId,
       message: '',
     };
   }
 
+  async handleSetDefault(addressId) {
+    try {
+      const response = await axios.put(
+        globalVariable.userApi + 'update-user-details',
+        {
+          userId: this.props.user.userId,
+          defaultAddressId: addressId,
+        }
+      );
+      this.props.setUser(response.data);
+      if (this.props.route.params.announcementId) {
+        this.props.navigation.replace('MyAnnouncement', {
+          announcementId: this.props.route.params.announcementId,
+        });
+      } else {
+        this.props.navigation.replace('Tabs', {screen: 'MyActivity'});
+      }
+    } catch (error) {
+      console.log(error);
+      this.setState({
+        message: 'Unable to set default address.',
+      });
+    }
+  }
+
   async handleMakeAnnouncement() {
-    if (!this.state.startLocationId) {
+    if (!this.state.addressId) {
       this.setState({
         message: 'No address selected.',
       });
@@ -30,13 +55,13 @@ class StartLocation extends React.Component {
           globalVariable.announcementApi + 'create-announcement',
           {
             userId: this.props.user.userId,
-            addressId: this.state.startLocationId,
+            addressId: this.state.addressId,
             description: this.state.description,
             closeTime: this.state.closeTime,
             destination: this.state.destination,
           }
         );
-        this.props.navigation.replace('Tabs', {screen: 'MyActivity'});
+        this.handleSetDefault(this.state.addressId);
       } catch (error) {
         console.log(error);
         this.setState({
@@ -54,15 +79,13 @@ class StartLocation extends React.Component {
           {
             announcementId: this.props.route.params.announcementId,
             userId: this.props.user.userId,
-            addressId: this.state.startLocationId,
+            startLocation: this.state.addressId,
             description: this.state.description,
             closeTime: this.state.closeTime,
             destination: this.state.destination,
           }
         );
-        this.props.navigation.replace('MyAnnouncement', {
-          announcementId: this.props.route.params.announcementId,
-        });
+        this.handleSetDefault(this.state.addressId);
       } catch (error) {
         console.log(error);
         this.setState({
@@ -79,11 +102,11 @@ class StartLocation extends React.Component {
           key={address.addressId}
           style={[
             styles.card,
-            address.addressId === this.state.startLocationId
+            address.addressId === this.state.addressId
               ? {backgroundColor: '#ededed'}
               : '',
           ]}
-          onPress={() => this.setState({startLocationId: address.addressId})}>
+          onPress={() => this.setState({addressId: address.addressId})}>
           <Text category="label" style={styles.label}>
             DESCRIPTION
           </Text>
