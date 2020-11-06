@@ -264,7 +264,7 @@ class HomeScreen extends React.Component {
             </Text>
             <Icon style={styles.icon} fill="#8F9BB3" name="options-2-outline" />
             <Layout
-              style={{width: 300, backgroundColor: '#F5F5F5', marginRight: 20}}
+              style={{flex: 1, backgroundColor: '#F5F5F5', marginLeft: 10, marginRight: 20}}
               level="1">
               <Select
                 placeholder="Default"
