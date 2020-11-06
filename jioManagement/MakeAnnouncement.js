@@ -15,6 +15,7 @@ class MakeAnnouncement extends React.Component {
       user: this.props.user,
       temp: 0,
       closeTime: new Date(),
+      chosenDate: new Date(),
       isVisible: false,
       timeStr: '',
       dateStr: '',
@@ -83,8 +84,9 @@ class MakeAnnouncement extends React.Component {
     console.log(requestId);
     try {
       const rejectedRequest = await axios.put(
-        `${globalVariable.requestApi}reject-request`, {requestId: requestId}
-      ); 
+        `${globalVariable.requestApi}reject-request`,
+        {requestId: requestId}
+      );
     } catch (error) {
       console.log(error);
       this.setState({
@@ -97,22 +99,23 @@ class MakeAnnouncement extends React.Component {
     try {
       const requestsUnderThisAnnouncement = await axios.get(
         `${globalVariable.announcementApi}all-requests/${this.props.route.params.announcementId}`
-      ); 
+      );
 
       const requests = requestsUnderThisAnnouncement.data;
       const pending = requests.filter(
-        (request) =>
-          request.requestStatus === 'PENDING'
+        (request) => request.requestStatus === 'PENDING'
       );
 
-      await Promise.all(pending.map(async(request) => {
-        this.rejectRequest(request.requestId);
-      }));
+      await Promise.all(
+        pending.map(async (request) => {
+          this.rejectRequest(request.requestId);
+        })
+      );
 
       const response = await axios.delete(
         `${globalVariable.announcementApi}by/${this.props.route.params.announcementId}`
       );
-      
+
       this.props.navigation.replace('Tabs', {screen: 'MyActivity'});
     } catch (e) {
       console.log(e);
@@ -223,6 +226,9 @@ class MakeAnnouncement extends React.Component {
   }
 
   render() {
+    const minDate = new Date();
+    const maxDate = new Date();
+    maxDate.setHours(maxDate.getHours() + 24);
     return (
       <Layout style={styles.layout}>
         <StatusBar
@@ -283,7 +289,12 @@ class MakeAnnouncement extends React.Component {
           <Modal backdropStyle={styles.backdrop} visible={this.state.isVisible}>
             <Card>
               <DatePicker
-                date={this.state.closeTime}
+                //date time now
+                minimumDate={minDate}
+                //tomorrow
+                maximumDate={maxDate}
+                timeZoneOffsetInMinutes="480"
+                date={this.state.chosenDate}
                 onDateChange={this.handleCloseTime}
               />
 
