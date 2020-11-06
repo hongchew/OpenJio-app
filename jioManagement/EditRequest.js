@@ -35,6 +35,7 @@ class EditRequest extends React.Component {
         .toString(),
       message: '',
       deleteModalVisible: false,
+      editModalVisible: false, 
     };
     console.log(this.props.route.params.request.requestStatus);
   }
@@ -51,12 +52,12 @@ class EditRequest extends React.Component {
     return true;
   }
 
-  async handleEditRequest() {
+  handleEditSubmit() {
     if (this.state.title == '') {
       this.setState({
         message: 'Fields are empty, unable to proceed.',
       });
-    } else if (!this.correctAmountFormat()) {
+    } else if (this.state.amount <= 0) {
       this.setState({
         message: 'Invalid amount.',
       });
@@ -65,6 +66,33 @@ class EditRequest extends React.Component {
         message: 'Amount exceeded balance.',
       });
     } else {
+      this.setState({
+        editModalVisible: true
+      });
+    }
+  }
+
+  handleDeleteSubmit() {
+    if (this.state.title == '') {
+      this.setState({
+        message: 'Fields are empty, unable to proceed.',
+      });
+    } else if (this.state.amount <= 0) {
+      this.setState({
+        message: 'Invalid amount.',
+      });
+    } else if (this.state.amount > this.state.user.Wallet.balance) {
+      this.setState({
+        message: 'Amount exceeded balance.',
+      });
+    } else {
+      this.setState({
+        deleteModalVisible: true
+      });
+    }
+  }
+
+  async handleEditRequest() {
       try {
         const response = await axios.put(
           globalVariable.requestApi + 'update-request',
@@ -85,7 +113,7 @@ class EditRequest extends React.Component {
           message: 'Unable to update your request.',
         });
       }
-    }
+  
   }
   async handleDeleteRequest() {
     console.log(this.props.route.params.request.requestId);
@@ -148,6 +176,42 @@ class EditRequest extends React.Component {
     );
   }
 
+  renderEditModal() {
+    return (
+      <Modal
+        backdropStyle={styles.backdrop}
+        visible={this.state.editModalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            Are you sure you want to update this request?
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({editModalVisible: false});
+                this.handleEditRequest();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  editModalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
+
   render() {
     return (
       <Layout style={styles.layout}>
@@ -164,7 +228,7 @@ class EditRequest extends React.Component {
             <Button
               style={styles.deleteButton}
               status="basic"
-              onPress={() => this.setState({deleteModalVisible: true})}>
+              onPress={() => this.handleDeleteSubmit()}>
               Delete Request
             </Button>
           ) : null}
@@ -206,13 +270,14 @@ class EditRequest extends React.Component {
             />
             <Button
               style={styles.button}
-              onPress={() => this.handleEditRequest()}>
+              onPress={() => this.handleEditSubmit()}>
               Update Request
             </Button>
             <Text style={styles.description} status="danger">
               {this.state.message}
             </Text>
             {this.renderDeleteModal()}
+            {this.renderEditModal()}
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
