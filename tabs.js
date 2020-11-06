@@ -29,8 +29,8 @@ const BottomTabBar = ({navigation, state}) => (
   >
     <BottomNavigationTab title="Home" icon={HomeIcon} />
     <BottomNavigationTab title="Activity" icon={ActivityIcon} />
-    <BottomNavigationTab title="Leaderboard" icon={LeaderIcon} />
     <BottomNavigationTab title="Wallet" icon={WalletIcon} />
+    <BottomNavigationTab title="Leaderboard" icon={LeaderIcon} />
     <BottomNavigationTab title="Profile" icon={PersonIcon} />
   </BottomNavigation>
 );
@@ -39,8 +39,8 @@ export const TabNavigator = () => (
   <Tab.Navigator tabBar={(props) => <BottomTabBar {...props} />}>
     <Tab.Screen name="Home" component={HomeScreen} />
     <Tab.Screen name="MyActivity" component={MyActivity} />
-    <Tab.Screen name="Leaderboard" component={LeaderboardScreen} />
     <Tab.Screen name="Wallet" component={WalletScreen} />
+    <Tab.Screen name="Leaderboard" component={LeaderboardScreen} />
     <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>
 );

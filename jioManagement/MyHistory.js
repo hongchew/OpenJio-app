@@ -102,8 +102,8 @@ class MyHistory extends React.Component {
         <ListItem
         style={styles.listItem}
         onPress={() =>
-          this.props.navigation.navigate('MyActivity', {
-            announcement: item,
+          this.props.navigation.navigate('MyAnnouncement', {
+            announcementId: item.announcementId,
           })
         }
         title={
@@ -133,8 +133,8 @@ class MyHistory extends React.Component {
         <ListItem
         style={styles.listItem}
         onPress={() =>
-          this.props.navigation.navigate('MyActivity', {
-            request: item,
+          this.props.navigation.navigate('MyRequest', {
+            requestId: item.requestId,
           })
         }
         title={
