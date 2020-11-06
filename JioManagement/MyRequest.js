@@ -49,6 +49,19 @@ class MyRequest extends React.Component {
     this.getRequest(requestId);
   }
 
+  checkmarkIfVerified = (user) => {
+    console.log(user);
+    if (user && user.isSingPassVerified) {
+      return (
+        <Icon
+          name="checkmark-circle"
+          style={{width: 17, height: 17}}
+          fill="green"
+        />
+      );
+    }
+  };
+
   formatDate(inputDate) {
     const date = new Date(inputDate);
     var formattedDate =
@@ -159,13 +172,13 @@ class MyRequest extends React.Component {
           <Text style={styles.header} category="h4">
             My Request
           </Text>
-           {/* Associated announcement */}
-           <Card style={styles.jioCard}>
+          {/* Associated announcement */}
+          <Card style={styles.jioCard}>
             <Text category="label" style={styles.label}>
               Jio Details
             </Text>
             <Text style={{fontWeight: 'bold', marginTop: 5}} category="h6">
-              {this.state.announcement.destination} 
+              {this.state.announcement.destination}
             </Text>
 
             <Text style={styles.word}>
@@ -178,8 +191,16 @@ class MyRequest extends React.Component {
                   Submitted by
                 </Text>
                 <View style={styles.userRow}>
-                  <UserAvatar source={this.state.announcer.avatarPath} size="small" />
-                  <Text style={{marginLeft: 10}}>{this.state.announcer.name}</Text>
+                  <UserAvatar
+                    source={this.state.announcer.avatarPath}
+                    size="small"
+                  />
+                  <Text style={{marginLeft: 10}}>
+                    {this.state.announcer.name}
+                  </Text>
+                  <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
+                    {this.checkmarkIfVerified(this.state.announcer)}
+                  </Layout>
                 </View>
               </View>
             </View>
@@ -194,7 +215,10 @@ class MyRequest extends React.Component {
                 <Text category="label" style={styles.label}>
                   Request Details
                 </Text>
-                <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8,}}>{this.state.request.title}</Text>
+                <Text
+                  style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
+                  {this.state.request.title}
+                </Text>
               </View>
               <View style={styles.moreinfosubbox}>
                 <Text category="label" style={styles.label}>
@@ -223,8 +247,9 @@ class MyRequest extends React.Component {
                   Price
                 </Text>
                 <Text style={{fontWeight: 'bold', marginBottom: 8}}>
-                  {this.state.request.amount ? `SGD ${parseFloat(this.state.request.amount).toFixed(2)}` : 'Loading...'}
-                  
+                  {this.state.request.amount
+                    ? `SGD ${parseFloat(this.state.request.amount).toFixed(2)}`
+                    : 'Loading...'}
                 </Text>
               </View>
               <View style={styles.moreinfosubbox}>
@@ -239,13 +264,14 @@ class MyRequest extends React.Component {
               this.state.request.requestStatus === 'PENDING',
               <Button
                 style={styles.button}
-                onPress={() => this.props.navigation.navigate('EditRequest', {
-                  request: this.state.request,
-                })}>
+                onPress={() =>
+                  this.props.navigation.navigate('EditRequest', {
+                    request: this.state.request,
+                  })
+                }>
                 Edit
               </Button>
             )}
-           
           </View>
         </ScrollView>
       </Layout>

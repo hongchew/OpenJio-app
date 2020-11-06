@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {View, StatusBar, StyleSheet, TouchableOpacity} from 'react-native';
-import {Text, Layout, Button, Card} from '@ui-kitten/components';
+import {Text, Layout, Button, Card, Icon} from '@ui-kitten/components';
 import renderIf from '../components/renderIf';
 import {ScrollView} from 'react-native-gesture-handler';
 import axios from 'axios';
@@ -42,6 +42,18 @@ class AnnouncementDetails extends React.Component {
   //     })
   //   );
   // }
+  checkmarkIfVerified = (user) => {
+    console.log(user);
+    if (user && user.isSingPassVerified) {
+      return (
+        <Icon
+          name="checkmark-circle"
+          style={{width: 17, height: 17}}
+          fill="green"
+        />
+      );
+    }
+  };
 
   formatTime(date) {
     //convert to 12-hour clock
@@ -102,6 +114,7 @@ class AnnouncementDetails extends React.Component {
           name: responseUser.data.name,
           badges: responseUser.data.Badges,
           img: responseUser.data.avatarPath,
+          isSingPassVerified: responseUser.data.isSingPassVerified,
         },
       });
     } catch (error) {
@@ -224,6 +237,9 @@ class AnnouncementDetails extends React.Component {
                 <Text style={styles.name}>
                   {this.state.createdBy.name ? this.state.createdBy.name : ''}
                 </Text>
+                <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
+              {this.checkmarkIfVerified(this.state.createdBy)}
+            </Layout>
               </TouchableOpacity>
             </View>
           </Card>

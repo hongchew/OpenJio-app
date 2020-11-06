@@ -47,6 +47,18 @@ class HomeScreen extends React.Component {
     this.getAnnouncements();
   };
 
+  checkmarkIfVerified = (user) => {
+    if (user && user.isSingPassVerified) {
+      return (
+        <Icon
+          name="checkmark-circle"
+          style={{width: 17, height: 17}}
+          fill="green"
+        />
+      );
+    }
+  };
+
   componentDidMount() {
     if (this.props.user.defaultAddressId !== null) {
       this.getDefaultAddress();
@@ -54,31 +66,44 @@ class HomeScreen extends React.Component {
     this.getAnnouncements();
   }
 
-  componentDidUpdate(prevProps,prevState) {
-    if (this.state.selectedIndex.row === 0 && this.state.displayValue !== prevState.displayValue) {
+  componentDidUpdate(prevProps, prevState) {
+    if (
+      this.state.selectedIndex.row === 0 &&
+      this.state.displayValue !== prevState.displayValue
+    ) {
       //Update announcement by distance
-      this.getAnnouncements()
-      console.log(this.state.announcements)
-    } else if (this.state.selectedIndex.row === 1 && this.state.displayValue !== prevState.displayValue) {
+      this.getAnnouncements();
+      console.log(this.state.announcements);
+    } else if (
+      this.state.selectedIndex.row === 1 &&
+      this.state.displayValue !== prevState.displayValue
+    ) {
       //Update announcement by close time
-      const response = this.state.announcements
+      const response = this.state.announcements;
       const sortedAnnouncements = response.sort(
-        (a, b) => new Date(a.announcement.closeTime) - new Date(b.announcement.closeTime)
+        (a, b) =>
+          new Date(a.announcement.closeTime) -
+          new Date(b.announcement.closeTime)
       );
       this.setState({
         announcements: sortedAnnouncements,
       });
-      console.log(sortedAnnouncements)
-    } else if (this.state.selectedIndex.row === 2 && this.state.displayValue !== prevState.displayValue) {
+      console.log(sortedAnnouncements);
+    } else if (
+      this.state.selectedIndex.row === 2 &&
+      this.state.displayValue !== prevState.displayValue
+    ) {
       // Update announcement by time listed
-      const response = this.state.announcements
+      const response = this.state.announcements;
       const sortedAnnouncements = response.sort(
-        (a, b) => new Date(a.announcement.createdAt) - new Date(b.announcement.createdAt)
+        (a, b) =>
+          new Date(a.announcement.createdAt) -
+          new Date(b.announcement.createdAt)
       );
       this.setState({
         announcements: sortedAnnouncements,
       });
-      console.log(sortedAnnouncements)
+      console.log(sortedAnnouncements);
     }
   }
 
@@ -168,30 +193,28 @@ class HomeScreen extends React.Component {
           </Text>
           <Text style={styles.word}>{announcement.description}</Text>
 
-          <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-            <View>
-              <Text category="label" style={styles.label}>
-                Submitted by
-              </Text>
-              <View style={styles.userRow}>
-                <UserAvatar source={announcer.avatarPath} size="small" />
-                <Text style={styles.name}>{announcer.name}</Text>
-              </View>
-            </View>
-            <View style={{marginLeft: 40}}>
-              <Text category="label" style={styles.label}>
-                Close Time
-              </Text>
-              <Text style={styles.word}>
-                {formattedDate}, {formattedTime}
-              </Text>
-            </View>
+          <Text category="label" style={styles.label}>
+            Close Time
+          </Text>
+          <Text style={styles.word}>
+            {formattedDate}, {formattedTime}
+          </Text>
+
+          <Text category="label" style={styles.label}>
+            Submitted by
+          </Text>
+          <View style={styles.userRow}>
+            <UserAvatar source={announcer.avatarPath} size="small" />
+            <Text style={styles.name}>{announcer.name}</Text>
+            <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
+              {this.checkmarkIfVerified(announcer)}
+            </Layout>
           </View>
         </Card>
       );
     });
 
-  renderOption = (title, index) => <SelectItem title={title} key={index}/>;
+  renderOption = (title, index) => <SelectItem title={title} key={index} />;
 
   render() {
     return (
@@ -219,9 +242,11 @@ class HomeScreen extends React.Component {
             Start a jio to help reduce foot traffic in your neighbourhood!
           </Text>
           <TouchableOpacity
-            onPress={() => this.props.navigation.replace('HealthDeclaration', {
-              startJio: 'startJio'
-            })}>
+            onPress={() =>
+              this.props.navigation.replace('HealthDeclaration', {
+                startJio: 'startJio',
+              })
+            }>
             <Image
               style={{
                 width: 400,
@@ -264,7 +289,12 @@ class HomeScreen extends React.Component {
             </Text>
             <Icon style={styles.icon} fill="#8F9BB3" name="options-2-outline" />
             <Layout
-              style={{flex: 1, backgroundColor: '#F5F5F5', marginLeft: 10, marginRight: 20}}
+              style={{
+                flex: 1,
+                backgroundColor: '#F5F5F5',
+                marginLeft: 10,
+                marginRight: 20,
+              }}
               level="1">
               <Select
                 placeholder="Default"
