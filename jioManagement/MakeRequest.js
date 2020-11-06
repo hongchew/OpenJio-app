@@ -72,7 +72,6 @@ class MakeRequest extends React.Component {
       this.setState({
         modalVisible: true
       });
-      this.handleMakeRequest();
     }
   }
 
