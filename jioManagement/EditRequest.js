@@ -88,6 +88,7 @@ class EditRequest extends React.Component {
     }
   }
   async handleDeleteRequest() {
+    console.log(this.props.route.params.request.requestId);
     try {
       const response = await axios.delete(
         globalVariable.requestApi +
@@ -95,7 +96,7 @@ class EditRequest extends React.Component {
           '/' +
           this.props.route.params.request.requestId
       );
-      this.props.navigation.navigate('Tabs', {
+      this.props.navigation.replace('Tabs', {
         screen: 'MyActivity',
         params: {
           filter: 'request',

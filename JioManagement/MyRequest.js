@@ -34,6 +34,16 @@ class MyRequest extends React.Component {
     };
   }
 
+  onRefresh = () => {
+    this.setState({
+      refreshing: true,
+    });
+    this.getRequest(this.props.route.params.requestId);
+    this.setState({
+      refreshing: false,
+    });
+  };
+
   componentDidMount() {
     const requestId = this.props.route.params.requestId;
     this.getRequest(requestId);

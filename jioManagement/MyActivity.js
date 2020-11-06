@@ -207,7 +207,7 @@ class MyActivity extends React.Component {
             style={styles.cardlisting}
             key={request.requestId}
             onPress={() =>
-              this.props.navigation.navigate('MyRequest', {
+              this.props.navigation.replace('MyRequest', {
                 requestId: request.requestId,
                 // this.props.navigation.navigate('AnnouncementDetails', {
                 //   announcementId: request.announcementId,

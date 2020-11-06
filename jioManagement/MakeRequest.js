@@ -81,7 +81,7 @@ class MakeRequest extends React.Component {
             amount: this.state.amount,
           }
         );
-        this.props.navigation.navigate('Tabs', {
+        this.props.navigation.replace('Tabs', {
           screen: 'MyActivity',
           params: {
             filter: 'request',
