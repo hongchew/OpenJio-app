@@ -225,11 +225,11 @@ class MyAnnouncement extends React.Component {
           <View key={request.requestId} style={styles.requestRow}>
             <View style={{marginRight: 50}}>
               <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('RequestDetails', {
-                  requestId: request.requestId,
-                })}
-              >
+                onPress={() =>
+                  this.props.navigation.navigate('RequestDetails', {
+                    requestId: request.requestId,
+                  })
+                }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
                 <Text style={{flexShrink: 1}}>{request.description}</Text>
                 <Text>${request.amount}</Text>
@@ -265,12 +265,12 @@ class MyAnnouncement extends React.Component {
         return (
           <View key={request.requestId} style={styles.requestRow}>
             <View>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('RequestDetails', {
-                  requestId: request.requestId,
-                })}
-              >
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('RequestDetails', {
+                    requestId: request.requestId,
+                  })
+                }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
                 <Text>{request.description}</Text>
@@ -522,7 +522,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
   description: {
     fontSize: 14,
