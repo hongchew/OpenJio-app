@@ -95,8 +95,13 @@ class EditRequest extends React.Component {
           '/' +
           this.props.route.params.request.requestId
       );
-      this.props.navigation.navigate('AnnouncementDetails', {
-        userRequest: '',
+      this.props.navigation.navigate('Tabs', {
+        screen: 'MyActivity',
+        params: {
+          filter: 'request',
+          announcementBtn: 'basic',
+          requestBtn: 'primary',
+        },
       });
     } catch (e) {
       console.log(error);
