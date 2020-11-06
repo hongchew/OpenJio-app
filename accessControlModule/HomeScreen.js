@@ -34,7 +34,7 @@ class HomeScreen extends React.Component {
       announcements: [],
       startLocationStr: 'Select a location',
       selectedIndex: new IndexPath(0),
-      filterdata: ['Distance', 'Closing Time', 'Time Listed'],
+      filterdata: ['Distance', 'Closing Time'],
       displayValue: 'Distance',
     };
   }
@@ -164,6 +164,7 @@ class HomeScreen extends React.Component {
 
   renderAnnouncements = () =>
     this.state.announcements.map((announcementObj) => {
+      let distance = announcementObj.distance;
       let announcer = announcementObj.announcement.User;
       let announcement = announcementObj.announcement;
 
@@ -171,6 +172,7 @@ class HomeScreen extends React.Component {
       var cDate = new Date(announcement.closeTime);
       var formattedDate = this.formatDate(cDate);
       var formattedTime = this.formatTime(cDate);
+      console.log(announcement.distance);
       return (
         <Card
           style={styles.card}
@@ -198,6 +200,13 @@ class HomeScreen extends React.Component {
           </Text>
           <Text style={styles.word}>
             {formattedDate}, {formattedTime}
+          </Text>
+
+          <Text category="label" style={styles.label}>
+            Distance from you
+          </Text>
+          <Text style={styles.word}>
+            {distance}m 
           </Text>
 
           <Text category="label" style={styles.label}>

@@ -55,8 +55,7 @@ class MakeRequest extends React.Component {
   //     console.log(error);
   //   }
   // }
-
-  async handleMakeRequest() {
+  handleSubmit() {
     if (this.state.title == '') {
       this.setState({
         message: 'Fields are empty, unable to proceed.',
@@ -70,6 +69,15 @@ class MakeRequest extends React.Component {
         message: 'Amount exceeded balance.',
       });
     } else {
+      this.setState({
+        modalVisible: true
+      });
+      this.handleMakeRequest();
+    }
+  }
+
+  async handleMakeRequest() {
+    
       try {
         const response = await axios.post(
           globalVariable.requestApi + 'create-request',
@@ -97,7 +105,7 @@ class MakeRequest extends React.Component {
         console.log(error);
       }
     }
-  }
+  
 
   //this method prevents returning NaN when Input has empty text
   safeParseFloat = (str) => {
@@ -184,7 +192,7 @@ class MakeRequest extends React.Component {
             />
             <Button
               style={styles.button}
-              onPress={() => this.setState({modalVisible: true})}>
+              onPress={() => this.handleSubmit()}>
               Submit Request
             </Button>
             <Text style={styles.description} status="danger">
