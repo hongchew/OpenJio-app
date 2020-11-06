@@ -49,6 +49,8 @@ import EditRequest from './jioManagement/EditRequest';
 import MyHistory from './jioManagement/MyHistory';
 import MyAnnouncement from './jioManagement/MyAnnouncement';
 import MyRequest from './jioManagement/MyRequest';
+import RequestDetails from './jioManagement/RequestDetails';
+
 
 const Stack = createStackNavigator();
 
@@ -431,6 +433,16 @@ const HomeNavigator = () => (
             size="tiny"
           />
         ),
+      })}
+    />
+    <Stack.Screen
+      name="RequestDetails"
+      component={RequestDetails}
+      options={({navigation}) => ({
+        headerShown: true,
+        headerStyle: {backgroundColor: '#F5F5F5', elevation: 0},
+        headerTitleStyle: {color: '#F5F5F5'},
+        ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
     <Stack.Screen

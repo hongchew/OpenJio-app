@@ -225,10 +225,10 @@ class MyAnnouncement extends React.Component {
           <View key={request.requestId} style={styles.requestRow}>
             <View style={{marginRight: 50}}>
               <TouchableOpacity
-              // onPress={() =>
-              //   this.props.navigation.navigate('TransactionDetails', {
-              //     transactionId: transaction.transactionId,
-              //   })}
+              onPress={() =>
+                this.props.navigation.navigate('RequestDetails', {
+                  requestId: request.requestId,
+                })}
               >
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
                 <Text style={{flexShrink: 1}}>{request.description}</Text>
@@ -265,11 +265,11 @@ class MyAnnouncement extends React.Component {
         return (
           <View key={request.requestId} style={styles.requestRow}>
             <View>
-              <TouchableOpacity
-              // onPress={() =>
-              //   this.props.navigation.navigate('TransactionDetails', {
-              //     transactionId: transaction.transactionId,
-              //   })}
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('RequestDetails', {
+                  requestId: request.requestId,
+                })}
               >
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
   },
   selection: {
     flexDirection: 'row',
-    marginRight: 20,
+    marginLeft: 'auto',
   },
   label: {
     marginTop: 5,
@@ -522,6 +522,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     flexDirection: 'row',
+    justifyContent: 'space-around'
   },
   description: {
     fontSize: 14,
