@@ -67,13 +67,16 @@ class HealthDeclaration extends React.Component {
           temperatureLog: response.data,
           message: '',
         });
+
+
         //check if user is able to proceed to make announcement/request or not
         //by checking the risk level
         if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
           //coming from home page (make announcement)
-          if (!this.state.announcementId) {
+          if (this.state.startJio) {
             this.props.navigation.navigate('MakeAnnouncement');
-          } else if (this.state.announcementId || this.state.startJio) {  //params passed over from AnnouncementDetails page to make request
+          } else if (this.state.announcementId) {  
+            //params passed over from AnnouncementDetails page to make request
             this.props.navigation.navigate('MakeRequest', {
               announcementId: this.state.announcementId,
             });

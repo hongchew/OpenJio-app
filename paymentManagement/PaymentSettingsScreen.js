@@ -50,11 +50,6 @@ class PaymentSettingsScreen extends React.Component {
               onPress={() => this.props.navigation.navigate('WalletLimit')}
             />
             <MenuItem
-              accessoryLeft={this.paypalIcon}
-              title={<Text style={styles.menuItem}>PayPal Account Set Up</Text>}
-              onPress={() => this.props.navigation.navigate('Wallet')}
-            />
-            <MenuItem
               accessoryLeft={this.recurrentTopUpIcon}
               title={<Text style={styles.menuItem}>Monthly Top Up</Text>}
               onPress={() =>
