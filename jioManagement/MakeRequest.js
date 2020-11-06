@@ -8,7 +8,7 @@ import {
   TextInput,
   StatusBar,
 } from 'react-native';
-import {Text, Layout, Card, Input, Button} from '@ui-kitten/components';
+import {Text, Layout, Card, Input, Button, Modal} from '@ui-kitten/components';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
@@ -22,6 +22,7 @@ class MakeRequest extends React.Component {
       amount: 0,
       message: '',
       announcementId: this.props.route.params.announcementId,
+      modalVisible: false,
     };
   }
 
@@ -87,7 +88,7 @@ class MakeRequest extends React.Component {
             announcementBtn: 'basic',
             requestBtn: 'primary',
           },
-        })
+        });
         // this.props.navigation.navigate('AnnouncementDetails', {
         //   userRequest: response.data,
         //   announcementDetails: this.props.route.params.announcementDetails,
@@ -103,6 +104,39 @@ class MakeRequest extends React.Component {
     const value = Number.parseFloat(str);
     return Number.isNaN(value) ? 0 : value;
   };
+  renderModal() {
+    return (
+      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            Are you sure you want to submit this request?
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({modalVisible: false});
+                this.handleMakeRequest();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
 
   render() {
     return (
@@ -150,12 +184,13 @@ class MakeRequest extends React.Component {
             />
             <Button
               style={styles.button}
-              onPress={() => this.handleMakeRequest()}>
+              onPress={() => this.setState({modalVisible: true})}>
               Submit Request
             </Button>
             <Text style={styles.description} status="danger">
               {this.state.message}
             </Text>
+            {this.renderModal()}
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
@@ -218,6 +253,18 @@ const styles = StyleSheet.create({
   description: {
     textAlign: 'center',
     marginTop: 10,
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 
