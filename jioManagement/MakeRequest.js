@@ -26,35 +26,7 @@ class MakeRequest extends React.Component {
     };
   }
 
-  // async handleCreateRequest() {
-  //   try {
-  //     //check if user is able to proceed to make request or not
-  //     //by checking the risk level
-  //     if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
-  //       const response = await axios.post(
-  //         globalVariable.requestApi + 'create-request',
-  //         {
-  //           announcementId: this.state.newRequest.announcementId,
-  //           userId: this.state.user.userId,
-  //           title: this.state.newRequest.title,
-  //           description: this.state.newRequest.description,
-  //           amount: this.state.newRequest.amount,
-  //         }
-  //       );
-  //       this.props.navigation.navigate('AnnouncementDetails', {
-  //         userRequest: response.data,
-  //         announcementDetails: this.props.route.params.announcementDetails,
-  //       });
-  //     } else {
-  //       this.setState({
-  //         message:
-  //           'Your risk level is high and you are not able to make any announcements/requests.',
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
+  //triggered when user clicks on the Submit Request button 
   handleSubmit() {
     if (this.state.title == '') {
       this.setState({
@@ -70,47 +42,47 @@ class MakeRequest extends React.Component {
       });
     } else {
       this.setState({
-        modalVisible: true
+        //if it passes all the checks, show the modal 
+        modalVisible: true,
       });
     }
   }
 
   async handleMakeRequest() {
-    
-      try {
-        const response = await axios.post(
-          globalVariable.requestApi + 'create-request',
-          {
-            announcementId: this.state.announcementId,
-            userId: this.state.user.userId,
-            title: this.state.title,
-            description: this.state.description,
-            amount: this.state.amount,
-          }
-        );
-        this.props.navigation.replace('Tabs', {
-          screen: 'MyActivity',
-          params: {
-            filter: 'request',
-            announcementBtn: 'basic',
-            requestBtn: 'primary',
-          },
-        });
-        // this.props.navigation.navigate('AnnouncementDetails', {
-        //   userRequest: response.data,
-        //   announcementDetails: this.props.route.params.announcementDetails,
-        // });
-      } catch (error) {
-        console.log(error);
-      }
+    try {
+      const response = await axios.post(
+        globalVariable.requestApi + 'create-request',
+        {
+          announcementId: this.state.announcementId,
+          userId: this.state.user.userId,
+          title: this.state.title,
+          description: this.state.description,
+          amount: this.state.amount,
+        }
+      );
+      this.props.navigation.replace('Tabs', {
+        screen: 'MyActivity',
+        params: {
+          filter: 'request',
+          announcementBtn: 'basic',
+          requestBtn: 'primary',
+        },
+      });
+      // this.props.navigation.navigate('AnnouncementDetails', {
+      //   userRequest: response.data,
+      //   announcementDetails: this.props.route.params.announcementDetails,
+      // });
+    } catch (error) {
+      console.log(error);
     }
-  
+  }
 
   //this method prevents returning NaN when Input has empty text
   safeParseFloat = (str) => {
     const value = Number.parseFloat(str);
     return Number.isNaN(value) ? 0 : value;
   };
+
   renderModal() {
     return (
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
@@ -189,9 +161,7 @@ class MakeRequest extends React.Component {
                 this.setState({description: description})
               }
             />
-            <Button
-              style={styles.button}
-              onPress={() => this.handleSubmit()}>
+            <Button style={styles.button} onPress={() => this.handleSubmit()}>
               Submit Request
             </Button>
             <Text style={styles.description} status="danger">

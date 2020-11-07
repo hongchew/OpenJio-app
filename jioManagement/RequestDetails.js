@@ -148,11 +148,6 @@ class RequestDetails extends React.Component {
 
           <View style={styles.moreinfobox}>
             <Card style={styles.card}>
-              {/* <View style={styles.moreinfosubbox}>
-                <Text style={styles.moreinfotext}>Requester</Text>
-                <Text>{this.state.requestedUser.name}</Text>
-              </View> */}
-              
               <View style={styles.moreinfosubbox}>
                 <Text category="label" style={styles.label} >
                   Title

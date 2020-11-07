@@ -26,6 +26,7 @@ class MyActivity extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
+      //check which route the user is coming from, either from Announcement/Request 
       filter: this.props.route.params
         ? this.props.route.params.filter
         : 'announcement',

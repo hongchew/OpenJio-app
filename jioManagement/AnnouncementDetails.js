@@ -26,22 +26,6 @@ class AnnouncementDetails extends React.Component {
     this.getUserRequest();
   }
 
-  // dateFormat(date) {
-  //   const dateFormat = new Date(date);
-  //   return (
-  //     dateFormat.getFullYear() +
-  //     '-' +
-  //     (dateFormat.getMonth() + 1) +
-  //     '-' +
-  //     dateFormat.getDate() +
-  //     ', ' +
-  //     dateFormat.toLocaleTimeString('en', {
-  //       timeStyle: 'short',
-  //       hour12: true,
-  //       timeZone: 'Asia/Singapore',
-  //     })
-  //   );
-  // }
   checkmarkIfVerified = (user) => {
     console.log(user);
     if (user && user.isSingPassVerified) {
@@ -243,59 +227,6 @@ class AnnouncementDetails extends React.Component {
               </TouchableOpacity>
             </View>
           </Card>
-          {/* {renderIf(
-            this.state.userRequest !== '',
-            <Card style={styles.card}>
-              <Text
-                style={{fontWeight: 'bold', marginBottom: 10}}
-                category="h6">
-                My Request
-              </Text>
-              <Text category="label" style={styles.label}>
-                Title
-              </Text>
-              <Text style={styles.word}>
-                {this.state.userRequest ? this.state.userRequest.title : ''}
-              </Text>
-              <Text category="label" style={styles.label}>
-                Description
-              </Text>
-              <Text style={styles.word}>
-                {this.state.userRequest && this.state.userRequest.description
-                  ? this.state.userRequest.description
-                  : '-'}
-              </Text>
-              <Text category="label" style={styles.label}>
-                Amount
-              </Text>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.word}>
-                  {this.state.userRequest && this.state.userRequest.amount
-                    ? 'SGD ' +
-                      parseFloat(this.state.userRequest.amount).toFixed(2)
-                    : ''}
-                </Text>
-              </View>
-              <Text category="label" style={styles.label}>
-                Status
-              </Text>
-              <Text style={styles.word}>
-                {this.state.userRequest
-                  ? this.state.userRequest.requestStatus
-                  : ''}
-              </Text>
-              <Text category="label" style={styles.label}>
-                Submitted At
-              </Text>
-              <Text style={styles.word}>
-                {this.state.userRequest && this.state.userRequest.createdAt
-                  ? this.formatDate(this.state.userRequest.createdAt) +
-                    ', ' +
-                    this.formatTime(this.state.userRequest.createdAt)
-                  : ''}
-              </Text>
-            </Card>
-          )} */}
 
           {/* hide submit request button if announcement is made by the user */}
           {renderIf(
