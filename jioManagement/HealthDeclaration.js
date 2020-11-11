@@ -130,7 +130,7 @@ class HealthDeclaration extends React.Component {
               <TextInput
                 keyboardType={'number-pad'}
                 style={styles.temp}
-                value={String(this.state.temp)}
+                value={this.state.temp}
                 onChangeText={(temp) =>
                   this.setState({temp: this.safeParseFloat(temp)})
                 }

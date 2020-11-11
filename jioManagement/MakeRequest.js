@@ -19,7 +19,7 @@ class MakeRequest extends React.Component {
       user: this.props.user,
       title: '',
       description: '',
-      amount: 0,
+      amount: '',
       message: '',
       announcementId: this.props.route.params.announcementId,
       modalVisible: false,
