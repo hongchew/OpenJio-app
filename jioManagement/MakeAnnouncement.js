@@ -24,11 +24,11 @@ class MakeAnnouncement extends React.Component {
       selected: false,
       btnString: 'Set close time',
       deleteModalVisible: false,
+      datePicked: false,
     };
   }
 
   componentDidMount() {
-    console.log(this.props.route.params);
     if (this.props.route.params) {
       this.retrieveAnnouncement();
     }
@@ -81,7 +81,6 @@ class MakeAnnouncement extends React.Component {
   }
 
   async rejectRequest(requestId) {
-    console.log(requestId);
     try {
       const rejectedRequest = await axios.put(
         `${globalVariable.requestApi}reject-request`,
@@ -293,9 +292,9 @@ class MakeAnnouncement extends React.Component {
                 minimumDate={minDate}
                 //tomorrow
                 maximumDate={maxDate}
-                timeZoneOffsetInMinutes="480"
+                timeZoneOffsetInMinutes={480}
                 date={this.state.chosenDate}
-                onDateChange={this.handleCloseTime}
+                onDateChange={(selected) => this.handleCloseTime(selected)}
               />
 
               <View style={styles.modalButtonsContainer}>

@@ -18,7 +18,7 @@ class HealthDeclaration extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
-      temp: 0,
+      temp: '',
       selectedIndex: 0,
       announcementId: this.props.route.params
         ? this.props.route.params.announcementId
@@ -130,7 +130,7 @@ class HealthDeclaration extends React.Component {
               <TextInput
                 keyboardType={'number-pad'}
                 style={styles.temp}
-                value={this.state.temp}
+                value={String(this.state.temp)}
                 onChangeText={(temp) =>
                   this.setState({temp: this.safeParseFloat(temp)})
                 }
