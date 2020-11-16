@@ -13,30 +13,18 @@ class PaymentSettingsScreen extends React.Component {
 
   //to render wallet limit icon
   walletLimitIcon = (props) => (
-    <Icon {...props}
-        name="minus-circle-outline"
-        width= "25" 
-        height= "25"
-      />
-  )
+    <Icon {...props} name="minus-circle-outline" width="25" height="25" />
+  );
 
   //to render paypal icon
   paypalIcon = (props) => (
-    <Icon {...props}
-        name="credit-card-outline"
-        width= "25" 
-        height= "25"
-      />
-  )
+    <Icon {...props} name="credit-card-outline" width="25" height="25" />
+  );
 
   //to render recurrent top up icon
   recurrentTopUpIcon = (props) => (
-    <Icon {...props}
-        name="clock-outline"
-        width= "25" 
-        height= "25"
-      />
-  )
+    <Icon {...props} name="clock-outline" width="25" height="25" />
+  );
 
   render() {
     return (
@@ -49,7 +37,9 @@ class PaymentSettingsScreen extends React.Component {
             <Text style={styles.label}>Balance</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD</Text>
-              <Text style={styles.money}>{this.state.user.Wallet.balance.toFixed(2)}</Text>
+              <Text style={styles.money}>
+                {this.state.user.Wallet.balance.toFixed(2)}
+              </Text>
             </View>
           </Card>
 
@@ -60,14 +50,11 @@ class PaymentSettingsScreen extends React.Component {
               onPress={() => this.props.navigation.navigate('WalletLimit')}
             />
             <MenuItem
-              accessoryLeft={this.paypalIcon}
-              title={<Text style={styles.menuItem}>PayPal Account Set Up</Text>}
-              onPress={() => this.props.navigation.navigate('Wallet')}
-            />
-            <MenuItem
               accessoryLeft={this.recurrentTopUpIcon}
-              title={<Text style={styles.menuItem}>Recurrent Top Up</Text>}
-              onPress={() => this.props.navigation.navigate('Wallet')}
+              title={<Text style={styles.menuItem}>Monthly Top Up</Text>}
+              onPress={() =>
+                this.props.navigation.navigate('MonthlyTopUpScreen')
+              }
             />
           </Menu>
         </Layout>
@@ -75,7 +62,6 @@ class PaymentSettingsScreen extends React.Component {
     );
   }
 }
-
 
 const styles = StyleSheet.create({
   layout: {

@@ -24,6 +24,9 @@ class AddressScreen extends React.Component {
         }
       );
       this.props.setUser(response.data);
+      if (this.props.route.params) {
+        this.props.navigation.replace('Tabs', {screen: 'Home'});
+      }
     } catch (error) {
       console.log(error);
       this.setState({
@@ -43,7 +46,6 @@ class AddressScreen extends React.Component {
       const response = await axios.delete(
         globalVariable.addressApi + addressId
       );
-      console.log(response.data);
       this.props.updateAddressArr(response.data);
     } catch (error) {
       console.log(error);
@@ -110,22 +112,28 @@ class AddressScreen extends React.Component {
             <Text style={styles.word}>{address.line2}</Text>,
             <Text category="s2">-</Text>
           )}
-          <Text category="label" style={styles.label}>
-            POSTAL CODE
-          </Text>
-          {renderIf(
-            address.postalCode != null,
-            <Text style={styles.word}>{address.postalCode}</Text>,
-            <Text category="s2">-</Text>
-          )}
-          <Text category="label" style={styles.label}>
-            COUNTRY
-          </Text>
-          {renderIf(
-            address.country != null,
-            <Text style={styles.word}>{address.country}</Text>,
-            <Text category="s2">-</Text>
-          )}
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+            <View>
+              <Text category="label" style={styles.label}>
+                COUNTRY
+              </Text>
+              {renderIf(
+                address.country != null,
+                <Text style={styles.word}>{address.country}</Text>,
+                <Text category="s2">-</Text>
+              )}
+            </View>
+            <View style={{marginLeft: 40}}>
+              <Text category="label" style={styles.label}>
+                POSTAL CODE
+              </Text>
+              {renderIf(
+                address.postalCode != null,
+                <Text style={styles.word}>{address.postalCode}</Text>,
+                <Text category="s2">-</Text>
+              )}
+            </View>
+          </View>
         </Card>
       );
     });
@@ -140,34 +148,42 @@ class AddressScreen extends React.Component {
           translucent={true}
         />
         <View style={styles.headerRow}>
+          <View style={{width: 200}}>
           <Text style={styles.header} category="h4">
-            Address Book
+            {this.props.route.params ? 'Set Location' : 'Address Book'}
           </Text>
-          {renderIf(
-            this.props.user && this.props.user.Addresses.length < 3,
-            <Button
-              size="small"
-              style={styles.button}
-              onPress={() => this.props.navigation.navigate('AddAddress')}>
-              ADD ADDRESS
-            </Button>,
-            <Button
-              size="small"
-              style={styles.button}
-              onPress={() => this.props.navigation.navigate('AddAddress')}
-              disabled={true}>
-              ADD ADDRESS
-            </Button>
-          )}
+          {this.props.user.Addresses.length == 0 &&
+            <Text style={styles.subtitle}>Add an address and set a default location to start finding jios near you.</Text>
+          }
+
+          {this.props.route.params && this.props.user.Addresses.length != 0 &&
+            <Text style={styles.subtitle}>Set a default location to start finding jios near you.</Text>
+          }
+          </View>
+          <Button
+            size="small"
+            style={styles.button}
+            onPress={() =>
+              this.props.route.params
+                ? this.props.navigation.navigate('AddAddress', {screen: 'Home'})
+                : this.props.navigation.navigate('AddAddress')
+            }
+            disabled={
+              this.props.user && this.props.user.Addresses.length < 3
+                ? false
+                : true
+            }>
+            ADD ADDRESS
+          </Button>
         </View>
         <ScrollView style={styles.container}>
+        
           {renderIf(
             this.state.message,
             <Text style={styles.description} status="danger">
               {this.state.message}
             </Text>
           )}
-
           {renderIf(
             this.props.user && this.props.user.Addresses.length == 0,
             <Card style={styles.card}>
@@ -175,6 +191,7 @@ class AddressScreen extends React.Component {
             </Card>,
             this.RenderAddress()
           )}
+          <View style={{height: 30}}></View>
         </ScrollView>
       </Layout>
     );
@@ -190,8 +207,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginBottom: 30,
+    marginBottom: 10,
     fontFamily: 'Karla-Bold',
+  },
+  subtitle: {
+    marginBottom: 20,
+    color: 'grey',
+    flexWrap: 'wrap',
   },
   headerRow: {
     flexDirection: 'row',
@@ -237,7 +259,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   button: {
-    //marginTop: 30,
     height: 40,
   },
   footerContainer: {

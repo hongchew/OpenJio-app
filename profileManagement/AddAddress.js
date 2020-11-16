@@ -51,9 +51,15 @@ class AddAddress extends React.Component {
             description: this.state.description,
           },
         });
-        console.log(response.data);
         this.props.updateAddressArr(response.data);
-        this.props.navigation.replace('Address');
+        if (this.props.route.params) {
+          this.props.navigation.replace('Address', {
+            screen: 'Home'
+          });
+        } else {
+          this.props.navigation.replace('Address');
+        }
+        
       } catch (error) {
         console.log(error);
         this.setState({
