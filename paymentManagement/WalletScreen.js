@@ -206,7 +206,7 @@ class WalletScreen extends React.Component {
           <FocusAwareStatusBar
             barStyle="dark-content"
             hidden={false}
-            backgroundColor="transparent"
+            backgroundColor="#F5F5F5"
             translucent={true}
           />
           <View style={styles.headerRow}>
