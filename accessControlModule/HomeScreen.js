@@ -178,7 +178,7 @@ class HomeScreen extends React.Component {
           style={styles.card}
           key={announcement.announcementId}
           onPress={() =>
-            this.props.navigation.navigate('AnnouncementDetails', {
+            this.props.navigation.replace('AnnouncementDetails', {
               announcementId: announcement.announcementId,
               announcementDetails: announcement,
             })
@@ -286,9 +286,18 @@ class HomeScreen extends React.Component {
                 screen: 'Home',
               })
             }>
-            <Text style={{fontFamily: 'Karla-Bold'}}>
-              {this.state.startLocationStr}
-            </Text>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <Text style={{fontFamily: 'Karla-Bold'}}>
+                {this.state.startLocationStr}
+              </Text>
+              <View>
+              <Icon
+                name="arrow-ios-forward"
+                style={{width: 19, height: 19}}
+                fill="#222222"
+              />
+              </View>
+            </View>
           </Card>
           <View style={styles.filterrow}>
             <Text style={styles.filterheader} category="h6">
