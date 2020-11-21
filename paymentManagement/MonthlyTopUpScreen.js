@@ -92,7 +92,7 @@ class MonthlyTopUpScreen extends React.Component {
           </Button>
           <Text style={loginStyle.message}>
             Please wait a moment and pull down to refresh{'\n'} if "Next
-            Payment" is not yet updated.
+            Payment" is not available.
           </Text>
         </View>
       );
@@ -155,19 +155,19 @@ class MonthlyTopUpScreen extends React.Component {
                     ? this.props.agreement.paypalSubscriptionId
                     : null}
                 </Text>
-                <Text style={styles.label}>{'\n'}Next payment:</Text>
+                <Text style={styles.label}>{'\n'}Next Payment:</Text>
                 <Text>
-                  {this.props.agreement
-                    ? new Date(
-                        this.props.agreement.nextPaymentDate
-                      ).toDateString()
-                    : null}
+                  {this.props.nextPaymentDate !== this.props.lastPaymentDate
+                    ? this.props.nextPaymentDate
+                    : 'Currently Unavailable'}
                 </Text>
-                <Text style={styles.label}>{'\n'}Created on:</Text>
+                <Text style={styles.label}>{'\n'}Last Payment:</Text>
                 <Text>
-                  {this.props.agreement
-                    ? new Date(this.props.agreement.createdAt).toDateString()
-                    : null}
+                  {this.props.agreement && this.props.agreement.lastPaymentDate
+                    ? new Date(
+                        this.props.agreement.lastPaymentDate
+                      ).toDateString()
+                    : '-'}
                 </Text>
               </Card>
             )}
@@ -262,9 +262,25 @@ const mapStateToProps = (state) => {
   const agreement = state.user.Wallet.RecurrentAgreements.filter(
     (agreement) => agreement.recurrentAgreementType === 'TOP_UP'
   )[0];
+
+  var lastPaymentDate;
+  var nextPaymentDate;
+
+  if (agreement) {
+    lastPaymentDate = agreement.lastPaymentDate
+      ? new Date(agreement.lastPaymentDate).toDateString()
+      : '-';
+
+    nextPaymentDate = agreement.nextPaymentDate
+      ? new Date(agreement.nextPaymentDate).toDateString()
+      : '-';
+  }
+
   return {
     user: state.user,
     agreement: agreement,
+    lastPaymentDate: lastPaymentDate ? lastPaymentDate : '-',
+    nextPaymentDate: nextPaymentDate ? nextPaymentDate : '-',
   };
 };
 
