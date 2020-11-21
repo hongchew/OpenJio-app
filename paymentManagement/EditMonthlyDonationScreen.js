@@ -22,7 +22,7 @@ import loginStyle from '../styles/loginStyle';
 import {setUser} from '../redux/actions';
 import axios from 'axios';
 
-class EditMonthlyTopUpScreen extends React.Component {
+class EditMonthlyDonationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,7 +43,7 @@ class EditMonthlyTopUpScreen extends React.Component {
       this.setState({
         showModal: false,
         amount: 0,
-        message: 'Update Success!\n',
+        message: 'Update Success!\n The new amount will take effect from the next donation\n',
         messageStatus: 'success',
       });
       const response = await axios.get(
@@ -79,7 +79,7 @@ class EditMonthlyTopUpScreen extends React.Component {
         this.setState({
           showTopUpConfirmationModal: true,
           showModal: false,
-          topUpURI: `${globalVariable.paypalApi}edit-monthly-topup?amount=${(
+          topUpURI: `${globalVariable.paypalApi}edit-monthly-donation?amount=${(
             this.state.amount * 100
           ).toString()}&recurrentAgreementId=${
             this.props.agreement.recurrentAgreementId
@@ -103,11 +103,11 @@ class EditMonthlyTopUpScreen extends React.Component {
           backgroundColor="transparent"
         />
         <Text style={styles.header} category="h4">
-          Edit Monthly Top Up
+          Edit Monthly Donation
         </Text>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
-            <Text style={styles.label}>Current Monthly Top Up Amount</Text>
+            <Text style={styles.label}>Current Monthly Donation Amount</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
               <Text style={styles.currentMoney}>
@@ -116,7 +116,7 @@ class EditMonthlyTopUpScreen extends React.Component {
                   : '-'}
               </Text>
             </View>
-            <Text style={styles.label}>New Monthly Top Up Amount</Text>
+            <Text style={styles.label}>New Monthly Donation Amount</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
               <TextInput
@@ -159,7 +159,7 @@ class EditMonthlyTopUpScreen extends React.Component {
             <Card style={styles.confirmationModal}>
               <Layout style={styles.confirmationModal}>
                 <Text>You will be redirected to Paypal shortly</Text>
-                <Text>New amount to top up monthly:</Text>
+                <Text>New amount to donate monthly:</Text>
                 <Text style={{fontWeight: 'bold'}}>
                   SGD {this.state.amount.toFixed(2)}
                 </Text>
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
 
 function mapStateToProps(state) {
   const agreement = state.user.Wallet.RecurrentAgreements.filter(
-    (agreement) => agreement.recurrentAgreementType === 'TOP_UP'
+    (agreement) => agreement.recurrentAgreementType === 'DONATE'
   )[0];
   return {
     user: state.user,
@@ -311,4 +311,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(EditMonthlyTopUpScreen);
+)(EditMonthlyDonationScreen);

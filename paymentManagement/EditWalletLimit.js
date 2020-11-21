@@ -50,7 +50,7 @@ class EditWalletLimit extends React.Component {
       } catch (error) {
         console.log(error);
         this.setState({
-          message: 'Wallet Limit Edition Failed.',
+          message: 'Edit Wallet Limit Failed.',
         });
       }
     }

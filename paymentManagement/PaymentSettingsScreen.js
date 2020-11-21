@@ -26,6 +26,11 @@ class PaymentSettingsScreen extends React.Component {
     <Icon {...props} name="clock-outline" width="25" height="25" />
   );
 
+  //to render recurrent donation icon
+  recurrentDonateIcon = (props) => (
+    <Icon {...props} name="heart-outline" width="25" height="25" />
+  );
+
   render() {
     return (
       <Layout style={styles.layout}>
@@ -56,6 +61,13 @@ class PaymentSettingsScreen extends React.Component {
                 this.props.navigation.navigate('MonthlyTopUpScreen')
               }
             />
+            <MenuItem
+            accessoryLeft={this.recurrentDonateIcon}
+            title={<Text style={styles.menuItem}>Monthly Donation</Text>}
+            onPress={() =>
+              this.props.navigation.navigate('MonthlyDonationScreen')
+            }
+          />
           </Menu>
         </Layout>
       </Layout>

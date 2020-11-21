@@ -9,7 +9,7 @@ import axios from 'axios';
 import loginStyle from '../styles/loginStyle';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
-class MonthlyTopUpScreen extends React.Component {
+class MonthlyDonationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -67,8 +67,8 @@ class MonthlyTopUpScreen extends React.Component {
     }
   }
 
-  async handleEditLimit() {
-    this.props.navigation.navigate('EditMonthlyTopUpScreen');
+  async handleEdit() {
+    this.props.navigation.navigate('EditMonthlyDonationScreen');
   }
 
   renderButtons() {
@@ -78,9 +78,9 @@ class MonthlyTopUpScreen extends React.Component {
           <Button
             style={styles.button}
             onPress={() => {
-              this.handleEditLimit();
+              this.handleEdit();
             }}>
-            Edit Monthly Top Up Amount
+            Edit Monthly Donation Amount
           </Button>
           <Button
             appearance="outline"
@@ -88,11 +88,11 @@ class MonthlyTopUpScreen extends React.Component {
             onPress={() => {
               this.handleCancelTopUp();
             }}>
-            Cancel Monthly Top Up
+            Cancel Monthly Donation
           </Button>
           <Text style={loginStyle.message}>
             Please wait a moment and pull down to refresh{'\n'} if "Next
-            Payment" is not available.
+            Donation" is not available.
           </Text>
         </View>
       );
@@ -102,9 +102,9 @@ class MonthlyTopUpScreen extends React.Component {
           <Button
             style={styles.button}
             onPress={() =>
-              this.props.navigation.navigate('SetMonthlyTopUpScreen')
+              this.props.navigation.navigate('SetMonthlyDonationScreen')
             }>
-            Set Monthly Top Up
+            Set Monthly Donation
           </Button>
         </View>
       );
@@ -129,18 +129,24 @@ class MonthlyTopUpScreen extends React.Component {
           />
           <View style={styles.headerRow}>
             <Text style={styles.header} category="h4">
-              Monthly Top Up
+              Monthly Donation
             </Text>
           </View>
           <ScrollView style={styles.container}>
             <View style={styles.descriptionText}>
-              <Text>Top Up your wallet automatically every month.</Text>
-              <Text>This is not affected by your wallet limit.</Text>
+              <Text>
+                OpenJio is a non-profit platform that depends on your donations
+                to function.{`\n`}
+              </Text>
+              <Text>
+                Set up an automatic monthly donation to help us make this
+                platform possible!
+              </Text>
             </View>
             {renderIf(
               this.props.agreement,
               <Card style={styles.card}>
-                <Text style={styles.label}>Monthly Top Up Amount</Text>
+                <Text style={styles.label}>Monthly Donation Amount</Text>
                 <View style={{flexDirection: 'row'}}>
                   <Text style={{marginTop: 5}}>SGD</Text>
                   <Text style={styles.money}>
@@ -155,13 +161,13 @@ class MonthlyTopUpScreen extends React.Component {
                     ? this.props.agreement.paypalSubscriptionId
                     : null}
                 </Text>
-                <Text style={styles.label}>{'\n'}Next Payment:</Text>
+                <Text style={styles.label}>{'\n'}Next Donation:</Text>
                 <Text>
                   {this.props.nextPaymentDate !== this.props.lastPaymentDate
                     ? this.props.nextPaymentDate
                     : 'Currently Unavailable'}
                 </Text>
-                <Text style={styles.label}>{'\n'}Last Payment:</Text>
+                <Text style={styles.label}>{'\n'}Last Donation:</Text>
                 <Text>
                   {this.props.agreement && this.props.agreement.lastPaymentDate
                     ? new Date(
@@ -174,7 +180,7 @@ class MonthlyTopUpScreen extends React.Component {
             {renderIf(
               !this.props.agreement,
               <Card style={styles.card}>
-                <Text>No monthly top up set up yet</Text>
+                <Text>No monthly donation set up yet</Text>
               </Card>
             )}
             {this.renderButtons()}
@@ -260,7 +266,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   //   console.log(state);
   const agreement = state.user.Wallet.RecurrentAgreements.filter(
-    (agreement) => agreement.recurrentAgreementType === 'TOP_UP'
+    (agreement) => agreement.recurrentAgreementType === 'DONATE'
   )[0];
 
   var lastPaymentDate;
@@ -295,4 +301,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MonthlyTopUpScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MonthlyDonationScreen);
