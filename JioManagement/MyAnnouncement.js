@@ -331,73 +331,73 @@ class MyAnnouncement extends React.Component {
             </Text>
           </View>
 
+          <Card style={styles.card}>
+            <Text category="label" style={styles.label}>
+              Destination
+            </Text>
+            <Text style={styles.cardtitle} category="h5">
+              {this.state.announcement.destination}
+            </Text>
+
+            <Text category="label" style={styles.label}>
+              Description
+            </Text>
+            <Text style={styles.word}>
+              {this.state.announcement.description}
+            </Text>
+
+            <Text category="label" style={styles.label}>
+              Close Time
+            </Text>
+
+            <Text style={styles.word}>
+              {this.state.announcement.closeTime
+                ? formattedDate + ', ' + formattedTime
+                : 'Loading...'}
+            </Text>
+
+            <Text category="label" style={styles.label}>
+              Start Location
+            </Text>
+            <Text style={styles.word}>{this.state.startLocation}</Text>
+
+            <Text category="label" style={styles.label}>
+              Total Amount from Accepted Requests
+            </Text>
+            {this.renderAmount()}
+
+            <Text category="label" style={styles.label}>
+              Status
+            </Text>
+
+            <View>
+              <Text
+                style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>
+                {this.state.announcement.announcementStatus === 'ACTIVE' &&
+                  'Active'}
+                {this.state.announcement.announcementStatus === 'ONGOING' &&
+                  'Ongoing'}
+                {this.state.announcement.announcementStatus === 'PAST' &&
+                  'Past'}
+              </Text>
+            </View>
+          </Card>
+
+          {this.renderActiveButton()}
+          {this.state.announcement.announcementStatus === 'PAST' && (
+            <Button
+              style={{marginLeft: 15, marginRight: 15}}
+              onPress={() => {}}
+              size="small">
+              Contact Support
+            </Button>
+          )}
+
           <ScrollView style={styles.container}>
-            <Card style={styles.card}>
-              <Text category="label" style={styles.label}>
-                Destination
-              </Text>
-              <Text style={styles.cardtitle} category="h5">
-                {this.state.announcement.destination}
-              </Text>
-
-              <Text category="label" style={styles.label}>
-                Description
-              </Text>
-              <Text style={styles.word}>
-                {this.state.announcement.description}
-              </Text>
-
-              <Text category="label" style={styles.label}>
-                Close Time
-              </Text>
-
-              <Text style={styles.word}>
-                {this.state.announcement.closeTime
-                  ? formattedDate + ', ' + formattedTime
-                  : 'Loading...'}
-              </Text>
-
-              <Text category="label" style={styles.label}>
-                Start Location
-              </Text>
-              <Text style={styles.word}>{this.state.startLocation}</Text>
-
-              <Text category="label" style={styles.label}>
-                Total Amount from Accepted Requests
-              </Text>
-              {this.renderAmount()}
-
-              <Text category="label" style={styles.label}>
-                Status
-              </Text>
-
-              <View>
-                <Text
-                  style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>
-                  {this.state.announcement.announcementStatus === 'ACTIVE' &&
-                    'Active'}
-                  {this.state.announcement.announcementStatus === 'ONGOING' &&
-                    'Ongoing'}
-                  {this.state.announcement.announcementStatus === 'PAST' &&
-                    'Past'}
-                </Text>
-              </View>
-            </Card>
-
-            {this.renderActiveButton()}
-            {this.state.announcement.announcementStatus === 'PAST' && (
-              <Button
-                style={{marginLeft: 15, marginRight: 15}}
-                onPress={() => {}}
-                size="small">
-                Contact Support
-              </Button>
-            )}
-
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
                 <Text style={styles.recentRequestsTitle}>
-                  Requests under Jio
+                  Recent Requests under Jio
                 </Text>
                 <TouchableOpacity
                 //navigate to see all the requests under the announcement in the page
