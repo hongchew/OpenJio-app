@@ -10,7 +10,14 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import {Text, Layout, Card, Divider, Button} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  Card,
+  Divider,
+  Button,
+  Modal,
+} from '@ui-kitten/components';
 import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
@@ -32,6 +39,9 @@ class MyAnnouncement extends React.Component {
       refreshing: false,
       startLocation: '',
       acceptedRequest: false,
+      acceptBtnClicked: '',
+      modalVisible: false,
+      selectedRequest: '',
     };
   }
 
@@ -116,6 +126,29 @@ class MyAnnouncement extends React.Component {
     }
   }
 
+  async handleRequest() {
+    try {
+      if (this.state.acceptBtnClicked) {
+        const response = await axios.put(
+          globalVariable.requestApi + 'schedule-request',
+          {
+            requestId: this.state.selectedRequest,
+          }
+        );
+      } else {
+        const response = await axios.put(
+          globalVariable.requestApi + 'reject-request',
+          {
+            requestId: this.state.selectedRequest,
+          }
+        );
+      }
+      this.getRequests(this.props.route.params.announcementId);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   formatDate(date) {
     var formattedDate =
       date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
@@ -139,9 +172,9 @@ class MyAnnouncement extends React.Component {
 
   handleClose() {}
 
-  async acceptRequest(requestId) {}
+  // async acceptRequest(requestId) {}
 
-  async rejectRequest(requestId) {}
+  // async rejectRequest(requestId) {}
 
   renderAmount = () => {
     const acceptedRequests = this.state.requests.filter(
@@ -238,7 +271,12 @@ class MyAnnouncement extends React.Component {
               status === 'PENDING',
               <View style={styles.selection}>
                 <TouchableOpacity
-                  // onPress={() => this.acceptRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: true,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/check.png')}
@@ -246,7 +284,12 @@ class MyAnnouncement extends React.Component {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={() => this.rejectRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: false,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/cross.png')}
@@ -256,6 +299,8 @@ class MyAnnouncement extends React.Component {
               </View>,
               <Text style={styles.status}>{displayStatus}</Text>
             )}
+            {this.state.modalVisible &&
+              this.setState({selectedRequest: request.requestId})}
           </View>
         );
       }
@@ -271,7 +316,7 @@ class MyAnnouncement extends React.Component {
                 }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
-                <Text>{request.description}</Text>
+                <Text>{request.description ? request.description : '-'}</Text>
                 <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
               </TouchableOpacity>
             </View>
@@ -280,7 +325,13 @@ class MyAnnouncement extends React.Component {
               status === 'PENDING',
               <View style={styles.selection}>
                 <TouchableOpacity
-                  // onPress={() => this.acceptRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: true,
+                      selectedRequest: request.requestId,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/check.png')}
@@ -288,7 +339,13 @@ class MyAnnouncement extends React.Component {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={() => this.rejectRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: false,
+                      selectedRequest: request.requestId,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/cross.png')}
@@ -296,7 +353,14 @@ class MyAnnouncement extends React.Component {
                   />
                 </TouchableOpacity>
               </View>,
-              <Text style={styles.status}>{displayStatus}</Text>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}>
+                <Text style={styles.status}>{displayStatus}</Text>
+              </View>
             )}
 
             <Divider />
@@ -305,6 +369,46 @@ class MyAnnouncement extends React.Component {
       }
     });
   };
+
+  renderModal() {
+    return (
+      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            {renderIf(
+              this.state.acceptBtnClicked,
+              'Are you sure you want to accept this request?',
+              'Are you sure you want to reject this request?'
+            )}
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+                this.handleRequest();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
 
   render() {
     const closeDate = new Date(this.state.announcement.closeTime);
@@ -417,6 +521,7 @@ class MyAnnouncement extends React.Component {
             </Card>
           </ScrollView>
         </ScrollView>
+        {this.renderModal()}
       </Layout>
     );
   }
@@ -528,6 +633,18 @@ const styles = StyleSheet.create({
   },
   requestTitle: {
     fontWeight: 'bold',
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 
