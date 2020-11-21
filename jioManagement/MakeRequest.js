@@ -22,11 +22,12 @@ class MakeRequest extends React.Component {
       amount: '',
       message: '',
       announcementId: this.props.route.params.announcementId,
-      modalVisible: false,
+      submitModalVisible: false,
+      topUpModalVisible: false,
     };
   }
 
-  //triggered when user clicks on the Submit Request button 
+  //triggered when user clicks on the Submit Request button
   handleSubmit() {
     if (this.state.title == '') {
       this.setState({
@@ -42,14 +43,37 @@ class MakeRequest extends React.Component {
       });
     } else {
       this.setState({
-        //if it passes all the checks, show the modal 
-        modalVisible: true,
+        //if it passes all the checks, show the modal
+        submitModalVisible: true,
       });
+    }
+  }
+
+  //check if the total amount of all pending requests and curr request exceeds the wallet balance
+  async checkWalletBalance() {
+    try {
+      const pendingRequests = await axios.get(
+        globalVariable.requestApi + 'pending/' + this.state.user.userId
+      );
+
+      let pendingAmt = 0;
+      for (let request of pendingRequests.data) {
+        pendingAmt += request.amount;
+      }
+      pendingAmt += this.state.amount;
+      // console.log(pendingAmt, this.state.user.Wallet.balance);
+      if (pendingAmt > this.state.user.Wallet.balance) {
+        //throw error if the current request causes wallet balance to be exceeded
+        throw 'Exceeded balance';
+      }
+    } catch (error) {
+      throw error;
     }
   }
 
   async handleMakeRequest() {
     try {
+      await this.checkWalletBalance();
       const response = await axios.post(
         globalVariable.requestApi + 'create-request',
         {
@@ -68,12 +92,14 @@ class MakeRequest extends React.Component {
           requestBtn: 'primary',
         },
       });
-      // this.props.navigation.navigate('AnnouncementDetails', {
-      //   userRequest: response.data,
-      //   announcementDetails: this.props.route.params.announcementDetails,
-      // });
     } catch (error) {
+      if (error === 'Exceeded balance') {
+        this.setState({topUpModalVisible: true});
+      }
       console.log(error);
+      this.setState({
+        message: 'Unable to make request.',
+      });
     }
   }
 
@@ -83,9 +109,11 @@ class MakeRequest extends React.Component {
     return Number.isNaN(value) ? 0 : value;
   };
 
-  renderModal() {
+  renderSubmitModal() {
     return (
-      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+      <Modal
+        backdropStyle={styles.backdrop}
+        visible={this.state.submitModalVisible}>
         <Card>
           <Text style={{marginTop: 10, marginBottom: 10}}>
             Are you sure you want to submit this request?
@@ -95,7 +123,7 @@ class MakeRequest extends React.Component {
               style={styles.modalButton}
               size={'small'}
               onPress={() => {
-                this.setState({modalVisible: false});
+                this.setState({submitModalVisible: false});
                 this.handleMakeRequest();
               }}>
               Confirm
@@ -106,7 +134,46 @@ class MakeRequest extends React.Component {
               size={'small'}
               onPress={() => {
                 this.setState({
-                  modalVisible: false,
+                  submitModalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
+
+  renderTopUpModal() {
+    return (
+      <Modal
+        backdropStyle={styles.backdrop}
+        visible={this.state.topUpModalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            You do not have enough in your wallet to make this request. Please
+            proceed to top up your wallet to continue.
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  topUpModalVisible: false,
+                });
+                this.props.navigation.navigate('TopUpScreen');
+              }}>
+              Top Up
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  topUpModalVisible: false,
                 });
               }}>
               Dismiss
@@ -167,7 +234,8 @@ class MakeRequest extends React.Component {
             <Text style={styles.description} status="danger">
               {this.state.message}
             </Text>
-            {this.renderModal()}
+            {this.renderSubmitModal()}
+            {this.renderTopUpModal()}
           </Layout>
         </TouchableWithoutFeedback>
       </Layout>
