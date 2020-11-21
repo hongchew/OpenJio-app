@@ -102,7 +102,7 @@ class MonthlyDonationScreen extends React.Component {
           <Button
             style={styles.button}
             onPress={() =>
-              this.props.navigation.navigate('SetMonthlyTopUpScreen')
+              this.props.navigation.navigate('SetMonthlyDonationScreen')
             }>
             Set Monthly Donation
           </Button>
@@ -134,8 +134,8 @@ class MonthlyDonationScreen extends React.Component {
           </View>
           <ScrollView style={styles.container}>
             <View style={styles.descriptionText}>
-              <Text>Top Up your wallet automatically every month.</Text>
-              <Text>This is not affected by your wallet limit.</Text>
+              <Text>OpenJio is a non-profit platform that depends on your donations to function.{`\n`}</Text>
+              <Text>Set up an automatic monthly donation to help us make this platform possible!</Text>
             </View>
             {renderIf(
               this.props.agreement,
