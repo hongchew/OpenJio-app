@@ -92,7 +92,7 @@ class MonthlyDonationScreen extends React.Component {
           </Button>
           <Text style={loginStyle.message}>
             Please wait a moment and pull down to refresh{'\n'} if "Next
-            Payment" is not yet updated.
+            Donation" is not available.
           </Text>
         </View>
       );
@@ -134,8 +134,14 @@ class MonthlyDonationScreen extends React.Component {
           </View>
           <ScrollView style={styles.container}>
             <View style={styles.descriptionText}>
-              <Text>OpenJio is a non-profit platform that depends on your donations to function.{`\n`}</Text>
-              <Text>Set up an automatic monthly donation to help us make this platform possible!</Text>
+              <Text>
+                OpenJio is a non-profit platform that depends on your donations
+                to function.{`\n`}
+              </Text>
+              <Text>
+                Set up an automatic monthly donation to help us make this
+                platform possible!
+              </Text>
             </View>
             {renderIf(
               this.props.agreement,
@@ -155,19 +161,19 @@ class MonthlyDonationScreen extends React.Component {
                     ? this.props.agreement.paypalSubscriptionId
                     : null}
                 </Text>
-                <Text style={styles.label}>{'\n'}Next donation:</Text>
+                <Text style={styles.label}>{'\n'}Next Donation:</Text>
                 <Text>
-                  {this.props.agreement
-                    ? new Date(
-                        this.props.agreement.nextPaymentDate
-                      ).toDateString()
-                    : null}
+                  {this.props.nextPaymentDate !== this.props.lastPaymentDate
+                    ? this.props.nextPaymentDate
+                    : 'Currently Unavailable'}
                 </Text>
-                <Text style={styles.label}>{'\n'}Created on:</Text>
+                <Text style={styles.label}>{'\n'}Last Donation:</Text>
                 <Text>
-                  {this.props.agreement
-                    ? new Date(this.props.agreement.createdAt).toDateString()
-                    : null}
+                  {this.props.agreement && this.props.agreement.lastPaymentDate
+                    ? new Date(
+                        this.props.agreement.lastPaymentDate
+                      ).toDateString()
+                    : '-'}
                 </Text>
               </Card>
             )}
@@ -262,9 +268,25 @@ const mapStateToProps = (state) => {
   const agreement = state.user.Wallet.RecurrentAgreements.filter(
     (agreement) => agreement.recurrentAgreementType === 'DONATE'
   )[0];
+
+  var lastPaymentDate;
+  var nextPaymentDate;
+
+  if (agreement) {
+    lastPaymentDate = agreement.lastPaymentDate
+      ? new Date(agreement.lastPaymentDate).toDateString()
+      : '-';
+
+    nextPaymentDate = agreement.nextPaymentDate
+      ? new Date(agreement.nextPaymentDate).toDateString()
+      : '-';
+  }
+
   return {
     user: state.user,
     agreement: agreement,
+    lastPaymentDate: lastPaymentDate ? lastPaymentDate : '-',
+    nextPaymentDate: nextPaymentDate ? nextPaymentDate : '-',
   };
 };
 
@@ -279,4 +301,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MonthlyDonationScreen);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MonthlyDonationScreen);

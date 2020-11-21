@@ -43,7 +43,7 @@ class EditMonthlyDonationScreen extends React.Component {
       this.setState({
         showModal: false,
         amount: 0,
-        message: 'Update Success!\n',
+        message: 'Update Success!\n The new amount will take effect from the next donation\n',
         messageStatus: 'success',
       });
       const response = await axios.get(
