@@ -24,9 +24,10 @@ import LeaderboardScreen from './profileManagement/LeaderboardScreen';
 import WalletScreen from './paymentManagement/WalletScreen';
 import MakePayment from './paymentManagement/MakePayment';
 import TopUpScreen from './paymentManagement/TopUpScreen';
+import MonthlyTopUpScreen from './paymentManagement/MonthlyTopUpScreen';
 import SetMonthlyTopUpScreen from './paymentManagement/SetMonthlyTopUpScreen';
 import EditMonthlyTopUpScreen from './paymentManagement/EditMonthlyTopUpScreen';
-import MonthlyTopUpScreen from './paymentManagement/MonthlyTopUpScreen';
+import MonthlyDonationScreen from './paymentManagement/MonthlyDonationScreen';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import TransactionDetailsScreen from './paymentManagement/TransactionDetailsScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
@@ -50,7 +51,6 @@ import MyHistory from './jioManagement/MyHistory';
 import MyAnnouncement from './jioManagement/MyAnnouncement';
 import MyRequest from './jioManagement/MyRequest';
 import RequestDetails from './jioManagement/RequestDetails';
-
 
 const Stack = createStackNavigator();
 
@@ -477,6 +477,15 @@ const HomeNavigator = () => (
       name="EditMonthlyTopUpScreen"
       component={EditMonthlyTopUpScreen}
       options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="MonthlyDonationScreen"
+      component={MonthlyDonationScreen}
+      options={({navigation}) => ({
+        title: 'Monthly Donation',
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
