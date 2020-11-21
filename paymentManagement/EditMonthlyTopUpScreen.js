@@ -183,7 +183,7 @@ class EditMonthlyTopUpScreen extends React.Component {
                       this.setState({
                         showTopUpConfirmationModal: false,
                         showModal: false,
-                        message: 'Topup was Cancelled',
+                        message: 'Update was Cancelled',
                         messageStatus: 'danger',
                       });
                     }}>

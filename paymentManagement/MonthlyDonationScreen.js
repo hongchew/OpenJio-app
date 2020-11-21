@@ -67,8 +67,8 @@ class MonthlyDonationScreen extends React.Component {
     }
   }
 
-  async handleEditLimit() {
-    this.props.navigation.navigate('EditMonthlyTopUpScreen');
+  async handleEdit() {
+    this.props.navigation.navigate('EditMonthlyDonationScreen');
   }
 
   renderButtons() {
@@ -78,7 +78,7 @@ class MonthlyDonationScreen extends React.Component {
           <Button
             style={styles.button}
             onPress={() => {
-              this.handleEditLimit();
+              this.handleEdit();
             }}>
             Edit Monthly Donation Amount
           </Button>
@@ -260,7 +260,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => {
   //   console.log(state);
   const agreement = state.user.Wallet.RecurrentAgreements.filter(
-    (agreement) => agreement.recurrentAgreementType === 'TOP_UP'
+    (agreement) => agreement.recurrentAgreementType === 'DONATE'
   )[0];
   return {
     user: state.user,

@@ -29,6 +29,7 @@ import SetMonthlyTopUpScreen from './paymentManagement/SetMonthlyTopUpScreen';
 import EditMonthlyTopUpScreen from './paymentManagement/EditMonthlyTopUpScreen';
 import MonthlyDonationScreen from './paymentManagement/MonthlyDonationScreen';
 import SetMonthlyDonationScreen from './paymentManagement/SetMonthlyDonationScreen';
+import EditMonthlyDonationScreen from './paymentManagement/EditMonthlyDonationScreen';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import TransactionDetailsScreen from './paymentManagement/TransactionDetailsScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
@@ -494,6 +495,14 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="SetMonthlyDonationScreen"
       component={SetMonthlyDonationScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="EditMonthlyDonationScreen"
+      component={EditMonthlyDonationScreen}
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,

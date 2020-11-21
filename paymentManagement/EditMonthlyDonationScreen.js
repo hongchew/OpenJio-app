@@ -22,7 +22,7 @@ import loginStyle from '../styles/loginStyle';
 import {setUser} from '../redux/actions';
 import axios from 'axios';
 
-class SetMonthlyDonationScreen extends React.Component {
+class EditMonthlyDonationScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,11 +38,12 @@ class SetMonthlyDonationScreen extends React.Component {
     };
   }
 
-  handleTopupResponse = async (data) => {
+  handleWebviewResponse = async (data) => {
     if (data.title === 'success') {
       this.setState({
         showModal: false,
-        message: 'Set Up Success!\nRecurring donations require some time to process, please refresh the wallet in a while to see the new donation!',
+        amount: 0,
+        message: 'Update Success!\n',
         messageStatus: 'success',
       });
       const response = await axios.get(
@@ -53,7 +54,7 @@ class SetMonthlyDonationScreen extends React.Component {
     } else if (data.title === 'cancel') {
       this.setState({
         showModal: false,
-        message: 'Donation was Cancelled',
+        message: 'Update was Cancelled',
         messageStatus: 'danger',
       });
     } else {
@@ -61,11 +62,16 @@ class SetMonthlyDonationScreen extends React.Component {
     }
   };
 
-  donationValidation = (amount) => {
+  topUpValidation = (amount) => {
     if (amount) {
       if (amount <= 0) {
         this.setState({
-          message: 'Invalid  amount',
+          message: 'Invalid top up amount',
+          messageStatus: 'danger',
+        });
+      } else if (this.state.wallet.walletLimit === 0) {
+        this.setState({
+          message: 'Wallet limit is currently set to 0',
           messageStatus: 'danger',
         });
       } else {
@@ -73,14 +79,16 @@ class SetMonthlyDonationScreen extends React.Component {
         this.setState({
           showTopUpConfirmationModal: true,
           showModal: false,
-          topUpURI: `${globalVariable.paypalApi}monthly-donation?amount=${(
+          topUpURI: `${globalVariable.paypalApi}edit-monthly-donation?amount=${(
             this.state.amount * 100
-          ).toString()}&walletId=${this.state.wallet.walletId}`,
+          ).toString()}&recurrentAgreementId=${
+            this.props.agreement.recurrentAgreementId
+          }`,
         });
       }
     } else {
       this.setState({
-        message: 'Please input amount to donate',
+        message: 'Please input new monthly top up amount',
         messageStatus: 'danger',
       });
     }
@@ -95,11 +103,20 @@ class SetMonthlyDonationScreen extends React.Component {
           backgroundColor="transparent"
         />
         <Text style={styles.header} category="h4">
-          Set Monthly Donation
+          Edit Monthly Donation
         </Text>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
-            <Text style={styles.label}>Monthly Donation Amount</Text>
+            <Text style={styles.label}>Current Monthly Donation Amount</Text>
+            <View style={{flexDirection: 'row'}}>
+              <Text style={{marginTop: 5}}>SGD </Text>
+              <Text style={styles.currentMoney}>
+                {this.props.agreement
+                  ? this.props.agreement.amount.toFixed(2)
+                  : '-'}
+              </Text>
+            </View>
+            <Text style={styles.label}>New Monthly Donation Amount</Text>
             <View style={{flexDirection: 'row'}}>
               <Text style={{marginTop: 5}}>SGD </Text>
               <TextInput
@@ -112,8 +129,8 @@ class SetMonthlyDonationScreen extends React.Component {
               />
             </View>
           </Card>
-          <Button onPress={() => this.donationValidation(this.state.amount)}>
-            Subscribe with Paypal
+          <Button onPress={() => this.topUpValidation(this.state.amount)}>
+            Update Change with Paypal
           </Button>
           <Modal
             visible={this.state.showModal}
@@ -122,7 +139,9 @@ class SetMonthlyDonationScreen extends React.Component {
               source={{
                 uri: this.state.topUpURI,
               }}
-              onNavigationStateChange={(data) => this.handleTopupResponse(data)}
+              onNavigationStateChange={(data) =>
+                this.handleWebviewResponse(data)
+              }
               onMessage={() => {}}
               onError={() => {
                 this.setState({
@@ -140,7 +159,7 @@ class SetMonthlyDonationScreen extends React.Component {
             <Card style={styles.confirmationModal}>
               <Layout style={styles.confirmationModal}>
                 <Text>You will be redirected to Paypal shortly</Text>
-                <Text>Amount to donate monthly:</Text>
+                <Text>New amount to donate monthly:</Text>
                 <Text style={{fontWeight: 'bold'}}>
                   SGD {this.state.amount.toFixed(2)}
                 </Text>
@@ -164,7 +183,7 @@ class SetMonthlyDonationScreen extends React.Component {
                       this.setState({
                         showTopUpConfirmationModal: false,
                         showModal: false,
-                        message: 'Topup was Cancelled',
+                        message: 'Update was Cancelled',
                         messageStatus: 'danger',
                       });
                     }}>
@@ -219,6 +238,7 @@ const styles = StyleSheet.create({
     color: '#3366FF',
     fontWeight: 'bold',
     marginBottom: 5,
+    marginTop: 10,
   },
   action: {
     fontWeight: 'bold',
@@ -230,6 +250,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     borderBottomWidth: 1,
     borderColor: '#3366FF',
+  },
+  currentMoney: {
+    flexGrow: 1,
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   subtitle: {
     fontFamily: 'Karla-Regular',
@@ -267,9 +292,13 @@ const styles = StyleSheet.create({
 });
 
 function mapStateToProps(state) {
+  const agreement = state.user.Wallet.RecurrentAgreements.filter(
+    (agreement) => agreement.recurrentAgreementType === 'DONATE'
+  )[0];
   return {
     user: state.user,
     wallet: state.user.Wallet,
+    agreement,
   };
 }
 const mapDispatchToProps = (dispatch) => {
@@ -282,4 +311,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SetMonthlyDonationScreen);
+)(EditMonthlyDonationScreen);
