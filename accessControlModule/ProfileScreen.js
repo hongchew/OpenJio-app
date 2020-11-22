@@ -39,6 +39,10 @@ const BadgeIcon = (props) => (
   <Icon {...props} name="award-outline" width="25" height="25" />
 );
 
+const SupportIcon = (props) => (
+  <Icon {...props} name="message-circle-outline" width="25" height="25" />
+);
+
 class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
@@ -201,6 +205,11 @@ class ProfileScreen extends React.Component {
               accessoryLeft={BadgeIcon}
               title={<Text style={styles.menuItem}>My Badges</Text>}
               onPress={() => this.props.navigation.navigate('UserBadges')}
+            />
+            <MenuItem
+              accessoryLeft={SupportIcon}
+              title={<Text style={styles.menuItem}>Support</Text>}
+              onPress={() => this.props.navigation.navigate('SupportTickets')}
             />
             <MenuItem
               accessoryLeft={LogoutIcon}

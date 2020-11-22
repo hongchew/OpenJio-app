@@ -20,6 +20,9 @@ import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
+//screens from customer support module
+import SupportTickets from './customerSupport/SupportTickets';
+import AddSupportTicket from './customerSupport/AddSupportTicket';
 //screens from payment management
 import WalletScreen from './paymentManagement/WalletScreen';
 import MakePayment from './paymentManagement/MakePayment';
@@ -592,7 +595,46 @@ const HomeNavigator = () => (
         ),
       })}
     />
+    <Stack.Screen
+      name="SupportTickets"
+      component={SupportTickets}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="AddSupportTicket"
+      component={AddSupportTicket}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
   </Stack.Navigator>
+  
 );
 
 export const AppNavigator = () => (
