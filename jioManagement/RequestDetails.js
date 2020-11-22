@@ -71,19 +71,16 @@ class RequestDetails extends React.Component {
 
   async handleRequest() {
     try {
-      if (this.state.acceptBtnClicked) {
+      //if announcement status is ONGOING, don't allow the announcer to accept any requests
+      if (
+        this.state.announcement.announcementStatus !== 'ONGOING' &&
+        this.state.acceptBtnClicked
+      ) {
         await axios.put(globalVariable.requestApi + 'schedule-request', {
           requestId: this.state.request.requestId,
         });
-        //change status of announcement to ongoing once it has accepted a request
-        if (this.state.announcement.announcementStatus === 'ACTIVE') {
-          await axios.put(
-            globalVariable.announcementApi +
-              'ongoing-announcement/' +
-              this.state.announcement.announcementId
-          );
-        }
-      } else {
+      }
+      if (!this.state.acceptBtnClicked) {
         await axios.put(globalVariable.requestApi + 'reject-request', {
           requestId: this.state.request.requestId,
         });
@@ -314,7 +311,8 @@ class RequestDetails extends React.Component {
             </Card>
 
             {renderIf(
-              this.state.request.requestStatus === 'PENDING',
+              this.state.request.requestStatus === 'PENDING' &&
+                this.state.announcement.announcementStatus !== 'ONGOING',
               <View style={styles.buttons}>
                 <Button
                   size="small"
