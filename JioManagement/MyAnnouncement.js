@@ -51,6 +51,12 @@ class MyAnnouncement extends React.Component {
     this.getAnnouncement(announcementId);
     this.getRequests(announcementId);
 
+    //to force refresh the page if the user press the back button from RequestDetails
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.getAnnouncement(announcementId);
+      this.getRequests(announcementId);
+      //Put your Data loading function here instead of my this.LoadData()
+    });
     // this.getWalletAmount(this.props.user.userId);
   }
 
@@ -253,7 +259,7 @@ class MyAnnouncement extends React.Component {
       if (counter === index + 1) {
         return (
           <View key={request.requestId} style={styles.requestRow}>
-            <View style={{marginRight: 50}}>
+            <View style={{flex: 1, flexWrap: 'wrap'}}>
               <TouchableOpacity
                 onPress={() =>
                   this.props.navigation.navigate('RequestDetails', {
@@ -306,7 +312,7 @@ class MyAnnouncement extends React.Component {
       if (counter > index + 1) {
         return (
           <View key={request.requestId} style={styles.requestRow}>
-            <View>
+            <View style={{flex: 1, flexWrap: 'wrap'}}>
               <TouchableOpacity
                 onPress={() =>
                   this.props.navigation.navigate('RequestDetails', {
@@ -433,7 +439,6 @@ class MyAnnouncement extends React.Component {
               My Jio
             </Text>
           </View>
-
           <Card style={styles.card}>
             <Text category="label" style={styles.label}>
               Destination
@@ -480,6 +485,8 @@ class MyAnnouncement extends React.Component {
                   'Active'}
                 {this.state.announcement.announcementStatus === 'ONGOING' &&
                   'Ongoing'}
+                {this.state.announcement.announcementStatus === 'COMPLETED' &&
+                  'Completed'}
                 {this.state.announcement.announcementStatus === 'PAST' &&
                   'Past'}
               </Text>
@@ -550,7 +557,6 @@ const styles = StyleSheet.create({
   },
   selection: {
     flexDirection: 'row',
-    marginLeft: 'auto',
   },
   label: {
     marginTop: 5,
@@ -585,7 +591,6 @@ const styles = StyleSheet.create({
   buttonItem: {
     marginTop: 20,
     marginLeft: 20,
-    marginRight: 10,
     alignItems: 'center',
   },
   imageContainer: {
@@ -623,6 +628,7 @@ const styles = StyleSheet.create({
   requestRow: {
     marginTop: 10,
     marginBottom: 10,
+    marginLeft: 4,
     flexDirection: 'row',
     justifyContent: 'space-around',
   },

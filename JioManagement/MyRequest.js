@@ -12,16 +12,14 @@ import {
   Text,
   Layout,
   Card,
-  Divider,
-  MenuItem,
   Button,
   Icon,
+  Modal,
 } from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import {UserAvatar} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
 
-const ForwardIcon = (props) => <Icon {...props} name="arrow-ios-forward" />;
 
 class MyRequest extends React.Component {
   constructor(props) {
@@ -31,6 +29,7 @@ class MyRequest extends React.Component {
       request: {},
       announcer: {},
       announcement: {},
+      modalVisible: false,
     };
   }
 
@@ -89,7 +88,6 @@ class MyRequest extends React.Component {
       const response = await axios.get(
         `${globalVariable.requestApi}by-requestId/${requestId}`
       );
-      //   console.log(response.data);
       //set state of request
       this.setState({
         request: response.data,
@@ -97,17 +95,6 @@ class MyRequest extends React.Component {
     } catch (error) {
       console.log(error);
     }
-    // try {
-    //   const response = await axios.get(
-    //     `${globalVariable.userApi}/${this.state.request.userId}`
-    //   );
-    //   console.log(response);
-    //   this.setState({
-    //     requestedUser: response.data,
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
 
     try {
       const response = await axios.get(
@@ -123,6 +110,58 @@ class MyRequest extends React.Component {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async handleVerify(requestId) {
+    try {
+      const response = await axios.put(
+        `${globalVariable.requestApi}verify-request/`, {
+          requestId: requestId
+        }
+      );
+      //set state of request
+      this.setState({
+        request: response.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  renderVerifyModal() {
+    return (
+      <Modal
+        backdropStyle={styles.backdrop}
+        visible={this.state.modalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            Are you sure you want to verify this request?
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({modalVisible: false});
+                this.handleVerify(this.props.route.params.requestId);
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
   }
 
   renderStatus() {
@@ -272,8 +311,19 @@ class MyRequest extends React.Component {
                 Edit
               </Button>
             )}
+
+            {renderIf(
+              this.state.request.requestStatus === 'COMPLETED',
+              <Button
+                style={styles.button}
+                onPress={() => this.setState({modalVisible: true})}
+              >
+                Verify Request
+              </Button>
+            )}
           </View>
         </ScrollView>
+        {this.renderVerifyModal()}
       </Layout>
     );
   }
@@ -286,7 +336,6 @@ const styles = StyleSheet.create({
   },
   header: {
     marginLeft: 15,
-    backgroundColor: '#F5F5F5',
     fontFamily: 'Karla-Bold',
   },
   jioCard: {
@@ -342,6 +391,18 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginRight: 20,
     // marginTop: 20,
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 

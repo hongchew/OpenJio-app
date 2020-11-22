@@ -28,6 +28,7 @@ class RequestDetails extends React.Component {
       requestUser: {},
       modalVisible: false,
       acceptBtnClicked: '',
+      completeBtnClicked: '',
     };
   }
 
@@ -88,6 +89,38 @@ class RequestDetails extends React.Component {
           requestId: this.state.request.requestId,
         });
       }
+      this.props.navigation.replace('RequestDetails', {
+        requestId: this.state.request.requestId,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async handleCompleteRequest() {
+    try {
+      await axios.put(globalVariable.requestApi + 'complete-request', {
+        requestId: this.state.request.requestId,
+      });
+      
+      const allRequests = await axios.get(
+        `${globalVariable.announcementApi}all-requests/${this.state.announcement.announcementId}`
+      );
+      
+      //retrieve all the accepted requests under 
+      //this announcement that are completed
+      const completedRequests = allRequests.data.filter(
+        (request) => request.requestStatus === 'COMPLETED'
+      );
+      
+      //if the announcer has completed all the requests, 
+      //set the announcement to COMPLETED 
+      if (completedRequests.length === allRequests.data.length) {
+        await axios.put(
+          `${globalVariable.announcementApi}complete-announcement/${this.state.announcement.announcementId}`
+        );
+      }
+
       this.props.navigation.replace('RequestDetails', {
         requestId: this.state.request.requestId,
       });
@@ -169,15 +202,23 @@ class RequestDetails extends React.Component {
   renderModal() {
     return (
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
-        <Card>
+        <Card style={{marginLeft: 10, marginRight: 10}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
-            {renderIf(
-              this.state.acceptBtnClicked,
-              'Are you sure you want to accept this request?',
+            {this.state.acceptBtnClicked && 
+              'Are you sure you want to accept this request?'
+            }
+            {!this.state.acceptBtnClicked && !this.state.completeBtnClicked &&
               'Are you sure you want to reject this request?'
-            )}
+            }
+            {this.state.completeBtnClicked && 
+            <Text>
+              <Text style={{fontWeight: 'bold'}}>Do you want to complete the request?</Text>
+              {'\n\n'}
+              <Text style={{fontStyle: 'italic'}}>A request is completed only when you have fulfilled all request details and description. </Text>
+              </Text>
+            }
           </Text>
-          <Layout style={styles.modalButtonsContainer}>
+          <View style={styles.modalButtonsContainer}>
             <Button
               style={styles.modalButton}
               size={'small'}
@@ -185,7 +226,8 @@ class RequestDetails extends React.Component {
                 this.setState({
                   modalVisible: false,
                 });
-                this.handleRequest();
+                {this.state.completeBtnClicked && this.handleCompleteRequest();}
+                {this.state.acceptBtnClicked && this.handleRequest();}
               }}>
               Confirm
             </Button>
@@ -200,7 +242,7 @@ class RequestDetails extends React.Component {
               }}>
               Dismiss
             </Button>
-          </Layout>
+          </View>
         </Card>
       </Modal>
     );
@@ -336,6 +378,20 @@ class RequestDetails extends React.Component {
                   Reject
                 </Button>
               </View>
+            )}
+
+            {renderIf(
+              this.state.request.requestStatus === 'SCHEDULED',
+              <View>
+                <Button
+                  style={{marginLeft: 15, marginRight: 15}}
+                  size="small"
+                  onPress={() => {
+                    this.setState({modalVisible: true, completeBtnClicked: true});
+                  }}>
+                  Complete this Request
+                </Button>
+                </View>
             )}
           </View>
         </ScrollView>
