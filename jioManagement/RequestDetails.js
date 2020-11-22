@@ -72,21 +72,21 @@ class RequestDetails extends React.Component {
   async handleRequest() {
     try {
       if (this.state.acceptBtnClicked) {
-        console.log('accept btn clicked');
-        const response = await axios.put(
-          globalVariable.requestApi + 'schedule-request',
-          {
-            requestId: this.state.request.requestId,
-          }
-        );
+        await axios.put(globalVariable.requestApi + 'schedule-request', {
+          requestId: this.state.request.requestId,
+        });
+        //change status of announcement to ongoing once it has accepted a request
+        if (this.state.announcement.announcementStatus === 'ACTIVE') {
+          await axios.put(
+            globalVariable.announcementApi +
+              'ongoing-announcement/' +
+              this.state.announcement.announcementId
+          );
+        }
       } else {
-        console.log('reject btn clicked');
-        const response = await axios.put(
-          globalVariable.requestApi + 'reject-request',
-          {
-            requestId: this.state.request.requestId,
-          }
-        );
+        await axios.put(globalVariable.requestApi + 'reject-request', {
+          requestId: this.state.request.requestId,
+        });
       }
       this.props.navigation.replace('RequestDetails', {
         requestId: this.state.request.requestId,

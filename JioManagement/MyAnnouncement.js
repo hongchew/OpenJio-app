@@ -129,21 +129,24 @@ class MyAnnouncement extends React.Component {
   async handleRequest() {
     try {
       if (this.state.acceptBtnClicked) {
-        const response = await axios.put(
-          globalVariable.requestApi + 'schedule-request',
-          {
-            requestId: this.state.selectedRequest,
-          }
-        );
+        await axios.put(globalVariable.requestApi + 'schedule-request', {
+          requestId: this.state.selectedRequest,
+        });
+        //change status of announcement to ongoing once it has accepted a request
+        if (this.state.announcement.announcementStatus === 'ACTIVE') {
+          await axios.put(
+            globalVariable.announcementApi +
+              'ongoing-announcement/' +
+              this.state.announcement.announcementId
+          );
+          this.getAnnouncement(this.state.announcement.announcementId);
+        }
       } else {
-        const response = await axios.put(
-          globalVariable.requestApi + 'reject-request',
-          {
-            requestId: this.state.selectedRequest,
-          }
-        );
+        await axios.put(globalVariable.requestApi + 'reject-request', {
+          requestId: this.state.selectedRequest,
+        });
       }
-      this.getRequests(this.props.route.params.announcementId);
+      this.getRequests(this.state.announcement.announcementId);
     } catch (error) {
       console.log(error);
     }
@@ -171,10 +174,6 @@ class MyAnnouncement extends React.Component {
   handleEdit() {}
 
   handleClose() {}
-
-  // async acceptRequest(requestId) {}
-
-  // async rejectRequest(requestId) {}
 
   renderAmount = () => {
     const acceptedRequests = this.state.requests.filter(
