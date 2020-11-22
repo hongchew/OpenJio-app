@@ -49,20 +49,20 @@ class MakeRequest extends React.Component {
     }
   }
 
-  //check if the total amount of all pending requests and curr request exceeds the wallet balance
+  //check if the total amount of all ongoing requests (PENDING, SCHEDULED, DOING, COMPLETED) and curr request exceeds the wallet balance
   async checkWalletBalance() {
     try {
-      const pendingRequests = await axios.get(
-        globalVariable.requestApi + 'pending/' + this.state.user.userId
+      const ongoingRequests = await axios.get(
+        globalVariable.requestApi + 'ongoing/' + this.state.user.userId
       );
 
-      let pendingAmt = 0;
-      for (let request of pendingRequests.data) {
-        pendingAmt += request.amount;
+      let unpaidAmt = 0;
+      for (let request of ongoingRequests.data) {
+        unpaidAmt += request.amount;
       }
-      pendingAmt += this.state.amount;
-      // console.log(pendingAmt, this.state.user.Wallet.balance);
-      if (pendingAmt > this.state.user.Wallet.balance) {
+      unpaidAmt += this.state.amount;
+      // console.log(unpaidAmt, this.state.user.Wallet.balance);
+      if (unpaidAmt > this.state.user.Wallet.balance) {
         //throw error if the current request causes wallet balance to be exceeded
         throw 'Exceeded balance';
       }
@@ -150,7 +150,7 @@ class MakeRequest extends React.Component {
       <Modal
         backdropStyle={styles.backdrop}
         visible={this.state.topUpModalVisible}>
-        <Card>
+        <Card style={{marginLeft: 15, marginRight: 15}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
             You do not have enough in your wallet to make this request. Please
             proceed to top up your wallet to continue.
