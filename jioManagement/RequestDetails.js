@@ -169,11 +169,11 @@ class RequestDetails extends React.Component {
   renderModal() {
     return (
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
-        <Card>
+        <Card style={{marginLeft: 20, marginRight: 20}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
             {renderIf(
               this.state.acceptBtnClicked,
-              'Are you sure you want to accept this request?',
+              'Are you sure you want to accept this request? This request will be scheduled after you accept.',
               'Are you sure you want to reject this request?'
             )}
           </Text>

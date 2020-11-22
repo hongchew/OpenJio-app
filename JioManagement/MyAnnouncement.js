@@ -17,6 +17,7 @@ import {
   Divider,
   Button,
   Modal,
+  ListItem,
 } from '@ui-kitten/components';
 import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
@@ -130,7 +131,7 @@ class MyAnnouncement extends React.Component {
     try {
       if (this.state.acceptBtnClicked) {
         await axios.put(globalVariable.requestApi + 'schedule-request', {
-          requestId: this.state.selectedRequest,
+          requestId: this.state.selectedRequest.requestId,
         });
         //change status of announcement to ongoing once it has accepted a request
         if (this.state.announcement.announcementStatus === 'ACTIVE') {
@@ -143,7 +144,7 @@ class MyAnnouncement extends React.Component {
         }
       } else {
         await axios.put(globalVariable.requestApi + 'reject-request', {
-          requestId: this.state.selectedRequest,
+          requestId: this.state.selectedRequest.requestId,
         });
       }
       this.getRequests(this.state.announcement.announcementId);
@@ -188,7 +189,7 @@ class MyAnnouncement extends React.Component {
 
     return (
       <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 5}}>
-        SGD {totalAmount.toFixed(2)}
+        SGD ${totalAmount.toFixed(2)}
       </Text>
     );
   };
@@ -299,7 +300,7 @@ class MyAnnouncement extends React.Component {
               <Text style={styles.status}>{displayStatus}</Text>
             )}
             {this.state.modalVisible &&
-              this.setState({selectedRequest: request.requestId})}
+              this.setState({selectedRequest: request})}
           </View>
         );
       }
@@ -316,7 +317,7 @@ class MyAnnouncement extends React.Component {
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
                 <Text>{request.description ? request.description : '-'}</Text>
-                <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
+                <Text>SGD ${parseFloat(request.amount).toFixed(2)}</Text>
               </TouchableOpacity>
             </View>
 
@@ -328,7 +329,7 @@ class MyAnnouncement extends React.Component {
                     this.setState({
                       modalVisible: true,
                       acceptBtnClicked: true,
-                      selectedRequest: request.requestId,
+                      selectedRequest: request,
                     })
                   }
                   style={styles.buttonItem}>
@@ -342,7 +343,7 @@ class MyAnnouncement extends React.Component {
                     this.setState({
                       modalVisible: true,
                       acceptBtnClicked: false,
-                      selectedRequest: request.requestId,
+                      selectedRequest: request,
                     })
                   }
                   style={styles.buttonItem}>
@@ -372,14 +373,48 @@ class MyAnnouncement extends React.Component {
   renderModal() {
     return (
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
-        <Card>
-          <Text style={{marginTop: 10, marginBottom: 10}}>
+        <Card style={{marginLeft: 20, marginRight: 20}}>
+          <Text
+            style={{
+              marginTop: 10,
+              marginBottom: 10,
+            }}>
             {renderIf(
               this.state.acceptBtnClicked,
-              'Are you sure you want to accept this request?',
+              'Are you sure you want to accept this request? This request will be scheduled after you accept.',
               'Are you sure you want to reject this request?'
             )}
           </Text>
+          <ListItem
+            description={
+              <Text style={styles.label}>
+                {this.state.selectedRequest.title}
+              </Text>
+            }
+            title={<Text>Title</Text>}
+          />
+          <Divider />
+          <ListItem
+            description={
+              <Text style={styles.label}>
+                {this.state.selectedRequest.description
+                  ? this.state.selectedRequest.description
+                  : '-'}
+              </Text>
+            }
+            title={<Text>Description</Text>}
+          />
+          <Divider />
+          <ListItem
+            description={
+              <Text
+                style={[styles.label, {fontWeight: 'bold', color: 'black'}]}>
+                {'SGD $' +
+                  parseFloat(this.state.selectedRequest.amount).toFixed(2)}
+              </Text>
+            }
+            title={<Text>Amount</Text>}
+          />
           <Layout style={styles.modalButtonsContainer}>
             <Button
               style={styles.modalButton}
@@ -641,7 +676,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   modalButton: {
-    marginTop: 20,
+    marginTop: 10,
     width: 120,
     margin: 5,
   },
