@@ -10,7 +10,14 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import {Text, Layout, Card, Divider, Button} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  Card,
+  Divider,
+  Button,
+  Modal,
+} from '@ui-kitten/components';
 import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
@@ -32,6 +39,9 @@ class MyAnnouncement extends React.Component {
       refreshing: false,
       startLocation: '',
       acceptedRequest: false,
+      acceptBtnClicked: '',
+      modalVisible: false,
+      selectedRequest: '',
     };
   }
 
@@ -116,6 +126,32 @@ class MyAnnouncement extends React.Component {
     }
   }
 
+  async handleRequest() {
+    try {
+      if (this.state.acceptBtnClicked) {
+        await axios.put(globalVariable.requestApi + 'schedule-request', {
+          requestId: this.state.selectedRequest,
+        });
+        //change status of announcement to ongoing once it has accepted a request
+        if (this.state.announcement.announcementStatus === 'ACTIVE') {
+          await axios.put(
+            globalVariable.announcementApi +
+              'ongoing-announcement/' +
+              this.state.announcement.announcementId
+          );
+          this.getAnnouncement(this.state.announcement.announcementId);
+        }
+      } else {
+        await axios.put(globalVariable.requestApi + 'reject-request', {
+          requestId: this.state.selectedRequest,
+        });
+      }
+      this.getRequests(this.state.announcement.announcementId);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   formatDate(date) {
     var formattedDate =
       date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();
@@ -138,10 +174,6 @@ class MyAnnouncement extends React.Component {
   handleEdit() {}
 
   handleClose() {}
-
-  async acceptRequest(requestId) {}
-
-  async rejectRequest(requestId) {}
 
   renderAmount = () => {
     const acceptedRequests = this.state.requests.filter(
@@ -238,7 +270,12 @@ class MyAnnouncement extends React.Component {
               status === 'PENDING',
               <View style={styles.selection}>
                 <TouchableOpacity
-                  // onPress={() => this.acceptRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: true,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/check.png')}
@@ -246,7 +283,12 @@ class MyAnnouncement extends React.Component {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={() => this.rejectRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: false,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/cross.png')}
@@ -256,6 +298,8 @@ class MyAnnouncement extends React.Component {
               </View>,
               <Text style={styles.status}>{displayStatus}</Text>
             )}
+            {this.state.modalVisible &&
+              this.setState({selectedRequest: request.requestId})}
           </View>
         );
       }
@@ -271,7 +315,7 @@ class MyAnnouncement extends React.Component {
                 }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
-                <Text>{request.description}</Text>
+                <Text>{request.description ? request.description : '-'}</Text>
                 <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
               </TouchableOpacity>
             </View>
@@ -280,7 +324,13 @@ class MyAnnouncement extends React.Component {
               status === 'PENDING',
               <View style={styles.selection}>
                 <TouchableOpacity
-                  // onPress={() => this.acceptRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: true,
+                      selectedRequest: request.requestId,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/check.png')}
@@ -288,7 +338,13 @@ class MyAnnouncement extends React.Component {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={() => this.rejectRequest(request.requestId)}
+                  onPress={() =>
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: false,
+                      selectedRequest: request.requestId,
+                    })
+                  }
                   style={styles.buttonItem}>
                   <Image
                     source={require('../img/cross.png')}
@@ -296,7 +352,14 @@ class MyAnnouncement extends React.Component {
                   />
                 </TouchableOpacity>
               </View>,
-              <Text style={styles.status}>{displayStatus}</Text>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}>
+                <Text style={styles.status}>{displayStatus}</Text>
+              </View>
             )}
 
             <Divider />
@@ -305,6 +368,46 @@ class MyAnnouncement extends React.Component {
       }
     });
   };
+
+  renderModal() {
+    return (
+      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            {renderIf(
+              this.state.acceptBtnClicked,
+              'Are you sure you want to accept this request?',
+              'Are you sure you want to reject this request?'
+            )}
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+                this.handleRequest();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
 
   render() {
     const closeDate = new Date(this.state.announcement.closeTime);
@@ -331,73 +434,73 @@ class MyAnnouncement extends React.Component {
             </Text>
           </View>
 
+          <Card style={styles.card}>
+            <Text category="label" style={styles.label}>
+              Destination
+            </Text>
+            <Text style={styles.cardtitle} category="h5">
+              {this.state.announcement.destination}
+            </Text>
+
+            <Text category="label" style={styles.label}>
+              Description
+            </Text>
+            <Text style={styles.word}>
+              {this.state.announcement.description}
+            </Text>
+
+            <Text category="label" style={styles.label}>
+              Close Time
+            </Text>
+
+            <Text style={styles.word}>
+              {this.state.announcement.closeTime
+                ? formattedDate + ', ' + formattedTime
+                : 'Loading...'}
+            </Text>
+
+            <Text category="label" style={styles.label}>
+              Start Location
+            </Text>
+            <Text style={styles.word}>{this.state.startLocation}</Text>
+
+            <Text category="label" style={styles.label}>
+              Total Amount from Accepted Requests
+            </Text>
+            {this.renderAmount()}
+
+            <Text category="label" style={styles.label}>
+              Status
+            </Text>
+
+            <View>
+              <Text
+                style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>
+                {this.state.announcement.announcementStatus === 'ACTIVE' &&
+                  'Active'}
+                {this.state.announcement.announcementStatus === 'ONGOING' &&
+                  'Ongoing'}
+                {this.state.announcement.announcementStatus === 'PAST' &&
+                  'Past'}
+              </Text>
+            </View>
+          </Card>
+
+          {this.renderActiveButton()}
+          {this.state.announcement.announcementStatus === 'PAST' && (
+            <Button
+              style={{marginLeft: 15, marginRight: 15}}
+              onPress={() => {}}
+              size="small">
+              Contact Support
+            </Button>
+          )}
+
           <ScrollView style={styles.container}>
-            <Card style={styles.card}>
-              <Text category="label" style={styles.label}>
-                Destination
-              </Text>
-              <Text style={styles.cardtitle} category="h5">
-                {this.state.announcement.destination}
-              </Text>
-
-              <Text category="label" style={styles.label}>
-                Description
-              </Text>
-              <Text style={styles.word}>
-                {this.state.announcement.description}
-              </Text>
-
-              <Text category="label" style={styles.label}>
-                Close Time
-              </Text>
-
-              <Text style={styles.word}>
-                {this.state.announcement.closeTime
-                  ? formattedDate + ', ' + formattedTime
-                  : 'Loading...'}
-              </Text>
-
-              <Text category="label" style={styles.label}>
-                Start Location
-              </Text>
-              <Text style={styles.word}>{this.state.startLocation}</Text>
-
-              <Text category="label" style={styles.label}>
-                Total Amount from Accepted Requests
-              </Text>
-              {this.renderAmount()}
-
-              <Text category="label" style={styles.label}>
-                Status
-              </Text>
-
-              <View>
-                <Text
-                  style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>
-                  {this.state.announcement.announcementStatus === 'ACTIVE' &&
-                    'Active'}
-                  {this.state.announcement.announcementStatus === 'ONGOING' &&
-                    'Ongoing'}
-                  {this.state.announcement.announcementStatus === 'PAST' &&
-                    'Past'}
-                </Text>
-              </View>
-            </Card>
-
-            {this.renderActiveButton()}
-            {this.state.announcement.announcementStatus === 'PAST' && (
-              <Button
-                style={{marginLeft: 15, marginRight: 15}}
-                onPress={() => {}}
-                size="small">
-                Contact Support
-              </Button>
-            )}
-
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
                 <Text style={styles.recentRequestsTitle}>
-                  Requests under Jio
+                  Recent Requests under Jio
                 </Text>
                 <TouchableOpacity
                 //navigate to see all the requests under the announcement in the page
@@ -417,6 +520,7 @@ class MyAnnouncement extends React.Component {
             </Card>
           </ScrollView>
         </ScrollView>
+        {this.renderModal()}
       </Layout>
     );
   }
@@ -528,6 +632,18 @@ const styles = StyleSheet.create({
   },
   requestTitle: {
     fontWeight: 'bold',
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 

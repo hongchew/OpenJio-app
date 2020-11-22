@@ -7,16 +7,9 @@ import {
   StatusBar,
   ScrollView,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
-import {
-  Text,
-  Layout,
-  Card,
-  Divider,
-  MenuItem,
-  Button,
-  Icon,
-} from '@ui-kitten/components';
+import {Text, Layout, Card, Button, Icon, Modal} from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import {UserAvatar} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
@@ -32,7 +25,9 @@ class RequestDetails extends React.Component {
       announcer: {},
       announcement: {},
       requestUserAddress: {},
-      requestUserName: '',
+      requestUser: {},
+      modalVisible: false,
+      acceptBtnClicked: '',
     };
   }
 
@@ -62,6 +57,45 @@ class RequestDetails extends React.Component {
     return formattedTime;
   }
 
+  checkmarkIfVerified = (user) => {
+    if (user && user.isSingPassVerified) {
+      return (
+        <Icon
+          name="checkmark-circle"
+          style={{width: 17, height: 17}}
+          fill="green"
+        />
+      );
+    }
+  };
+
+  async handleRequest() {
+    try {
+      if (this.state.acceptBtnClicked) {
+        await axios.put(globalVariable.requestApi + 'schedule-request', {
+          requestId: this.state.request.requestId,
+        });
+        //change status of announcement to ongoing once it has accepted a request
+        if (this.state.announcement.announcementStatus === 'ACTIVE') {
+          await axios.put(
+            globalVariable.announcementApi +
+              'ongoing-announcement/' +
+              this.state.announcement.announcementId
+          );
+        }
+      } else {
+        await axios.put(globalVariable.requestApi + 'reject-request', {
+          requestId: this.state.request.requestId,
+        });
+      }
+      this.props.navigation.replace('RequestDetails', {
+        requestId: this.state.request.requestId,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   //obtain the full list of transactions, credit and debit transactions
   async getRequest(requestId) {
     try {
@@ -78,13 +112,12 @@ class RequestDetails extends React.Component {
       //set state of request
       this.setState({
         request: response.data,
-        requestUserName: requestUser.data.name,
+        requestUser: requestUser.data,
         requestUserAddress: requestAddress.data,
       });
     } catch (error) {
       console.log(error);
     }
-  
 
     try {
       const response = await axios.get(
@@ -121,9 +154,55 @@ class RequestDetails extends React.Component {
         break;
     }
     return (
-      <Text style={{color: '#3366FF', marginTop: 5, fontWeight: 'bold'}}>
+      <Text
+        style={{
+          color: '#3366FF',
+          marginTop: 5,
+          marginBottom: 8,
+          fontWeight: 'bold',
+        }}>
         {status}
       </Text>
+    );
+  }
+
+  renderModal() {
+    return (
+      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+        <Card>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            {renderIf(
+              this.state.acceptBtnClicked,
+              'Are you sure you want to accept this request?',
+              'Are you sure you want to reject this request?'
+            )}
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+                this.handleRequest();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
     );
   }
 
@@ -143,17 +222,18 @@ class RequestDetails extends React.Component {
             backgroundColor="transparent"
           />
           <Text style={styles.header} category="h4">
-            {this.state.requestUserName}'s {'\n'}Request Details
+            {this.state.requestUser.name}'s Request Details
           </Text>
 
           <View style={styles.moreinfobox}>
             <Card style={styles.card}>
               <View style={styles.moreinfosubbox}>
-                <Text category="label" style={styles.label} >
+                <Text category="label" style={styles.label}>
                   Title
                 </Text>
                 <Text
-                  style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}} category="h6">
+                  style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}
+                  category="h6">
                   {this.state.request.title}
                 </Text>
               </View>
@@ -163,19 +243,6 @@ class RequestDetails extends React.Component {
                 </Text>
                 <Text style={styles.word}>
                   {this.state.request.description}
-                </Text>
-              </View>
-
-              <View style={styles.moreinfosubbox}>
-                <Text category="label" style={styles.label}>
-                  Request Time
-                </Text>
-                <Text style={styles.word}>
-                  {this.state.request.createdAt
-                    ? this.formatDate(this.state.request.createdAt) +
-                      ', ' +
-                      this.formatTime(this.state.request.createdAt)
-                    : 'Loading...'}
                 </Text>
               </View>
 
@@ -193,9 +260,10 @@ class RequestDetails extends React.Component {
                 <Text category="label" style={styles.label}>
                   Address
                 </Text>
-                <Text
-                  style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
-                  {this.state.requestUserAddress.line1}, {this.state.requestUserAddress.country} {this.state.requestUserAddress.postalCode}
+                <Text style={{marginTop: 5, marginBottom: 8}}>
+                  {this.state.requestUserAddress.line1},{' '}
+                  {this.state.requestUserAddress.country}{' '}
+                  {this.state.requestUserAddress.postalCode}
                 </Text>
               </View>
               <View style={styles.moreinfosubbox}>
@@ -203,6 +271,45 @@ class RequestDetails extends React.Component {
                   Status
                 </Text>
                 {this.renderStatus()}
+              </View>
+
+              <View style={styles.moreinfosubbox}>
+                <Text category="label" style={styles.label}>
+                  Request Time
+                </Text>
+                <Text style={styles.word}>
+                  {this.state.request.createdAt
+                    ? this.formatDate(this.state.request.createdAt) +
+                      ', ' +
+                      this.formatTime(this.state.request.createdAt)
+                    : 'Loading...'}
+                </Text>
+              </View>
+
+              <View style={styles.moreinfosubbox}>
+                <Text category="label" style={styles.label}>
+                  Submitted by
+                </Text>
+                <TouchableOpacity
+                  activeOpacity={0.3}
+                  onPress={() =>
+                    this.props.navigation.navigate('UserBadges', {
+                      badges: this.state.requestUser.Badges,
+                      name: this.state.requestUser.name,
+                    })
+                  }
+                  style={styles.userRow}>
+                  <UserAvatar
+                    source={this.state.requestUser.avatarPath}
+                    size="small"
+                  />
+                  <Text style={[styles.word, {marginLeft: 10}]}>
+                    {this.state.requestUser.name}
+                  </Text>
+                  <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
+                    {this.checkmarkIfVerified(this.state.requestUser)}
+                  </Layout>
+                </TouchableOpacity>
               </View>
             </Card>
 
@@ -212,14 +319,19 @@ class RequestDetails extends React.Component {
                 <Button
                   size="small"
                   style={styles.button}
-                  onPress={() => {this.handleAccept();}}>
+                  onPress={() => {
+                    this.setState({modalVisible: true, acceptBtnClicked: true});
+                  }}>
                   Accept
                 </Button>
                 <Button
                   size="small"
                   style={styles.button}
                   onPress={() => {
-                    this.handleReject();
+                    this.setState({
+                      modalVisible: true,
+                      acceptBtnClicked: false,
+                    });
                   }}>
                   Reject
                 </Button>
@@ -227,6 +339,7 @@ class RequestDetails extends React.Component {
             )}
           </View>
         </ScrollView>
+        {this.renderModal()}
       </Layout>
     );
   }
@@ -293,6 +406,24 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,
+  },
+  userRow: {
+    marginTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 
