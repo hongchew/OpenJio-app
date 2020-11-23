@@ -117,52 +117,56 @@ class MyRequest extends React.Component {
   }
 
   renderComplaints() {
-    return this.state.complaint.map((complaint, index) => {
-      return (
-        <Card key={complaint.complaintId}>
-          {index === 0 && (
-            <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
-              Submitted Complaints
+    if (this.state.complaint.length !== 0) {
+      return this.state.complaint.map((complaint, index) => {
+        return (
+          <Card key={complaint.complaintId}>
+            {index === 0 && (
+              <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
+                Submitted Complaint
+              </Text>
+            )}
+            <Text category="label" style={styles.label}>
+              Description
             </Text>
-          )}
-          <Text category="label" style={styles.label}>
-            Description
-          </Text>
-          <Text style={styles.word}>{complaint.description}</Text>
-          <Text category="label" style={styles.label}>
-            Admin Response
-          </Text>
-          <Text style={styles.word}>
-            {complaint.adminResponse ? complaint.adminResponse : '-'}
-          </Text>
-          <Text category="label" style={styles.label}>
-            Status
-          </Text>
-          <Text
-            style={{
-              color: '#3366FF',
-              marginTop: 5,
-              marginBottom: 5,
-              fontWeight: 'bold',
-              textTransform: 'capitalize',
-            }}>
-            {complaint.complaintStatus}
-          </Text>
-          <Text category="label" style={styles.label}>
-            Created at
-          </Text>
-          <Text style={styles.word}>
-            {this.formatDate(complaint.createdAt) +
-              ', ' +
-              this.formatTime(complaint.createdAt)}
-          </Text>
-          <Text category="label" style={styles.label}>
-            Complaint ID
-          </Text>
-          <Text style={styles.word}>{complaint.complaintId}</Text>
-        </Card>
-      );
-    });
+            <Text style={styles.word}>{complaint.description}</Text>
+            <Text category="label" style={styles.label}>
+              Admin Response
+            </Text>
+            <Text style={styles.word}>
+              {complaint.adminResponse ? complaint.adminResponse : '-'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Status
+            </Text>
+            <Text
+              style={{
+                color: '#3366FF',
+                marginTop: 5,
+                marginBottom: 5,
+                fontWeight: 'bold',
+                textTransform: 'capitalize',
+              }}>
+              {complaint.complaintStatus}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Created at
+            </Text>
+            <Text style={styles.word}>
+              {this.formatDate(complaint.createdAt) +
+                ', ' +
+                this.formatTime(complaint.createdAt)}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Complaint ID
+            </Text>
+            <Text style={styles.word}>{complaint.complaintId}</Text>
+          </Card>
+        );
+      });
+    } else {
+      return null;
+    }
   }
 
   renderStatus() {
@@ -338,7 +342,10 @@ class MyRequest extends React.Component {
             )}
 
             {/* show complaints made*/}
-            {renderIf(this.state.complaint, this.renderComplaints())}
+            {renderIf(
+              this.state.complaint.length !== 0,
+              this.renderComplaints()
+            )}
           </View>
         </ScrollView>
       </Layout>

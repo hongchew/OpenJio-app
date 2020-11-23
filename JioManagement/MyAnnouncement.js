@@ -270,6 +270,8 @@ class MyAnnouncement extends React.Component {
         displayStatus = 'Rejected';
       } else if (status === 'DOING') {
         displayStatus = 'Doing';
+      } else if (status === 'VERIFIED') {
+        displayStatus = 'Verified';
       } else {
         displayStatus = 'Completed';
       }
