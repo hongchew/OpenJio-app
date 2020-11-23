@@ -19,13 +19,58 @@ class RequestsUnderAnnoucements extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      announcement: this.props.route.params.announcement,
       requests: this.props.route.params.requests,
       allBtnStatus: 'primary',
       pendingBtnStatus: 'basic',
       acceptedBtnStatus: 'basic',
       modalVisible: false,
       selectedRequest: '',
+      acceptBtnClicked: false,
     };
+  }
+
+  //Retrieve requests tagged to announcement
+  async getRequests(announcementId) {
+    try {
+      const response = await axios.get(
+        `${globalVariable.announcementApi}all-requests/${announcementId}`
+      );
+      const requests = response.data;
+      const sortedRequests = await requests.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
+      this.setState({
+        requests: sortedRequests,
+      });
+
+      //get the total amount from the requests that this announcement has
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async handleRequest() {
+    try {
+      //if announcement status is ONGOING, don't allow the announcer to accept any requests
+      if (
+        this.state.announcement.announcementStatus !== 'ONGOING' &&
+        this.state.acceptBtnClicked
+      ) {
+        await axios.put(globalVariable.requestApi + 'schedule-request', {
+          requestId: this.state.selectedRequest.requestId,
+        });
+      }
+      if (!this.state.acceptBtnClicked) {
+        await axios.put(globalVariable.requestApi + 'reject-request', {
+          requestId: this.state.selectedRequest.requestId,
+        });
+      }
+      this.getRequests(this.state.announcement.announcementId);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   renderModal = () => {
@@ -108,7 +153,9 @@ class RequestsUnderAnnoucements extends React.Component {
       );
     } else if (this.state.acceptedBtnStatus === 'primary') {
       data = this.state.requests.filter(
-        (request) => request.requestStatus !== 'PENDING'
+        (request) =>
+          request.requestStatus !== 'PENDING' &&
+          request.requestStatus !== 'REJECTED'
       );
     }
     const renderItem = ({item}) => {
@@ -125,11 +172,16 @@ class RequestsUnderAnnoucements extends React.Component {
           }
           accessoryRight={() => {
             return renderIf(
-              item.requestStatus === 'PENDING',
+              item.requestStatus === 'PENDING' &&
+                this.state.announcement.announcementStatus !== 'ONGOING',
               <View style={{flexDirection: 'row'}}>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({modalVisible: true, selectedRequest: item});
+                    this.setState({
+                      modalVisible: true,
+                      selectedRequest: item,
+                      acceptBtnClicked: true,
+                    });
                   }}>
                   <Image
                     source={require('../img/check.png')}
@@ -138,7 +190,11 @@ class RequestsUnderAnnoucements extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({modalVisible: true, selectedRequest: item});
+                    this.setState({
+                      modalVisible: true,
+                      selectedRequest: item,
+                      acceptBtnClicked: false,
+                    });
                   }}>
                   <Image
                     source={require('../img/cross.png')}

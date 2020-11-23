@@ -285,8 +285,7 @@ class MyAnnouncement extends React.Component {
                       reqModalVisible: true,
                       acceptBtnClicked: true,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/check.png')}
                     style={styles.imageContainer}
@@ -298,15 +297,21 @@ class MyAnnouncement extends React.Component {
                       reqModalVisible: true,
                       acceptBtnClicked: false,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/cross.png')}
                     style={styles.imageContainer}
                   />
                 </TouchableOpacity>
               </View>,
-              <Text style={styles.status}>{displayStatus}</Text>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}>
+                <Text style={styles.status}>{displayStatus}</Text>
+              </View>
             )}
             {this.state.reqModalVisible &&
               this.setState({selectedRequest: request})}
@@ -341,8 +346,7 @@ class MyAnnouncement extends React.Component {
                       acceptBtnClicked: true,
                       selectedRequest: request,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/check.png')}
                     style={styles.imageContainer}
@@ -355,8 +359,7 @@ class MyAnnouncement extends React.Component {
                       acceptBtnClicked: false,
                       selectedRequest: request,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/cross.png')}
                     style={styles.imageContainer}
@@ -584,14 +587,17 @@ class MyAnnouncement extends React.Component {
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
                 <Text style={styles.recentRequestsTitle}>
-                  Recent Requests under Jio
+                  Recent requests under Jio
                 </Text>
                 <TouchableOpacity
                   //navigate to see all the requests under the announcement in the page
                   onPress={() =>
                     this.props.navigation.navigate(
                       'RequestsUnderAnnoucements',
-                      {requests: this.state.requests}
+                      {
+                        requests: this.state.requests,
+                        announcement: this.state.announcement,
+                      }
                     )
                   }>
                   <Text>Show all</Text>
@@ -677,8 +683,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
+    marginLeft: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   request: {
     marginTop: 20,
