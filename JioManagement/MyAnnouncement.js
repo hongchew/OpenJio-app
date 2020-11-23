@@ -587,10 +587,13 @@ class MyAnnouncement extends React.Component {
                   Recent Requests under Jio
                 </Text>
                 <TouchableOpacity
-                //navigate to see all the requests under the announcement in the page
-                // onPress={() =>
-                //   this.props.navigation.navigate('RequestsUnderAnnoucements')}
-                >
+                  //navigate to see all the requests under the announcement in the page
+                  onPress={() =>
+                    this.props.navigation.navigate(
+                      'RequestsUnderAnnoucements',
+                      {requests: this.state.requests}
+                    )
+                  }>
                   <Text>Show all</Text>
                 </TouchableOpacity>
               </View>
