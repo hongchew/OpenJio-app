@@ -30,6 +30,7 @@ class MyRequest extends React.Component {
       request: {},
       announcer: {},
       announcement: {},
+      complaint: [],
     };
   }
 
@@ -87,9 +88,13 @@ class MyRequest extends React.Component {
       const response = await axios.get(
         `${globalVariable.requestApi}by-requestId/${requestId}`
       );
-      //set state of request
+      const complaint = await axios.get(
+        `${globalVariable.complaintApi}all-complaints/${requestId}`
+      );
+      //set state of request and complaint
       this.setState({
         request: response.data,
+        complaint: complaint.data,
       });
     } catch (error) {
       console.log(error);
@@ -108,6 +113,55 @@ class MyRequest extends React.Component {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  renderComplaints() {
+    return this.state.complaint.map((complaint, index) => {
+      return (
+        <Card key={complaint.id}>
+          {index === 0 && (
+            <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
+              Submitted Complaints
+            </Text>
+          )}
+          <Text category="label" style={styles.label}>
+            Description
+          </Text>
+          <Text style={styles.word}>{complaint.description}</Text>
+          <Text category="label" style={styles.label}>
+            Admin Response
+          </Text>
+          <Text style={styles.word}>
+            {complaint.adminResponse ? complaint.adminResponse : '-'}
+          </Text>
+          <Text category="label" style={styles.label}>
+            Status
+          </Text>
+          <Text
+            style={{
+              color: '#3366FF',
+              marginTop: 5,
+              marginBottom: 5,
+              fontWeight: 'bold',
+              textTransform: 'capitalize',
+            }}>
+            {complaint.complaintStatus}
+          </Text>
+          <Text category="label" style={styles.label}>
+            Created at
+          </Text>
+          <Text style={styles.word}>
+            {this.formatDate(complaint.createdAt) +
+              ', ' +
+              this.formatTime(complaint.createdAt)}
+          </Text>
+          <Text category="label" style={styles.label}>
+            Complaint ID
+          </Text>
+          <Text style={styles.word}>{complaint.complaintId}</Text>
+        </Card>
+      );
+    });
   }
 
   renderStatus() {
@@ -260,8 +314,9 @@ class MyRequest extends React.Component {
 
             {/* report an issue */}
             {renderIf(
-              this.state.request.requestStatus === 'COMPLETED' ||
-                this.state.request.requestStatus === 'VERIFIED',
+              (this.state.request.requestStatus === 'COMPLETED' ||
+                this.state.request.requestStatus === 'VERIFIED') &&
+                this.state.complaint.length === 0,
               <MenuItem
                 style={styles.report}
                 title="Report an issue"
@@ -273,6 +328,9 @@ class MyRequest extends React.Component {
                 }
               />
             )}
+
+            {/* show complaints made*/}
+            {renderIf(this.state.complaint, this.renderComplaints())}
           </View>
         </ScrollView>
       </Layout>
