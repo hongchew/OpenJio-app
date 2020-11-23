@@ -695,8 +695,7 @@ const styles = StyleSheet.create({
     width: 25,
     height: 25,
     marginLeft: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 15,
   },
   request: {
     marginTop: 20,

@@ -12,7 +12,6 @@ import {
   Text,
   Layout,
   Card,
-  Divider,
   MenuItem,
   Button,
   Icon,
@@ -83,13 +82,11 @@ class MyRequest extends React.Component {
     return formattedTime;
   }
 
-  //obtain the full list of transactions, credit and debit transactions
   async getRequest(requestId) {
     try {
       const response = await axios.get(
         `${globalVariable.requestApi}by-requestId/${requestId}`
       );
-      //   console.log(response.data);
       //set state of request
       this.setState({
         request: response.data,
@@ -97,18 +94,6 @@ class MyRequest extends React.Component {
     } catch (error) {
       console.log(error);
     }
-    // try {
-    //   const response = await axios.get(
-    //     `${globalVariable.userApi}/${this.state.request.userId}`
-    //   );
-    //   console.log(response);
-    //   this.setState({
-    //     requestedUser: response.data,
-    //   });
-    // } catch (error) {
-    //   console.log(error);
-    // }
-
     try {
       const response = await axios.get(
         `${globalVariable.announcementApi}by/${this.state.request.announcementId}`
@@ -271,6 +256,22 @@ class MyRequest extends React.Component {
                 }>
                 Edit
               </Button>
+            )}
+
+            {/* report an issue */}
+            {renderIf(
+              this.state.request.requestStatus === 'COMPLETED' ||
+                this.state.request.requestStatus === 'VERIFIED',
+              <MenuItem
+                style={styles.report}
+                title="Report an issue"
+                accessoryRight={ForwardIcon}
+                onPress={() =>
+                  this.props.navigation.navigate('ReportScreen', {
+                    request: this.state.request,
+                  })
+                }
+              />
             )}
           </View>
         </ScrollView>
