@@ -152,7 +152,8 @@ class MyAnnouncement extends React.Component {
 
   //change announcement status to ONGOING
   //cannot accept requests after announcement status is ONGOING
-  //change all scheduled requests under announcement to DOING
+  //change all SCHEDULED requests under announcement to DOING
+  //change all PENDING requests under announcement to REJECTED
   async handleClose() {
     try {
       await axios.put(
@@ -163,6 +164,11 @@ class MyAnnouncement extends React.Component {
       for (var req of this.state.requests) {
         if (req.requestStatus === 'SCHEDULED') {
           await axios.put(globalVariable.requestApi + 'doing-request', {
+            requestId: req.requestId,
+          });
+        }
+        if (req.requestStatus === 'PENDING') {
+          await axios.put(globalVariable.requestApi + 'reject-request', {
             requestId: req.requestId,
           });
         }

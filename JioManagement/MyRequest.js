@@ -7,6 +7,7 @@ import {
   StatusBar,
   ScrollView,
   RefreshControl,
+  TouchableOpacity,
 } from 'react-native';
 import {
   Text,
@@ -118,7 +119,7 @@ class MyRequest extends React.Component {
   renderComplaints() {
     return this.state.complaint.map((complaint, index) => {
       return (
-        <Card key={complaint.id}>
+        <Card key={complaint.complaintId}>
           {index === 0 && (
             <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
               Submitted Complaints
@@ -229,7 +230,14 @@ class MyRequest extends React.Component {
                 <Text category="label" style={styles.label}>
                   Submitted by
                 </Text>
-                <View style={styles.userRow}>
+                <TouchableOpacity
+                  style={styles.userRow}
+                  onPress={() => {
+                    this.props.navigation.navigate('UserBadges', {
+                      badges: this.state.announcer.Badges,
+                      name: this.state.announcer.name,
+                    });
+                  }}>
                   <UserAvatar
                     source={this.state.announcer.avatarPath}
                     size="small"
@@ -240,7 +248,7 @@ class MyRequest extends React.Component {
                   <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
                     {this.checkmarkIfVerified(this.state.announcer)}
                   </Layout>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
           </Card>
