@@ -55,7 +55,6 @@ class MyAnnouncement extends React.Component {
     this.focusListener = this.props.navigation.addListener('focus', () => {
       this.getAnnouncement(announcementId);
       this.getRequests(announcementId);
-      //Put your Data loading function here instead of my this.LoadData()
     });
     // this.getWalletAmount(this.props.user.userId);
   }
@@ -185,7 +184,9 @@ class MyAnnouncement extends React.Component {
     const acceptedRequests = this.state.requests.filter(
       (request) =>
         request.requestStatus === 'SCHEDULED' ||
-        request.requestStatus === 'DOING'
+        request.requestStatus === 'DOING' || 
+        request.requestStatus === 'COMPLETED' || 
+        request.requestStatus === 'VERIFIED'
     );
     let totalAmount = 0;
     acceptedRequests.map((request) => {

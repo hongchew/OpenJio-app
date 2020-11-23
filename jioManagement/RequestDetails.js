@@ -381,11 +381,10 @@ class RequestDetails extends React.Component {
             )}
 
             {renderIf(
-              this.state.request.requestStatus === 'SCHEDULED',
+              this.state.request.requestStatus === 'DOING',
               <View>
                 <Button
                   style={{marginLeft: 15, marginRight: 15}}
-                  size="small"
                   onPress={() => {
                     this.setState({modalVisible: true, completeBtnClicked: true});
                   }}>
