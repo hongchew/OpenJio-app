@@ -54,7 +54,7 @@ class AddSupportTicket extends React.Component {
         this.setState({
           ticket: ticket,
         });
-        this.props.navigation.replace('SupportTickets');
+        this.props.navigation.navigate('SupportTickets');
       } catch (error) {
         console.log(error);
       }
@@ -81,11 +81,13 @@ class AddSupportTicket extends React.Component {
           <ScrollView>
             <Layout style={styles.container}>
               <Input
+                style={styles.input}
                 label="Title"
                 value={this.state.title}
                 onChangeText={(text) => this.setState({title: text})}
               />
               <Input
+                style={styles.input}
                 label="Description"
                 multiline={true}
                 textStyle={{minHeight: 64, textAlignVertical: 'top'}}
@@ -93,7 +95,6 @@ class AddSupportTicket extends React.Component {
                 onChangeText={(text) => this.setState({description: text})}
               />
               <Select
-                style={{flex:1,}}
                 placeholder="Default"
                 value={this.state.displayValue}
                 selectedIndex={this.state.selectedIndex}
@@ -116,7 +117,7 @@ class AddSupportTicket extends React.Component {
               {
                 renderIf(
                   this.state.message !== null,
-                  <Text>{this.state.message}</Text>
+                  <Text style={styles.message}>{this.state.message}</Text>
                 )
               }
             </Layout>
@@ -146,6 +147,15 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 30,
   },
+  input: {
+    marginBottom: 20
+  },
+  message:{
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    color: 'red'
+  }
 });
 
 const mapStateToProps = (state) => {

@@ -31,6 +31,9 @@ class SupportTickets extends React.Component {
   }
 
   componentDidMount() {
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.getSupportTickets(this.props.user.userId)
+    })
     this.getSupportTickets(this.props.user.userId);
   }
 
@@ -44,6 +47,10 @@ class SupportTickets extends React.Component {
     });
   };
 
+  componentWillUnmount () {
+    this.focusListener()
+  }
+
   //obtain list of support tickets
   async getSupportTickets(userId) {
     try {
@@ -51,9 +58,12 @@ class SupportTickets extends React.Component {
         `${globalVariable.supportTicketApi}tickets-by/${userId}`
       );
       const tickets = response.data;
-      console.log(tickets);
+      const sortedTickets = await tickets.sort(
+        (a,b,) => new Date(b.createdAt) - new Date(a.createdAt)
+      )
+      console.log(sortedTickets);
       this.setState({
-        tickets: tickets,
+        tickets: sortedTickets,
       });
     } catch (error) {
       console.log(error);
@@ -62,14 +72,13 @@ class SupportTickets extends React.Component {
 
   renderItem = () => {
     return this.state.tickets.map((ticket, index) => {
-      console.log('rendering ticket');
       {
         return (
           <View key={ticket.supportTicketId}>
             <TouchableOpacity
               style={styles.ticketRow}
               onPress={() =>
-                this.props.navigation.navigate('HomeScreen', {
+                this.props.navigation.navigate('SupportTicketDetails', {
                   supportTicketId: ticket.supportTicketId,
                 })
               }>
@@ -111,8 +120,8 @@ class SupportTickets extends React.Component {
               }
               {
                 renderIf(
-                  ticket.SupportComments.length > 0 && ticket.SupportComments[0].isPostedByAdmin,
-                  <View style={{flexDirection: 'column'}}>
+                  ticket.SupportComments.length > 0 && ticket.SupportComments[0].isPostedByAdmin && ticket.supportStatus === 'PENDING',
+                  <View style={{flex:1,flexDirection: 'column'}}>
                     <Text style={{marginBottom: 5, fontWeight: 'bold'}}>{ticket.title}</Text>
                     <Text style={{fontSize: 13, fontWeight: 'bold'}}>{ticket.description}</Text>
                   </View>
@@ -120,8 +129,8 @@ class SupportTickets extends React.Component {
               }
               {
                 renderIf(
-                  ticket.SupportComments.length === 0 || ticket.SupportComments[0].isPostedByAdmin === false,
-                  <View style={{flexDirection: 'column'}}>
+                  ticket.SupportComments.length === 0 || ticket.SupportComments[0].isPostedByAdmin === false || ticket.supportStatus === 'RESOLVED',
+                  <View style={{flex:1,flexDirection: 'column'}}>
                     <Text style={{marginBottom: 5}}>{ticket.title}</Text>
                     <Text style={{fontSize: 13}}>{ticket.description}</Text>
                   </View>
@@ -177,8 +186,9 @@ class SupportTickets extends React.Component {
         </ScrollView>
         <View style={styles.buttonRow}>
           <Button
+            style={styles.button}
             onPress={() => this.props.navigation.navigate('AddSupportTicket')}>
-            REQUEST SUPPORT
+            NEW SUPPORT
           </Button>
         </View>
       </Layout>
@@ -219,23 +229,26 @@ const styles = StyleSheet.create({
     height: 250,
   },
   ticketRow: {
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
   },
   buttonRow: {
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    marginBottom: 40,
-    marginTop: 20
+    marginBottom: 20,
+    marginTop: 20,
+    marginLeft: 20,
+    marginRight: 20
+  },
+  button: {
+    marginTop: 10,
+    marginBottom: 10,
   },
   avatar: {
     marginLeft: 20,
     marginRight: 20
   },
   ticketStatus: {
-    flex: 1, 
     justifyContent: 'flex-end', 
     textAlign: 'right', 
     marginRight: 20
