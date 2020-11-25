@@ -37,6 +37,7 @@ class HomeScreen extends React.Component {
       filterdata: ['Distance', 'Closing Time'],
       displayValue: 'Distance',
     };
+    console.log(this.props.user.hasCovid);
   }
 
   onRefresh = () => {
@@ -73,7 +74,7 @@ class HomeScreen extends React.Component {
     ) {
       //Update announcement by distance
       this.getAnnouncements();
-      console.log(this.state.announcements);
+      
     } else if (
       this.state.selectedIndex.row === 1 &&
       this.state.displayValue !== prevState.displayValue
@@ -88,7 +89,7 @@ class HomeScreen extends React.Component {
       this.setState({
         announcements: sortedAnnouncements,
       });
-      console.log(sortedAnnouncements);
+      
     } else if (
       this.state.selectedIndex.row === 2 &&
       this.state.displayValue !== prevState.displayValue
@@ -172,7 +173,7 @@ class HomeScreen extends React.Component {
       var cDate = new Date(announcement.closeTime);
       var formattedDate = this.formatDate(cDate);
       var formattedTime = this.formatTime(cDate);
-      console.log(announcement.distance);
+      
       return (
         <Card
           style={styles.card}
@@ -263,16 +264,18 @@ class HomeScreen extends React.Component {
               source={require('../img/homeImg.png')}
             />
           </TouchableOpacity>
-
           <TouchableOpacity
-            onPress={() => this.props.navigation.replace('HealthDeclaration')}>
+            onPress={() => this.props.user.hasCovid ? 
+              this.props.navigation.replace('DeclareCovid', {declareCovid: false}) : 
+              this.props.navigation.replace('DeclareCovid', {declareCovid: true})
+            }>
             <Image
               style={{
                 width: 400,
                 height: 120,
                 alignSelf: 'center',
               }}
-              source={require('../img/health.png')}
+              source={this.props.user.hasCovid ? require('../img/declareHealthy.png') : require('../img/declareCovid.png')}
             />
           </TouchableOpacity>
 

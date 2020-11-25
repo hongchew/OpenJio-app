@@ -102,19 +102,19 @@ class RequestDetails extends React.Component {
       await axios.put(globalVariable.requestApi + 'complete-request', {
         requestId: this.state.request.requestId,
       });
-      
+
       const allRequests = await axios.get(
         `${globalVariable.announcementApi}all-requests/${this.state.announcement.announcementId}`
       );
-      
-      //retrieve all the accepted requests under 
+
+      //retrieve all the accepted requests under
       //this announcement that are completed
       const completedRequests = allRequests.data.filter(
         (request) => request.requestStatus === 'COMPLETED'
       );
-      
-      //if the announcer has completed all the requests, 
-      //set the announcement to COMPLETED 
+
+      //if the announcer has completed all the requests,
+      //set the announcement to COMPLETED
       if (completedRequests.length === allRequests.data.length) {
         await axios.put(
           `${globalVariable.announcementApi}complete-announcement/${this.state.announcement.announcementId}`
@@ -204,19 +204,23 @@ class RequestDetails extends React.Component {
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
         <Card style={{marginLeft: 10, marginRight: 10}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
-            {this.state.acceptBtnClicked && 
-              'Are you sure you want to accept this request?'
-            }
-            {!this.state.acceptBtnClicked && !this.state.completeBtnClicked &&
-              'Are you sure you want to reject this request?'
-            }
-            {this.state.completeBtnClicked && 
-            <Text>
-              <Text style={{fontWeight: 'bold'}}>Do you want to complete the request?</Text>
-              {'\n\n'}
-              <Text style={{fontStyle: 'italic'}}>A request is completed only when you have fulfilled all request details and description. </Text>
+            {this.state.acceptBtnClicked &&
+              'Are you sure you want to accept this request?'}
+            {!this.state.acceptBtnClicked &&
+              !this.state.completeBtnClicked &&
+              'Are you sure you want to reject this request?'}
+            {this.state.completeBtnClicked && (
+              <Text>
+                <Text style={{fontWeight: 'bold'}}>
+                  Do you want to complete the request?
+                </Text>
+                {'\n\n'}
+                <Text style={{fontStyle: 'italic'}}>
+                  A request is completed only when you have fulfilled all
+                  request details and description.{' '}
+                </Text>
               </Text>
-            }
+            )}
           </Text>
           <View style={styles.modalButtonsContainer}>
             <Button
@@ -226,8 +230,12 @@ class RequestDetails extends React.Component {
                 this.setState({
                   modalVisible: false,
                 });
-                {this.state.completeBtnClicked && this.handleCompleteRequest();}
-                {this.state.acceptBtnClicked && this.handleRequest();}
+                {
+                  this.state.completeBtnClicked && this.handleCompleteRequest();
+                }
+                {
+                  this.state.acceptBtnClicked && this.handleRequest();
+                }
               }}>
               Confirm
             </Button>
@@ -353,6 +361,22 @@ class RequestDetails extends React.Component {
                   </Layout>
                 </TouchableOpacity>
               </View>
+              <View style={{marginTop: 10}}>
+                <Text category="label" style={styles.label}>
+                  {this.state.requestUser.name}'s' COVID-19 Risk Level
+                </Text>
+                <Text style={styles.word}>
+                  {this.state.requestUser.isHighRisk ? (
+                    <View style={styles.highRisk}>
+                      <Text style={{color: 'white'}}>High-Risk</Text>
+                    </View>
+                  ) : (
+                    <View style={styles.lowRisk}>
+                      <Text style={{color: 'white'}}>Low-Risk</Text>
+                    </View>
+                  )}
+                </Text>
+              </View>
             </Card>
 
             {renderIf(
@@ -386,11 +410,14 @@ class RequestDetails extends React.Component {
                 <Button
                   style={{marginLeft: 15, marginRight: 15}}
                   onPress={() => {
-                    this.setState({modalVisible: true, completeBtnClicked: true});
+                    this.setState({
+                      modalVisible: true,
+                      completeBtnClicked: true,
+                    });
                   }}>
                   Complete this Request
                 </Button>
-                </View>
+              </View>
             )}
           </View>
         </ScrollView>
@@ -461,6 +488,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,
+  },
+  lowRisk: {
+    backgroundColor: '#24B750',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginTop: 3,
+    marginBottom: 5,
+    marginLeft: -10,
+  },
+  highRisk: {
+    backgroundColor: '#B71A21',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginTop: 3,
+    marginBottom: 5,
+    marginLeft: -10,
   },
   userRow: {
     marginTop: 6,

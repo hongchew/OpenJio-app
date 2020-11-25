@@ -245,7 +245,7 @@ class AnnouncementDetails extends React.Component {
             <Button
               style={styles.button}
               onPress={() =>
-                this.props.navigation.navigate('HealthDeclaration', {
+                this.props.navigation.replace('HealthDeclaration', {
                   announcementId: this.state.announcementDetails.announcementId,
                 })
               }

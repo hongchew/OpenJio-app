@@ -58,6 +58,8 @@ import MyAnnouncement from './jioManagement/MyAnnouncement';
 import MyRequest from './jioManagement/MyRequest';
 import RequestDetails from './jioManagement/RequestDetails';
 import CommendAnnouncer from './jioManagement/CommendAnnouncer';
+//screens from covid module 
+import DeclareCovid from './covidModule/DeclareCovid';
 
 const Stack = createStackNavigator();
 
@@ -638,6 +640,25 @@ const HomeNavigator = () => (
           <Button
             onPress={() => {
               navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="DeclareCovid"
+      component={DeclareCovid}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Home'});
             }}
             accessoryLeft={BackIcon}
             appearance="ghost"
