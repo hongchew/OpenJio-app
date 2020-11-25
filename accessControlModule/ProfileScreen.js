@@ -211,6 +211,7 @@ class ProfileScreen extends React.Component {
               title={<Text style={styles.menuItem}>Support</Text>}
               onPress={() => this.props.navigation.navigate('SupportTickets')}
             />
+            <View style={{height:50}}></View>
             <MenuItem
               accessoryLeft={LogoutIcon}
               title={<Text style={styles.menuItem}>Logout</Text>}

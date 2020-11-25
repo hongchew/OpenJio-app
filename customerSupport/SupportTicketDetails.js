@@ -7,7 +7,7 @@ import {
   StatusBar,
   ScrollView,
   TouchableWithoutFeedback,
-  Image
+  Image,
 } from 'react-native';
 import {
   Text,
@@ -70,24 +70,28 @@ class SupportTicketDetails extends React.Component {
                 <View
                   key={comment.supportCommentId}
                   style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-                  <Text style={styles.adminComments}>
-                    {comment.description}
-                  </Text>
-                  {renderIf(
-                    this.state.showTime,
-                    <Text>{comment.createdAt}</Text>
-                  )}
+                  <View styles={{flexDirection: 'column'}}>
+                    <Text style={styles.adminComments}>
+                      {comment.description}
+                    </Text>
+                    {renderIf(
+                      this.state.showTime,
+                      <Text>{`${comment.createdAt.substring(5,10)},${comment.createdAt.substring(11,16)}`}</Text>
+                    )}
+                  </View>
                 </View>
               </TouchableWithoutFeedback>,
               <TouchableWithoutFeedback onPress={() => this.renderTime()}>
                 <View
                   key={comment.supportCommentId}
                   style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-                  <Text style={styles.myComments}>{comment.description}</Text>
-                  {renderIf(
-                    this.state.showTime,
-                    <Text style={{flex: 1, flexDirection: 'column'}}>{JSON.stringify(comment.createdAt)}</Text>
-                  )}
+                  <View styles={{flexDirection: 'column'}}>
+                    <Text style={styles.myComments}>{comment.description}</Text>
+                    {renderIf(
+                      this.state.showTime,
+                      <Text>{`${comment.createdAt.substring(5,10)},${comment.createdAt.substring(11,16)}`}</Text>
+                    )}
+                  </View>
                 </View>
               </TouchableWithoutFeedback>
             );
@@ -101,7 +105,9 @@ class SupportTicketDetails extends React.Component {
             source={require('../img/NoSupportComment.png')}
             style={styles.imageContainer}
           />
-          <Text style={styles.nocommentnotification}>No comments at the moment</Text>
+          <Text style={styles.nocommentnotification}>
+            No comments at the moment
+          </Text>
         </View>
       );
     }
@@ -207,7 +213,7 @@ class SupportTicketDetails extends React.Component {
             </Card>
           </View>
           <Text style={styles.header} category="h4">
-            Comments
+            Chat
           </Text>
           <View style={{flex: 1}}>{this.renderComments()}</View>
           {renderIf(
@@ -313,7 +319,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     maxWidth: 300,
     marginBottom: 15,
-    textAlign: 'left',
+    textAlign: 'right',
     marginLeft: 15,
     marginRight: 15,
   },
