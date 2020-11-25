@@ -181,6 +181,12 @@ class MyActivity extends React.Component {
                     <Text style={{color: 'white'}}>Ongoing</Text>
                   </View>
                 )}
+                {renderIf(
+                  announcement.announcementStatus === 'COMPLETED',
+                  <View style={styles.status}>
+                    <Text style={{color: 'white'}}>Completed</Text>
+                  </View>
+                )}
               </View>
               <View style={{marginLeft: 40}}>
                 <Text category="label" style={styles.cardlabel}>

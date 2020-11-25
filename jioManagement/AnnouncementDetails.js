@@ -135,6 +135,25 @@ class AnnouncementDetails extends React.Component {
     }
   }
 
+  renderJioStatus() {
+    let status;
+    switch (this.state.announcementDetails.announcementStatus) {
+      case 'ACTIVE':
+        status = 'Active';
+        break;
+      case 'ONGOING':
+        status = 'Ongoing';
+        break;
+      case 'COMPLETED':
+        status = 'Completed';
+        break;
+      case 'PAST':
+        status = 'Past';
+        break;
+    }
+    return <Text style={{color: 'white', textAlign: 'center'}}>{status}</Text>;
+  }
+
   render() {
     return (
       <Layout style={styles.layout}>
@@ -174,15 +193,7 @@ class AnnouncementDetails extends React.Component {
                 <Text category="label" style={styles.label}>
                   Status
                 </Text>
-
-                {this.state.announcementDetails.announcementStatus ===
-                  'ACTIVE' && (
-                  <View style={styles.status}>
-                    <Text style={{color: 'white', textAlign: 'center'}}>
-                      Active
-                    </Text>
-                  </View>
-                )}
+                <View style={styles.status}>{this.renderJioStatus()}</View>
               </View>
               <View style={{marginLeft: 40}}>
                 <Text category="label" style={styles.label}>
@@ -222,8 +233,8 @@ class AnnouncementDetails extends React.Component {
                   {this.state.createdBy.name ? this.state.createdBy.name : ''}
                 </Text>
                 <Layout style={{paddingLeft: 3, justifyContent: 'center'}}>
-              {this.checkmarkIfVerified(this.state.createdBy)}
-            </Layout>
+                  {this.checkmarkIfVerified(this.state.createdBy)}
+                </Layout>
               </TouchableOpacity>
             </View>
           </Card>
@@ -238,8 +249,7 @@ class AnnouncementDetails extends React.Component {
                   announcementId: this.state.announcementDetails.announcementId,
                 })
               }
-              disabled={!this.state.submitReqButton}
-              >
+              disabled={!this.state.submitReqButton}>
               {this.state.submitReqButton
                 ? 'Submit a Request'
                 : 'Request Submitted'}

@@ -57,6 +57,7 @@ import MyHistory from './jioManagement/MyHistory';
 import MyAnnouncement from './jioManagement/MyAnnouncement';
 import MyRequest from './jioManagement/MyRequest';
 import RequestDetails from './jioManagement/RequestDetails';
+import CommendAnnouncer from './jioManagement/CommendAnnouncer';
 
 const Stack = createStackNavigator();
 
@@ -463,6 +464,10 @@ const HomeNavigator = () => (
       })}
     />
     <Stack.Screen
+      name="CommendAnnouncer"
+      component={CommendAnnouncer}
+    />
+    <Stack.Screen
       name="SetMonthlyTopUpScreen"
       component={SetMonthlyTopUpScreen}
       options={({navigation}) => ({
@@ -545,17 +550,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
-        headerLeft: () => (
-          <Button
-            onPress={() => {
-              navigation.replace('Tabs', {screen: 'Home'});
-            }}
-            accessoryLeft={BackIcon}
-            appearance="ghost"
-            status="basic"
-            size="tiny"
-          />
-        ),
       })}
     />
     <Stack.Screen
