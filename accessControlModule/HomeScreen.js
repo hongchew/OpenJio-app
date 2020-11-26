@@ -74,7 +74,6 @@ class HomeScreen extends React.Component {
     ) {
       //Update announcement by distance
       this.getAnnouncements();
-      
     } else if (
       this.state.selectedIndex.row === 1 &&
       this.state.displayValue !== prevState.displayValue
@@ -89,7 +88,6 @@ class HomeScreen extends React.Component {
       this.setState({
         announcements: sortedAnnouncements,
       });
-      
     } else if (
       this.state.selectedIndex.row === 2 &&
       this.state.displayValue !== prevState.displayValue
@@ -139,7 +137,7 @@ class HomeScreen extends React.Component {
   renderContent = () => {
     return renderIf(
       this.state.announcements.length === 0,
-      <Text style={styles.message}>There is no announcements yet.</Text>,
+      <Text style={styles.message}>There are no announcements yet.</Text>,
       this.renderAnnouncements()
     );
   };
@@ -173,7 +171,7 @@ class HomeScreen extends React.Component {
       var cDate = new Date(announcement.closeTime);
       var formattedDate = this.formatDate(cDate);
       var formattedTime = this.formatTime(cDate);
-      
+
       return (
         <Card
           style={styles.card}
@@ -243,9 +241,23 @@ class HomeScreen extends React.Component {
               onRefresh={this.onRefresh}
             />
           }>
-          <Text style={styles.header} category="h4">
-            Hey, {this.state.user.name}
-          </Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text category="h4" style={styles.header}>
+              Hey, {this.state.user.name}
+            </Text>
+            <Icon
+              fill="#8F9BB3"
+              name="bell"
+              style={{
+                width: 32,
+                height: 32,
+                marginTop: 50,
+                marginBottom: 10,
+                marginRight: 20,
+              }}
+              onPress={() => this.props.navigation.replace('Notification')}
+            />
+          </View>
           <Text style={styles.subtitle}>
             Start a jio to help reduce foot traffic in your neighbourhood!
           </Text>
@@ -265,9 +277,14 @@ class HomeScreen extends React.Component {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.props.user.hasCovid ? 
-              this.props.navigation.replace('DeclareCovid', {declareCovid: false}) : 
-              this.props.navigation.replace('DeclareCovid', {declareCovid: true})
+            onPress={() =>
+              this.props.user.hasCovid
+                ? this.props.navigation.replace('DeclareCovid', {
+                    declareCovid: false,
+                  })
+                : this.props.navigation.replace('DeclareCovid', {
+                    declareCovid: true,
+                  })
             }>
             <Image
               style={{
@@ -275,7 +292,11 @@ class HomeScreen extends React.Component {
                 height: 120,
                 alignSelf: 'center',
               }}
-              source={this.props.user.hasCovid ? require('../img/declareHealthy.png') : require('../img/declareCovid.png')}
+              source={
+                this.props.user.hasCovid
+                  ? require('../img/declareHealthy.png')
+                  : require('../img/declareCovid.png')
+              }
             />
           </TouchableOpacity>
 
@@ -289,16 +310,17 @@ class HomeScreen extends React.Component {
                 screen: 'Home',
               })
             }>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={{fontFamily: 'Karla-Bold'}}>
                 {this.state.startLocationStr}
               </Text>
               <View>
-              <Icon
-                name="arrow-ios-forward"
-                style={{width: 19, height: 19}}
-                fill="#222222"
-              />
+                <Icon
+                  name="arrow-ios-forward"
+                  style={{width: 19, height: 19}}
+                  fill="#222222"
+                />
               </View>
             </View>
           </Card>
