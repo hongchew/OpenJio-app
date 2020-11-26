@@ -123,7 +123,7 @@ class SupportTickets extends React.Component {
                   ticket.SupportComments.length > 0 && ticket.SupportComments[0].isPostedByAdmin && ticket.supportStatus === 'PENDING',
                   <View style={{flex:1,flexDirection: 'column'}}>
                     <Text style={{marginBottom: 5, fontWeight: 'bold'}}>{ticket.title}</Text>
-                    <Text style={{fontSize: 13, fontWeight: 'bold'}}>{ticket.description}</Text>
+                    <Text style={{fontSize: 13, fontWeight: 'bold'}}>{ticket.description.length > 25 ? `${ticket.description.substring(0,26)}...`: `${ticket.description}`}</Text>
                   </View>
                 )
               }
@@ -132,7 +132,7 @@ class SupportTickets extends React.Component {
                   ticket.SupportComments.length === 0 || ticket.SupportComments[0].isPostedByAdmin === false || ticket.supportStatus === 'RESOLVED',
                   <View style={{flex:1,flexDirection: 'column'}}>
                     <Text style={{marginBottom: 5}}>{ticket.title}</Text>
-                    <Text style={{fontSize: 13}}>{ticket.description}</Text>
+                    <Text style={{fontSize: 13}}>{ticket.description.length > 25 ? `${ticket.description.substring(0,26)}...`: `${ticket.description}`}</Text>
                   </View>
                 )
               }

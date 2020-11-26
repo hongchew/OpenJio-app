@@ -81,7 +81,9 @@ class SupportTicketDetails extends React.Component {
                   </View>
                 </View>
               </TouchableWithoutFeedback>,
-              <TouchableWithoutFeedback onPress={() => this.renderTime()}>
+              <TouchableWithoutFeedback
+                key={comment.supportCommentId}
+                onPress={() => this.renderTime()}>
                 <View
                   key={comment.supportCommentId}
                   style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
@@ -181,10 +183,10 @@ class SupportTicketDetails extends React.Component {
                 <Text>{this.state.ticket.title}</Text>
               </View>
               <View style={styles.moreinfosubbox}>
-                <Text style={styles.moreinfotext}>Title</Text>
+                <Text style={styles.moreinfotext}>Description</Text>
                 <Text>{this.state.ticket.description}</Text>
               </View>
-              <View style={{flexDirection: 'row', marginBottom: 20}}>
+              <View style={{flexDirection: 'row', marginBottom: 20, justifyContent: 'space-between'}}>
                 <Text style={styles.moreinfotext}>Type</Text>
                 <View style={styles.status}>
                   <Text style={styles.statusword}>
@@ -306,8 +308,8 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 10,
     marginBottom: 10,
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 15,
   },
   myComments: {
     backgroundColor: '#3366FF',

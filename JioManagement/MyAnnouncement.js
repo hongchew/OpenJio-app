@@ -268,7 +268,7 @@ class MyAnnouncement extends React.Component {
                   })
                 }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
-                <Text style={{flexShrink: 1}}>{request.description}</Text>
+                <Text style={{flexShrink: 1}}>{request.description.length > 15 ? `${request.description.substring(0,16)}...`: `${request.description}`}</Text>
                 <Text>${request.amount}</Text>
               </TouchableOpacity>
             </View>
@@ -322,7 +322,7 @@ class MyAnnouncement extends React.Component {
                 }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
-                <Text>{request.description ? request.description : '-'}</Text>
+                <Text>{request.description.length > 15 ? `${request.description.substring(0,16)}...`: `${request.description}`}</Text>
                 <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
               </TouchableOpacity>
             </View>
