@@ -97,13 +97,17 @@ class MyRequest extends React.Component {
         `${globalVariable.complaintApi}all-complaints/${requestId}`
       );
 
+      const sortedComplaints = await complaint.data.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      );
+
       //set state of request and complaint
       this.setState({
         request: response.data,
-        complaint: complaint.data.filter(
+        complaint: sortedComplaints.filter(
           (complaint) => complaint.complainerUserId === this.props.user.userId
         ),
-        pendingComplaints: complaint.data.filter(
+        pendingComplaints: sortedComplaints.filter(
           (complaint) =>
             complaint.complaintStatus === 'PENDING' &&
             complaint.complainerUserId === this.props.user.userId
@@ -132,54 +136,50 @@ class MyRequest extends React.Component {
   renderComplaints() {
     if (this.state.complaint.length !== 0) {
       return this.state.complaint.map((complaint, index) => {
-        // only show complaints if this user is the owner of the complaint
-        if (complaint.complainerUserId == this.props.user.userId) {
-          return (
-            <Card key={complaint.complaintId}>
-              {index === 0 && (
-                <Text
-                  style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
-                  Submitted Complaint(s)
-                </Text>
-              )}
-              <Text category="label" style={styles.label}>
-                Description
+        return (
+          <Card key={complaint.complaintId}>
+            {index === 0 && (
+              <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
+                Submitted Complaint(s)
               </Text>
-              <Text style={styles.word}>{complaint.description}</Text>
-              <Text category="label" style={styles.label}>
-                Admin Response
-              </Text>
-              <Text style={styles.word}>
-                {complaint.adminResponse ? complaint.adminResponse : '-'}
-              </Text>
-              <Text category="label" style={styles.label}>
-                Status
-              </Text>
-              <Text
-                style={{
-                  color: '#3366FF',
-                  marginTop: 5,
-                  marginBottom: 5,
-                  fontWeight: 'bold',
-                  textTransform: 'capitalize',
-                }}>
-                {complaint.complaintStatus}
-              </Text>
-              <Text category="label" style={styles.label}>
-                Created at
-              </Text>
-              <Text style={styles.word}>
-                {this.formatDate(complaint.createdAt) +
-                  ', ' +
-                  this.formatTime(complaint.createdAt)}
-              </Text>
-              <Text category="label" style={styles.label}>
-                Complaint ID
-              </Text>
-              <Text style={styles.word}>{complaint.complaintId}</Text>
-            </Card>
-          );
-        }
+            )}
+            <Text category="label" style={styles.label}>
+              Description
+            </Text>
+            <Text style={styles.word}>{complaint.description}</Text>
+            <Text category="label" style={styles.label}>
+              Admin Response
+            </Text>
+            <Text style={styles.word}>
+              {complaint.adminResponse ? complaint.adminResponse : '-'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Status
+            </Text>
+            <Text
+              style={{
+                color: '#3366FF',
+                marginTop: 5,
+                marginBottom: 5,
+                fontWeight: 'bold',
+                textTransform: 'capitalize',
+              }}>
+              {complaint.complaintStatus}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Created at
+            </Text>
+            <Text style={styles.word}>
+              {this.formatDate(complaint.createdAt) +
+                ', ' +
+                this.formatTime(complaint.createdAt)}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Complaint ID
+            </Text>
+            <Text style={styles.word}>{complaint.complaintId}</Text>
+          </Card>
+        );
       });
     } else {
       return null;

@@ -20,6 +20,8 @@ import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
+import Notification from './profileManagement/Notification';
+import NotificationDetails from './profileManagement/NotificationDetails';
 //screens from customer support module
 import SupportTickets from './customerSupport/SupportTickets';
 import AddSupportTicket from './customerSupport/AddSupportTicket';
@@ -60,9 +62,8 @@ import RequestDetails from './jioManagement/RequestDetails';
 import RequestsUnderAnnoucements from './jioManagement/RequestsUnderAnnoucements';
 import ReportScreen from './jioManagement/ReportScreen';
 import CommendAnnouncer from './jioManagement/CommendAnnouncer';
-//screens from covid module 
+//screens from covid module
 import DeclareCovid from './covidModule/DeclareCovid';
-
 
 const Stack = createStackNavigator();
 
@@ -468,10 +469,7 @@ const HomeNavigator = () => (
         ...TransitionPresets.FadeFromBottomAndroid,
       })}
     />
-    <Stack.Screen
-      name="CommendAnnouncer"
-      component={CommendAnnouncer}
-    />
+    <Stack.Screen name="CommendAnnouncer" component={CommendAnnouncer} />
     <Stack.Screen
       name="SetMonthlyTopUpScreen"
       component={SetMonthlyTopUpScreen}
@@ -710,8 +708,45 @@ const HomeNavigator = () => (
         ),
       })}
     />
+    <Stack.Screen
+      name="Notification"
+      component={Notification}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="NotificationDetails"
+      component={NotificationDetails}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
   </Stack.Navigator>
-  
 );
 
 export const AppNavigator = () => (

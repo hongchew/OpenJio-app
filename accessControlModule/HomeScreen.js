@@ -36,6 +36,7 @@ class HomeScreen extends React.Component {
       selectedIndex: new IndexPath(0),
       filterdata: ['Distance', 'Closing Time'],
       displayValue: 'Distance',
+      unreadNotifications: 0,
     };
     console.log(this.props.user.hasCovid);
   }
@@ -65,6 +66,7 @@ class HomeScreen extends React.Component {
       this.getDefaultAddress();
     }
     this.getAnnouncements();
+    this.getNotifications();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -74,7 +76,6 @@ class HomeScreen extends React.Component {
     ) {
       //Update announcement by distance
       this.getAnnouncements();
-      
     } else if (
       this.state.selectedIndex.row === 1 &&
       this.state.displayValue !== prevState.displayValue
@@ -89,7 +90,6 @@ class HomeScreen extends React.Component {
       this.setState({
         announcements: sortedAnnouncements,
       });
-      
     } else if (
       this.state.selectedIndex.row === 2 &&
       this.state.displayValue !== prevState.displayValue
@@ -120,6 +120,21 @@ class HomeScreen extends React.Component {
       }
     });
 
+  async getNotifications() {
+    try {
+      const response = await axios.get(
+        globalVariable.notificationApi + 'userId/' + this.props.user.userId
+      );
+      this.setState({
+        unreadNotifications: response.data.filter(
+          (notification) => !notification.isRead
+        ).length,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   async getAnnouncements() {
     try {
       const response = await axios.get(
@@ -139,7 +154,7 @@ class HomeScreen extends React.Component {
   renderContent = () => {
     return renderIf(
       this.state.announcements.length === 0,
-      <Text style={styles.message}>There is no announcements yet.</Text>,
+      <Text style={styles.message}>There are no announcements yet.</Text>,
       this.renderAnnouncements()
     );
   };
@@ -173,7 +188,7 @@ class HomeScreen extends React.Component {
       var cDate = new Date(announcement.closeTime);
       var formattedDate = this.formatDate(cDate);
       var formattedTime = this.formatTime(cDate);
-      
+
       return (
         <Card
           style={styles.card}
@@ -243,9 +258,41 @@ class HomeScreen extends React.Component {
               onRefresh={this.onRefresh}
             />
           }>
-          <Text style={styles.header} category="h4">
-            Hey, {this.state.user.name}
-          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Text category="h4" style={styles.header}>
+              Hey, {this.state.user.name}
+            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.replace('Notification')}>
+              <View
+                style={
+                  this.state.unreadNotifications !== 0
+                    ? styles.circle
+                    : [styles.circle, {opacity: 0}]
+                }>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    color: 'white',
+                  }}>
+                  {this.state.unreadNotifications}
+                </Text>
+              </View>
+              <Icon
+                fill="#8F9BB3"
+                name="bell"
+                style={{
+                  width: 32,
+                  height: 32,
+                  marginRight: 30,
+                }}
+              />
+            </TouchableOpacity>
+          </View>
           <Text style={styles.subtitle}>
             Start a jio to help reduce foot traffic in your neighbourhood!
           </Text>
@@ -265,9 +312,14 @@ class HomeScreen extends React.Component {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => this.props.user.hasCovid ? 
-              this.props.navigation.replace('DeclareCovid', {declareCovid: false}) : 
-              this.props.navigation.replace('DeclareCovid', {declareCovid: true})
+            onPress={() =>
+              this.props.user.hasCovid
+                ? this.props.navigation.replace('DeclareCovid', {
+                    declareCovid: false,
+                  })
+                : this.props.navigation.replace('DeclareCovid', {
+                    declareCovid: true,
+                  })
             }>
             <Image
               style={{
@@ -275,7 +327,11 @@ class HomeScreen extends React.Component {
                 height: 120,
                 alignSelf: 'center',
               }}
-              source={this.props.user.hasCovid ? require('../img/declareHealthy.png') : require('../img/declareCovid.png')}
+              source={
+                this.props.user.hasCovid
+                  ? require('../img/declareHealthy.png')
+                  : require('../img/declareCovid.png')
+              }
             />
           </TouchableOpacity>
 
@@ -289,16 +345,17 @@ class HomeScreen extends React.Component {
                 screen: 'Home',
               })
             }>
-            <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={{fontFamily: 'Karla-Bold'}}>
                 {this.state.startLocationStr}
               </Text>
               <View>
-              <Icon
-                name="arrow-ios-forward"
-                style={{width: 19, height: 19}}
-                fill="#222222"
-              />
+                <Icon
+                  name="arrow-ios-forward"
+                  style={{width: 19, height: 19}}
+                  fill="#222222"
+                />
               </View>
             </View>
           </Card>
@@ -423,6 +480,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20,
     fontFamily: 'Karla-Bold',
+  },
+  circle: {
+    backgroundColor: '#ff190c',
+    minWidth: 20,
+    height: 20,
+    padding: 2,
+    marginLeft: 'auto',
+    marginRight: 20,
+    marginTop: 40,
+    marginBottom: -10,
+    borderRadius: 100 / 2,
+    alignSelf: 'center',
+    zIndex: 1,
   },
 });
 
