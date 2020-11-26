@@ -13,7 +13,10 @@ export const globalVariable = {
   requestApi: `${serverUrl}/requests/`,
   announcementApi: `${serverUrl}/announcements/`,
   temperatureApi: `${serverUrl}/temperatures/`,
+  supportTicketApi: `${serverUrl}/supportTickets/`,
+  supportCommentApi: `${serverUrl}/supportComments/`,
   complaintApi: `${serverUrl}/complaints/`,
+  outbreakZoneApi: `${serverUrl}/outbreakzones/`,
 };
 
 export const UserAvatar = (props) => {

@@ -38,6 +38,8 @@ class RequestDetails extends React.Component {
       acceptBtnClicked: '',
       complaint: [],
       pendingComplaints: '',
+      completeBtnClicked: '',
+
     };
   }
 
@@ -95,6 +97,38 @@ class RequestDetails extends React.Component {
           requestId: this.state.request.requestId,
         });
       }
+      this.props.navigation.replace('RequestDetails', {
+        requestId: this.state.request.requestId,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async handleCompleteRequest() {
+    try {
+      await axios.put(globalVariable.requestApi + 'complete-request', {
+        requestId: this.state.request.requestId,
+      });
+
+      const allRequests = await axios.get(
+        `${globalVariable.announcementApi}all-requests/${this.state.announcement.announcementId}`
+      );
+
+      //retrieve all the accepted requests under
+      //this announcement that are completed
+      const completedRequests = allRequests.data.filter(
+        (request) => request.requestStatus === 'COMPLETED'
+      );
+
+      //if the announcer has completed all the requests,
+      //set the announcement to COMPLETED
+      if (completedRequests.length === allRequests.data.length) {
+        await axios.put(
+          `${globalVariable.announcementApi}complete-announcement/${this.state.announcement.announcementId}`
+        );
+      }
+
       this.props.navigation.replace('RequestDetails', {
         requestId: this.state.request.requestId,
       });
@@ -237,15 +271,29 @@ class RequestDetails extends React.Component {
   renderModal() {
     return (
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
-        <Card style={{marginLeft: 20, marginRight: 20}}>
+
+        <Card style={{marginLeft: 10, marginRight: 10}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
-            {renderIf(
-              this.state.acceptBtnClicked,
-              'Are you sure you want to accept this request? This request will be scheduled after you accept.',
-              'Are you sure you want to reject this request?'
+            {this.state.acceptBtnClicked &&
+              'Are you sure you want to accept this request? This request will be scheduled after you accept.'}
+            {!this.state.acceptBtnClicked &&
+              !this.state.completeBtnClicked &&
+              'Are you sure you want to reject this request?'}
+            {this.state.completeBtnClicked && (
+              <Text>
+                <Text style={{fontWeight: 'bold'}}>
+                  Do you want to complete the request?
+                </Text>
+                {'\n\n'}
+                <Text style={{fontStyle: 'italic'}}>
+                  A request is completed only when you have fulfilled all
+                  request details and description.{' '}
+                </Text>
+              </Text>
+
             )}
           </Text>
-          <Layout style={styles.modalButtonsContainer}>
+          <View style={styles.modalButtonsContainer}>
             <Button
               style={styles.modalButton}
               size={'small'}
@@ -253,7 +301,12 @@ class RequestDetails extends React.Component {
                 this.setState({
                   modalVisible: false,
                 });
-                this.handleRequest();
+                {
+                  this.state.completeBtnClicked && this.handleCompleteRequest();
+                }
+                {
+                  this.state.acceptBtnClicked && this.handleRequest();
+                }
               }}>
               Confirm
             </Button>
@@ -268,7 +321,7 @@ class RequestDetails extends React.Component {
               }}>
               Dismiss
             </Button>
-          </Layout>
+          </View>
         </Card>
       </Modal>
     );
@@ -379,6 +432,28 @@ class RequestDetails extends React.Component {
                   </Layout>
                 </TouchableOpacity>
               </View>
+              <View style={{marginTop: 10}}>
+                <Text category="label" style={styles.label}>
+                  {this.state.requestUser.name}'s' COVID-19 Risk Level
+                </Text>
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                  {!this.state.requestUser.hasSymptoms && !this.state.requestUser.onSNH && (
+                    <View style={styles.lowRisk}>
+                      <Text style={{color: 'white'}}>Low-risk</Text>
+                    </View>
+                  )}
+                  {this.state.requestUser.hasSymptoms && (
+                    <View style={styles.highRisk}>
+                      <Text style={{color: 'white'}}>Has symptoms</Text>
+                    </View>
+                  )}
+                  {this.state.requestUser.onSNH && (
+                    <View style={styles.snh}>
+                      <Text style={{color: 'white'}}>SNH Notice</Text>
+                    </View>
+                  )}
+                  </View>
+              </View>
             </Card>
 
             {renderIf(
@@ -407,6 +482,7 @@ class RequestDetails extends React.Component {
               </View>
             )}
 
+
             {/* report an issue */}
             {renderIf(
               (this.state.request.requestStatus === 'COMPLETED' ||
@@ -428,6 +504,22 @@ class RequestDetails extends React.Component {
             {renderIf(
               this.state.complaint.length !== 0,
               this.renderComplaints()
+
+            {renderIf(
+              this.state.request.requestStatus === 'DOING',
+              <View>
+                <Button
+                  style={{marginLeft: 15, marginRight: 15}}
+                  onPress={() => {
+                    this.setState({
+                      modalVisible: true,
+                      completeBtnClicked: true,
+                    });
+                  }}>
+                  Complete this Request
+                </Button>
+              </View>
+
             )}
           </View>
         </ScrollView>
@@ -477,10 +569,8 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   word: {
-    marginTop: 5,
-    marginBottom: 8,
-    lineHeight: 22,
-    justifyContent: 'center',
+    marginTop: 8, 
+    marginBottom: 10,
   },
   body: {
     flex: 1,
@@ -498,6 +588,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginLeft: 20,
     marginRight: 20,
+  },
+  lowRisk: {
+    backgroundColor: '#24B750',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  highRisk: {
+    backgroundColor: '#B71F3A',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginRight: 10,
+  },
+  snh: {
+    backgroundColor: '#D89428',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   userRow: {
     marginTop: 6,

@@ -8,7 +8,9 @@ import {
   Card,
   RadioGroup,
   Radio,
+  Modal,
 } from '@ui-kitten/components';
+import renderIf from '../components/renderIf';
 import axios from 'axios';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 
@@ -19,7 +21,8 @@ class HealthDeclaration extends React.Component {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
       temp: '',
-      selectedIndex: 0,
+      hasSymptoms: 0,
+      snhNotice: 0,
       announcementId: this.props.route.params
         ? this.props.route.params.announcementId
         : null,
@@ -29,6 +32,7 @@ class HealthDeclaration extends React.Component {
       temperatureLog: '',
     };
     console.log(this.props.route.params);
+    
   }
 
   safeParseFloat = (str) => {
@@ -36,8 +40,9 @@ class HealthDeclaration extends React.Component {
     return Number.isNaN(value) ? 0 : value;
   };
 
-  async handleSubmitTemp() {
-    let hasCovid;
+  async handleSubmit() {
+    let hasSymptoms;
+    let snhNotice; 
     if (
       this.state.temp === 0 ||
       this.state.temp === -1 ||
@@ -47,11 +52,17 @@ class HealthDeclaration extends React.Component {
         message: 'Invalid temperature.',
       });
     } else {
-      //user answered yes (has covid)
-      if (this.state.selectedIndex === 0) {
-        hasCovid = true;
+      //user answered yes (has symptoms)
+      if (this.state.hasSymptoms === 0) {
+        hasSymptoms = true;
       } else {
-        hasCovid = false;
+        hasSymptoms = false;
+      }
+
+      if (this.state.snhNotice === 0) {
+        snhNotice = true;
+      } else {
+        snhNotice = false;
       }
 
       try {
@@ -60,33 +71,31 @@ class HealthDeclaration extends React.Component {
           {
             userId: this.state.user.userId,
             temperature: this.state.temp,
-            hasCovid: hasCovid,
+            hasSymptoms: hasSymptoms,
+            snhNotice: snhNotice
           }
         );
         this.setState({
-          temperatureLog: response.data,
+          user: response.data,
           message: '',
         });
 
 
         //check if user is able to proceed to make announcement/request or not
         //by checking the risk level
-        if (this.state.temperatureLog.riskLevel === 'LOW_RISK') {
+        if (!this.state.user.isHighRisk) {
           //coming from home page (make announcement)
           if (this.state.startJio) {
-            this.props.navigation.replace('MakeAnnouncement');
+            this.props.navigation.navigate('MakeAnnouncement');
           } else if (this.state.announcementId) {  
             //params passed over from AnnouncementDetails page to make request
-            this.props.navigation.replace('MakeRequest', {
+            this.props.navigation.navigate('MakeRequest', {
               announcementId: this.state.announcementId,
             });
-          } else {
-            this.props.navigation.replace('Tabs', {screen: 'Home'});
-          }
+          } 
         } else {
           this.setState({
-            message:
-              'Your risk level is high and you are not able to make any jios/requests.',
+            modalVisible: true
           });
         }
       } catch (error) {
@@ -97,6 +106,56 @@ class HealthDeclaration extends React.Component {
     }
   }
 
+  renderModal() {
+    return (
+      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+        <Card style={{marginLeft: 20, marginRight: 20}}>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            {renderIf(
+              this.state.startJio,
+              'It seems like your risk level is high and you should stay at home and make requests instead!',
+              'Take note that your risk level is high and you should stay at home.'
+            )}
+          </Text>
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+                {renderIf(
+                  this.state.startJio && !this.state.user.isHighRisk,
+                  this.props.navigation.navigate('MakeAnnouncement'),
+                  this.props.navigation.replace('Tabs', {screen: 'Home'}),
+                )}
+                {this.state.announcementId && this.props.navigation.navigate('MakeRequest', {
+                  announcementId: this.state.announcementId,
+                })}
+              }}>
+              {renderIf(
+                  this.state.startJio && this.state.user.isHighRisk,
+                  'Back to Home',
+                  'Confirm',
+                )}
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  modalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
 
   //Update state whenever data passed between screens is changed, so that the user will not be redirected to the wrong screen
   componentDidUpdate(prevProps) {
@@ -148,26 +207,40 @@ class HealthDeclaration extends React.Component {
           </Card>
           <Card style={styles.card}>
             <Text style={{marginTop: 8, marginBottom: 10}}>
-              Do you have COVID-19 or any related symptoms (e.g. fever, coughing
+              Do you have any flu-like symptoms (e.g. fever, coughing
               or breathing difficulties)?
             </Text>
             <RadioGroup
-              selectedIndex={this.state.selectedIndex}
-              onChange={(index) => this.setState({selectedIndex: index})}>
+              selectedIndex={this.state.hasSymptoms}
+              onChange={(index) => this.setState({hasSymptoms: index})}>
               {/* if yes is selected, value = 0 */}
               <Radio>Yes</Radio>
               {/* if no is selected, value = 1 */}
               <Radio>No</Radio>
             </RadioGroup>
           </Card>
-          <Button style={styles.button} onPress={() => this.handleSubmitTemp()}>
-            Next
-          </Button>
-
+          <Card style={styles.card}>
+            <Text style={{marginTop: 8, marginBottom: 10}}>
+              Are you on Stay-Home-Notice?
+            </Text>
+            <RadioGroup
+              selectedIndex={this.state.snhNotice}
+              onChange={(index) => this.setState({snhNotice: index})}>
+              {/* if yes is selected, value = 0 */}
+              <Radio>Yes</Radio>
+              {/* if no is selected, value = 1 */}
+              <Radio>No</Radio>
+            </RadioGroup>
+          </Card>
+          
           <Text style={styles.description} status="danger">
             {this.state.message}
           </Text>
         </ScrollView>
+        <Button style={styles.button} onPress={() => this.handleSubmit()}>
+          Next
+        </Button>
+        {this.renderModal()}
       </Layout>
     );
   }
@@ -179,8 +252,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    marginLeft: 20,
-    marginRight: 20,
   },
   header: {
     marginTop: 20,
@@ -213,6 +284,8 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
     marginBottom: 20,
+    marginLeft: 20, 
+    marginRight: 20,
     marginTop: 10,
     borderRadius: 15,
     elevation: 4,
@@ -252,10 +325,25 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 30,
+    marginLeft: 20,
+    marginRight: 20, 
+    marginBottom: 20
   },
   description: {
     textAlign: 'center',
     marginTop: 10,
+  },
+  backdrop: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  modalButton: {
+    marginTop: 20,
+    width: 120,
+    margin: 5,
   },
 });
 

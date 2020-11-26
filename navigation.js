@@ -20,13 +20,20 @@ import AddAddress from './profileManagement/AddAddress';
 import VerifyAccount from './profileManagement/VerifyAccount';
 import UserBadges from './profileManagement/UserBadges';
 import LeaderboardScreen from './profileManagement/LeaderboardScreen';
+//screens from customer support module
+import SupportTickets from './customerSupport/SupportTickets';
+import AddSupportTicket from './customerSupport/AddSupportTicket';
+import SupportTicketDetails from './customerSupport/SupportTicketDetails';
 //screens from payment management
 import WalletScreen from './paymentManagement/WalletScreen';
 import MakePayment from './paymentManagement/MakePayment';
 import TopUpScreen from './paymentManagement/TopUpScreen';
+import MonthlyTopUpScreen from './paymentManagement/MonthlyTopUpScreen';
 import SetMonthlyTopUpScreen from './paymentManagement/SetMonthlyTopUpScreen';
 import EditMonthlyTopUpScreen from './paymentManagement/EditMonthlyTopUpScreen';
-import MonthlyTopUpScreen from './paymentManagement/MonthlyTopUpScreen';
+import MonthlyDonationScreen from './paymentManagement/MonthlyDonationScreen';
+import SetMonthlyDonationScreen from './paymentManagement/SetMonthlyDonationScreen';
+import EditMonthlyDonationScreen from './paymentManagement/EditMonthlyDonationScreen';
 import TransactionsListScreen from './paymentManagement/TransactionsListScreen';
 import TransactionDetailsScreen from './paymentManagement/TransactionDetailsScreen';
 import PaymentSettingsScreen from './paymentManagement/PaymentSettingsScreen';
@@ -52,6 +59,10 @@ import MyRequest from './jioManagement/MyRequest';
 import RequestDetails from './jioManagement/RequestDetails';
 import RequestsUnderAnnoucements from './jioManagement/RequestsUnderAnnoucements';
 import ReportScreen from './jioManagement/ReportScreen';
+import CommendAnnouncer from './jioManagement/CommendAnnouncer';
+//screens from covid module 
+import DeclareCovid from './covidModule/DeclareCovid';
+
 
 const Stack = createStackNavigator();
 
@@ -458,6 +469,10 @@ const HomeNavigator = () => (
       })}
     />
     <Stack.Screen
+      name="CommendAnnouncer"
+      component={CommendAnnouncer}
+    />
+    <Stack.Screen
       name="SetMonthlyTopUpScreen"
       component={SetMonthlyTopUpScreen}
       options={({navigation}) => ({
@@ -477,6 +492,31 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="EditMonthlyTopUpScreen"
       component={EditMonthlyTopUpScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="MonthlyDonationScreen"
+      component={MonthlyDonationScreen}
+      options={({navigation}) => ({
+        title: 'Monthly Donation',
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="SetMonthlyDonationScreen"
+      component={SetMonthlyDonationScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+      })}
+    />
+    <Stack.Screen
+      name="EditMonthlyDonationScreen"
+      component={EditMonthlyDonationScreen}
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
@@ -515,17 +555,6 @@ const HomeNavigator = () => (
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
-        headerLeft: () => (
-          <Button
-            onPress={() => {
-              navigation.replace('Tabs', {screen: 'Home'});
-            }}
-            accessoryLeft={BackIcon}
-            appearance="ghost"
-            status="basic"
-            size="tiny"
-          />
-        ),
       })}
     />
     <Stack.Screen
@@ -550,6 +579,63 @@ const HomeNavigator = () => (
     <Stack.Screen
       name="EditRequest"
       component={EditRequest}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="SupportTickets"
+      component={SupportTickets}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="AddSupportTicket"
+      component={AddSupportTicket}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="SupportTicketDetails"
+      component={SupportTicketDetails}
       options={({navigation}) => ({
         headerShown: true,
         ...TransitionPresets.FadeFromBottomAndroid,
@@ -604,7 +690,28 @@ const HomeNavigator = () => (
         ),
       })}
     />
+
+    <Stack.Screen
+      name="DeclareCovid"
+      component={DeclareCovid}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.replace('Tabs', {screen: 'Home'});
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
   </Stack.Navigator>
+  
 );
 
 export const AppNavigator = () => (
