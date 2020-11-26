@@ -124,6 +124,10 @@ class SupportTicketDetails extends React.Component {
 
   async addComment(newComment) {
     try {
+      if(this.state.newComment === ''){
+        throw `Please enter an input in the chat box`
+      }
+      
       const response = await axios.post(
         `${globalVariable.supportCommentApi}create-comment`,
         {
