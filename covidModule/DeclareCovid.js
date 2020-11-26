@@ -8,6 +8,7 @@ import {
   Card,
   RadioGroup,
   Radio,
+  CheckBox,
   Modal,
   Input,
 } from '@ui-kitten/components';
@@ -27,7 +28,8 @@ class DeclareCovid extends React.Component {
         ? this.props.route.params.declareCovid
         : null,
       //yes = 0, no = 1
-      hasCovid: this.props.route.params.declareCovid ? 0 : 1,
+      hasCovid: false, //false means not checked
+      hasNoCovid: false, //false means not checked
       modalVisible: false,
     };
     console.log(this.props.route.params);
@@ -35,8 +37,13 @@ class DeclareCovid extends React.Component {
 
   handleSubmit() {
     //got covid 
-    if (this.state.hasCovid === 0) {
-      if (this.state.postalCode === '') {
+    console.log(this.state.hasCovid);
+    if (this.state.declareCovid) {
+      if (!this.state.hasCovid) {
+        this.setState({
+          message: 'Checkbox cannot be empty.',
+        });
+      } else if (this.state.postalCode === '') {
         this.setState({
           message: 'Postal Code cannot be empty.',
         });
@@ -46,18 +53,26 @@ class DeclareCovid extends React.Component {
         });
       }
     } else {
-      this.setState({
-        modalVisible: true,
-      });
+      if (!this.state.hasNoCovid) {
+        console.log('coming hre');
+        this.setState({
+          message: 'Checkbox cannot be empty.',
+        });
+      } else {
+        this.setState({
+          modalVisible: true,
+        });
+      }
     }
+
   }
 
   async handleDeclareCovid() {
     let hasCovid;
-    if (this.state.hasCovid === 1) {
-      hasCovid = false;
-    } else {
-      hasCovid = true; 
+    if (this.state.hasCovid) {
+      hasCovid = true;
+    } else if (this.state.hasNoCovid) {
+      hasCovid = false; 
     }
     
     try {
@@ -91,11 +106,8 @@ class DeclareCovid extends React.Component {
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
         <Card style={{marginLeft: 20, marginRight: 20}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
-            {renderIf(
-              this.state.hasCovid === 0,
-              'Are you sure you are diagnosed with COVID-19? Do stay at home and take good care of yourself.',
-              'Are you sure you have recovered from COVID-19? Congrats for recovering!'
-            )}
+            {this.state.hasCovid && 'Are you sure you are diagnosed with COVID-19? Do stay at home and take good care of yourself.'}
+            {this.state.hasNoCovid && 'Are you sure you have recovered from COVID-19? Still remember to take care of yourself and practise social distancing!'}
           </Text>
           <Layout style={styles.modalButtonsContainer}>
             <Button
@@ -146,20 +158,25 @@ class DeclareCovid extends React.Component {
             : 'Declare that you have recovered so you can start making announcements!'}
         </Text>
         <ScrollView style={styles.container}>
-          <Card style={styles.card}>
-            <Text style={{marginTop: 8, marginBottom: 10}}>
-              Are you diagnosed with COVID-19?
-            </Text>
-            <RadioGroup
-              selectedIndex={this.state.hasCovid}
-              onChange={(index) => this.setState({hasCovid: index})}>
-              {/* if yes is selected, value = 0 */}
-              <Radio>Yes</Radio>
-              {/* if no is selected, value = 1 */}
-              <Radio>No</Radio>
-            </RadioGroup>
+          {renderIf(
+            this.state.declareCovid,
+            <Card style={styles.card}>
+              <CheckBox
+                checked={this.state.hasCovid}
+                onChange={(nextChecked) => this.setState({hasCovid: nextChecked})}>
+                  <Text style={{fontSize: 15}}>I have been diagnosed with COVID-19</Text>
+              </CheckBox>
+            </Card>,
+            <Card style={styles.card}>
+            <CheckBox
+              checked={this.state.hasNoCovid}
+              onChange={(nextChecked) => this.setState({hasNoCovid: nextChecked})}>
+                <Text style={{fontSize: 15}}>I have recovered from COVID-19</Text>
+            </CheckBox>
           </Card>
-          {this.state.hasCovid === 0 && (
+          )}
+          
+          {this.state.declareCovid && (
             <View style={{marginLeft: 20, marginRight: 20}}>
               <Input
                 label="Postal Code"

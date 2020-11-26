@@ -365,17 +365,23 @@ class RequestDetails extends React.Component {
                 <Text category="label" style={styles.label}>
                   {this.state.requestUser.name}'s' COVID-19 Risk Level
                 </Text>
-                <Text style={styles.word}>
-                  {this.state.requestUser.isHighRisk ? (
-                    <View style={styles.highRisk}>
-                      <Text style={{color: 'white'}}>High-Risk</Text>
-                    </View>
-                  ) : (
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                  {!this.state.requestUser.hasSymptoms && !this.state.requestUser.onSNH && (
                     <View style={styles.lowRisk}>
-                      <Text style={{color: 'white'}}>Low-Risk</Text>
+                      <Text style={{color: 'white'}}>Low-risk</Text>
                     </View>
                   )}
-                </Text>
+                  {this.state.requestUser.hasSymptoms && (
+                    <View style={styles.highRisk}>
+                      <Text style={{color: 'white'}}>Has symptoms</Text>
+                    </View>
+                  )}
+                  {this.state.requestUser.onSNH && (
+                    <View style={styles.snh}>
+                      <Text style={{color: 'white'}}>SNH Notice</Text>
+                    </View>
+                  )}
+                  </View>
               </View>
             </Card>
 
@@ -467,10 +473,8 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   word: {
-    marginTop: 5,
-    marginBottom: 8,
-    lineHeight: 22,
-    justifyContent: 'center',
+    marginTop: 8, 
+    marginBottom: 10,
   },
   body: {
     flex: 1,
@@ -496,20 +500,23 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
-    marginTop: 3,
-    marginBottom: 5,
-    marginLeft: -10,
   },
   highRisk: {
-    backgroundColor: '#B71A21',
+    backgroundColor: '#B71F3A',
     borderRadius: 10,
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5,
-    marginTop: 3,
-    marginBottom: 5,
-    marginLeft: -10,
+    marginRight: 10,
+  },
+  snh: {
+    backgroundColor: '#D89428',
+    borderRadius: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
   },
   userRow: {
     marginTop: 6,
