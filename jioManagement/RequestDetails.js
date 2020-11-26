@@ -37,6 +37,7 @@ class RequestDetails extends React.Component {
       modalVisible: false,
       acceptBtnClicked: '',
       complaint: [],
+      pendingComplaints: '',
     };
   }
 
@@ -117,6 +118,9 @@ class RequestDetails extends React.Component {
       const complaint = await axios.get(
         `${globalVariable.complaintApi}all-complaints/${requestId}`
       );
+      const pendingComplaints = complaint.data.filter(
+        (complaint) => complaint.complaintStatus === 'PENDING'
+      ).length;
 
       //set state of request
       this.setState({
@@ -124,6 +128,7 @@ class RequestDetails extends React.Component {
         requestUser: requestUser.data,
         requestUserAddress: requestAddress.data,
         complaint: complaint.data,
+        pendingComplaints: pendingComplaints,
       });
     } catch (error) {
       console.log(error);
@@ -183,7 +188,7 @@ class RequestDetails extends React.Component {
           <Card key={complaint.complaintId}>
             {index === 0 && (
               <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
-                Submitted Complaint
+                Submitted Complaint(s)
               </Text>
             )}
             <Text category="label" style={styles.label}>
@@ -406,7 +411,7 @@ class RequestDetails extends React.Component {
             {renderIf(
               (this.state.request.requestStatus === 'COMPLETED' ||
                 this.state.request.requestStatus === 'VERIFIED') &&
-                this.state.complaint.length === 0,
+                this.state.pendingComplaints === 0,
               <MenuItem
                 style={styles.report}
                 title="Report an issue"

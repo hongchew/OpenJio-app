@@ -27,6 +27,7 @@ class ReportScreen extends React.Component {
       await axios.post(globalVariable.complaintApi + 'create-complaint', {
         description: this.state.description,
         requestId: this.state.request.requestId,
+        complainerUserId: this.props.user.userId,
       });
       this.setState({
         submitModalVisible: false,
