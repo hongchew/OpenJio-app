@@ -36,6 +36,7 @@ class HomeScreen extends React.Component {
       selectedIndex: new IndexPath(0),
       filterdata: ['Distance', 'Closing Time'],
       displayValue: 'Distance',
+      unreadNotifications: 0,
     };
     console.log(this.props.user.hasCovid);
   }
@@ -65,6 +66,7 @@ class HomeScreen extends React.Component {
       this.getDefaultAddress();
     }
     this.getAnnouncements();
+    this.getNotifications();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -117,6 +119,21 @@ class HomeScreen extends React.Component {
         });
       }
     });
+
+  async getNotifications() {
+    try {
+      const response = await axios.get(
+        globalVariable.notificationApi + 'userId/' + this.props.user.userId
+      );
+      this.setState({
+        unreadNotifications: response.data.filter(
+          (notification) => !notification.isRead
+        ).length,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   async getAnnouncements() {
     try {
@@ -241,22 +258,40 @@ class HomeScreen extends React.Component {
               onRefresh={this.onRefresh}
             />
           }>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
             <Text category="h4" style={styles.header}>
               Hey, {this.state.user.name}
             </Text>
-            <Icon
-              fill="#8F9BB3"
-              name="bell"
-              style={{
-                width: 32,
-                height: 32,
-                marginTop: 50,
-                marginBottom: 10,
-                marginRight: 20,
-              }}
-              onPress={() => this.props.navigation.replace('Notification')}
-            />
+            <TouchableOpacity
+              onPress={() => this.props.navigation.replace('Notification')}>
+              <View
+                style={
+                  this.state.unreadNotifications !== 0
+                    ? styles.circle
+                    : [styles.circle, {opacity: 0}]
+                }>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    color: 'white',
+                  }}>
+                  {this.state.unreadNotifications}
+                </Text>
+              </View>
+              <Icon
+                fill="#8F9BB3"
+                name="bell"
+                style={{
+                  width: 32,
+                  height: 32,
+                  marginRight: 30,
+                }}
+              />
+            </TouchableOpacity>
           </View>
           <Text style={styles.subtitle}>
             Start a jio to help reduce foot traffic in your neighbourhood!
@@ -445,6 +480,19 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginLeft: 20,
     fontFamily: 'Karla-Bold',
+  },
+  circle: {
+    backgroundColor: '#ff190c',
+    minWidth: 20,
+    height: 20,
+    padding: 2,
+    marginLeft: 'auto',
+    marginRight: 20,
+    marginTop: 40,
+    marginBottom: -10,
+    borderRadius: 100 / 2,
+    alignSelf: 'center',
+    zIndex: 1,
   },
 });
 
