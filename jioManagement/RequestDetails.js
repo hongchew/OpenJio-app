@@ -39,7 +39,6 @@ class RequestDetails extends React.Component {
       complaint: [],
       pendingComplaints: '',
       completeBtnClicked: '',
-
     };
   }
 
@@ -271,7 +270,6 @@ class RequestDetails extends React.Component {
   renderModal() {
     return (
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
-
         <Card style={{marginLeft: 10, marginRight: 10}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
             {this.state.acceptBtnClicked &&
@@ -290,7 +288,6 @@ class RequestDetails extends React.Component {
                   request details and description.{' '}
                 </Text>
               </Text>
-
             )}
           </Text>
           <View style={styles.modalButtonsContainer}>
@@ -437,11 +434,12 @@ class RequestDetails extends React.Component {
                   {this.state.requestUser.name}'s' COVID-19 Risk Level
                 </Text>
                 <View style={{flexDirection: 'row', marginTop: 10}}>
-                  {!this.state.requestUser.hasSymptoms && !this.state.requestUser.onSNH && (
-                    <View style={styles.lowRisk}>
-                      <Text style={{color: 'white'}}>Low-risk</Text>
-                    </View>
-                  )}
+                  {!this.state.requestUser.hasSymptoms &&
+                    !this.state.requestUser.onSNH && (
+                      <View style={styles.lowRisk}>
+                        <Text style={{color: 'white'}}>Low-risk</Text>
+                      </View>
+                    )}
                   {this.state.requestUser.hasSymptoms && (
                     <View style={styles.highRisk}>
                       <Text style={{color: 'white'}}>Has symptoms</Text>
@@ -452,7 +450,7 @@ class RequestDetails extends React.Component {
                       <Text style={{color: 'white'}}>SNH Notice</Text>
                     </View>
                   )}
-                  </View>
+                </View>
               </View>
             </Card>
 
@@ -482,7 +480,6 @@ class RequestDetails extends React.Component {
               </View>
             )}
 
-
             {/* report an issue */}
             {renderIf(
               (this.state.request.requestStatus === 'COMPLETED' ||
@@ -504,6 +501,7 @@ class RequestDetails extends React.Component {
             {renderIf(
               this.state.complaint.length !== 0,
               this.renderComplaints()
+            )}
 
             {renderIf(
               this.state.request.requestStatus === 'DOING',
@@ -519,7 +517,6 @@ class RequestDetails extends React.Component {
                   Complete this Request
                 </Button>
               </View>
-
             )}
           </View>
         </ScrollView>
@@ -569,7 +566,7 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   word: {
-    marginTop: 8, 
+    marginTop: 8,
     marginBottom: 10,
   },
   body: {
