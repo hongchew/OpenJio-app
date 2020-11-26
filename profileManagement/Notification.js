@@ -46,7 +46,7 @@ class Notification extends React.Component {
   renderNotifications = () => {
     return this.state.notifications.map((notification) => {
       return (
-        <View>
+        <View key={notification.notificationId}>
           <TouchableOpacity
             style={{
               flexDirection: 'row',
