@@ -9,7 +9,15 @@ import {
   RefreshControl,
   TouchableOpacity,
 } from 'react-native';
-import {Text, Layout, Card, Button, Icon, Modal} from '@ui-kitten/components';
+import {
+  Text,
+  Layout,
+  Card,
+  Button,
+  Icon,
+  Modal,
+  MenuItem,
+} from '@ui-kitten/components';
 import {globalVariable} from '../GLOBAL_VARIABLE';
 import {UserAvatar} from '../GLOBAL_VARIABLE';
 import axios from 'axios';
@@ -28,7 +36,10 @@ class RequestDetails extends React.Component {
       requestUser: {},
       modalVisible: false,
       acceptBtnClicked: '',
+      complaint: [],
+      pendingComplaints: '',
       completeBtnClicked: '',
+
     };
   }
 
@@ -72,19 +83,16 @@ class RequestDetails extends React.Component {
 
   async handleRequest() {
     try {
-      if (this.state.acceptBtnClicked) {
+      //if announcement status is ONGOING, don't allow the announcer to accept any requests
+      if (
+        this.state.announcement.announcementStatus !== 'ONGOING' &&
+        this.state.acceptBtnClicked
+      ) {
         await axios.put(globalVariable.requestApi + 'schedule-request', {
           requestId: this.state.request.requestId,
         });
-        //change status of announcement to ongoing once it has accepted a request
-        if (this.state.announcement.announcementStatus === 'ACTIVE') {
-          await axios.put(
-            globalVariable.announcementApi +
-              'ongoing-announcement/' +
-              this.state.announcement.announcementId
-          );
-        }
-      } else {
+      }
+      if (!this.state.acceptBtnClicked) {
         await axios.put(globalVariable.requestApi + 'reject-request', {
           requestId: this.state.request.requestId,
         });
@@ -141,12 +149,20 @@ class RequestDetails extends React.Component {
       const requestAddress = await axios.get(
         `${globalVariable.addressApi}retrieve-addressId/${requestUser.data.defaultAddressId}`
       );
+      const complaint = await axios.get(
+        `${globalVariable.complaintApi}all-complaints/${requestId}`
+      );
+      const pendingComplaints = complaint.data.filter(
+        (complaint) => complaint.complaintStatus === 'PENDING'
+      ).length;
 
       //set state of request
       this.setState({
         request: response.data,
         requestUser: requestUser.data,
         requestUserAddress: requestAddress.data,
+        complaint: complaint.data,
+        pendingComplaints: pendingComplaints,
       });
     } catch (error) {
       console.log(error);
@@ -199,13 +215,67 @@ class RequestDetails extends React.Component {
     );
   }
 
+  renderComplaints() {
+    if (this.state.complaint.length !== 0) {
+      return this.state.complaint.map((complaint, index) => {
+        return (
+          <Card key={complaint.complaintId}>
+            {index === 0 && (
+              <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 8}}>
+                Submitted Complaint(s)
+              </Text>
+            )}
+            <Text category="label" style={styles.label}>
+              Description
+            </Text>
+            <Text style={styles.word}>{complaint.description}</Text>
+            <Text category="label" style={styles.label}>
+              Admin Response
+            </Text>
+            <Text style={styles.word}>
+              {complaint.adminResponse ? complaint.adminResponse : '-'}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Status
+            </Text>
+            <Text
+              style={{
+                color: '#3366FF',
+                marginTop: 5,
+                marginBottom: 5,
+                fontWeight: 'bold',
+                textTransform: 'capitalize',
+              }}>
+              {complaint.complaintStatus}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Created at
+            </Text>
+            <Text style={styles.word}>
+              {this.formatDate(complaint.createdAt) +
+                ', ' +
+                this.formatTime(complaint.createdAt)}
+            </Text>
+            <Text category="label" style={styles.label}>
+              Complaint ID
+            </Text>
+            <Text style={styles.word}>{complaint.complaintId}</Text>
+          </Card>
+        );
+      });
+    } else {
+      return null;
+    }
+  }
+
   renderModal() {
     return (
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
+
         <Card style={{marginLeft: 10, marginRight: 10}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
             {this.state.acceptBtnClicked &&
-              'Are you sure you want to accept this request?'}
+              'Are you sure you want to accept this request? This request will be scheduled after you accept.'}
             {!this.state.acceptBtnClicked &&
               !this.state.completeBtnClicked &&
               'Are you sure you want to reject this request?'}
@@ -220,6 +290,7 @@ class RequestDetails extends React.Component {
                   request details and description.{' '}
                 </Text>
               </Text>
+
             )}
           </Text>
           <View style={styles.modalButtonsContainer}>
@@ -386,7 +457,8 @@ class RequestDetails extends React.Component {
             </Card>
 
             {renderIf(
-              this.state.request.requestStatus === 'PENDING',
+              this.state.request.requestStatus === 'PENDING' &&
+                this.state.announcement.announcementStatus !== 'ONGOING',
               <View style={styles.buttons}>
                 <Button
                   size="small"
@@ -410,6 +482,29 @@ class RequestDetails extends React.Component {
               </View>
             )}
 
+
+            {/* report an issue */}
+            {renderIf(
+              (this.state.request.requestStatus === 'COMPLETED' ||
+                this.state.request.requestStatus === 'VERIFIED') &&
+                this.state.pendingComplaints === 0,
+              <MenuItem
+                style={styles.report}
+                title="Report an issue"
+                accessoryRight={ForwardIcon}
+                onPress={() =>
+                  this.props.navigation.navigate('ReportScreen', {
+                    request: this.state.request,
+                  })
+                }
+              />
+            )}
+
+            {/* show complaints made*/}
+            {renderIf(
+              this.state.complaint.length !== 0,
+              this.renderComplaints()
+
             {renderIf(
               this.state.request.requestStatus === 'DOING',
               <View>
@@ -424,6 +519,7 @@ class RequestDetails extends React.Component {
                   Complete this Request
                 </Button>
               </View>
+
             )}
           </View>
         </ScrollView>

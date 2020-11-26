@@ -57,9 +57,12 @@ import MyHistory from './jioManagement/MyHistory';
 import MyAnnouncement from './jioManagement/MyAnnouncement';
 import MyRequest from './jioManagement/MyRequest';
 import RequestDetails from './jioManagement/RequestDetails';
+import RequestsUnderAnnoucements from './jioManagement/RequestsUnderAnnoucements';
+import ReportScreen from './jioManagement/ReportScreen';
 import CommendAnnouncer from './jioManagement/CommendAnnouncer';
 //screens from covid module 
 import DeclareCovid from './covidModule/DeclareCovid';
+
 
 const Stack = createStackNavigator();
 
@@ -649,6 +652,45 @@ const HomeNavigator = () => (
         ),
       })}
     />
+    <Stack.Screen
+      name="RequestsUnderAnnoucements"
+      component={RequestsUnderAnnoucements}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+    <Stack.Screen
+      name="ReportScreen"
+      component={ReportScreen}
+      options={({navigation}) => ({
+        headerShown: true,
+        ...TransitionPresets.FadeFromBottomAndroid,
+        headerLeft: () => (
+          <Button
+            onPress={() => {
+              navigation.goBack();
+            }}
+            accessoryLeft={BackIcon}
+            appearance="ghost"
+            status="basic"
+            size="tiny"
+          />
+        ),
+      })}
+    />
+
     <Stack.Screen
       name="DeclareCovid"
       component={DeclareCovid}

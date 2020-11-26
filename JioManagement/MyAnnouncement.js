@@ -17,6 +17,7 @@ import {
   Divider,
   Button,
   Modal,
+  ListItem,
 } from '@ui-kitten/components';
 import {useIsFocused} from '@react-navigation/native';
 import {globalVariable} from '../GLOBAL_VARIABLE';
@@ -40,7 +41,8 @@ class MyAnnouncement extends React.Component {
       startLocation: '',
       acceptedRequest: false,
       acceptBtnClicked: '',
-      modalVisible: false,
+      reqModalVisible: false,
+      closeAnnModalVisible: false,
       selectedRequest: '',
     };
   }
@@ -133,24 +135,50 @@ class MyAnnouncement extends React.Component {
 
   async handleRequest() {
     try {
-      if (this.state.acceptBtnClicked) {
+      //if announcement status is ONGOING, don't allow the announcer to accept any requests
+      if (
+        this.state.announcement.announcementStatus !== 'ONGOING' &&
+        this.state.acceptBtnClicked
+      ) {
         await axios.put(globalVariable.requestApi + 'schedule-request', {
-          requestId: this.state.selectedRequest,
-        });
-        //change status of announcement to ongoing once it has accepted a request
-        if (this.state.announcement.announcementStatus === 'ACTIVE') {
-          await axios.put(
-            globalVariable.announcementApi +
-              'ongoing-announcement/' +
-              this.state.announcement.announcementId
-          );
-          this.getAnnouncement(this.state.announcement.announcementId);
-        }
-      } else {
-        await axios.put(globalVariable.requestApi + 'reject-request', {
-          requestId: this.state.selectedRequest,
+          requestId: this.state.selectedRequest.requestId,
         });
       }
+      if (!this.state.acceptBtnClicked) {
+        await axios.put(globalVariable.requestApi + 'reject-request', {
+          requestId: this.state.selectedRequest.requestId,
+        });
+      }
+      this.getRequests(this.state.announcement.announcementId);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  //change announcement status to ONGOING
+  //cannot accept requests after announcement status is ONGOING
+  //change all SCHEDULED requests under announcement to DOING
+  //change all PENDING requests under announcement to REJECTED
+  async handleClose() {
+    try {
+      await axios.put(
+        globalVariable.announcementApi +
+          'ongoing-announcement/' +
+          this.state.announcement.announcementId
+      );
+      for (var req of this.state.requests) {
+        if (req.requestStatus === 'SCHEDULED') {
+          await axios.put(globalVariable.requestApi + 'doing-request', {
+            requestId: req.requestId,
+          });
+        }
+        if (req.requestStatus === 'PENDING') {
+          await axios.put(globalVariable.requestApi + 'reject-request', {
+            requestId: req.requestId,
+          });
+        }
+      }
+      this.getAnnouncement(this.state.announcement.announcementId);
       this.getRequests(this.state.announcement.announcementId);
     } catch (error) {
       console.log(error);
@@ -176,10 +204,6 @@ class MyAnnouncement extends React.Component {
     return formattedTime;
   }
 
-  handleEdit() {}
-
-  handleClose() {}
-
   renderAmount = () => {
     const acceptedRequests = this.state.requests.filter(
       (request) =>
@@ -195,7 +219,7 @@ class MyAnnouncement extends React.Component {
 
     return (
       <Text style={{fontWeight: 'bold', marginTop: 5, marginBottom: 5}}>
-        SGD {totalAmount.toFixed(2)}
+        SGD ${totalAmount.toFixed(2)}
       </Text>
     );
   };
@@ -231,7 +255,7 @@ class MyAnnouncement extends React.Component {
             size="small"
             style={styles.button}
             onPress={() => {
-              this.handleClose();
+              this.setState({closeAnnModalVisible: true});
             }}>
             Close
           </Button>
@@ -253,6 +277,8 @@ class MyAnnouncement extends React.Component {
         displayStatus = 'Rejected';
       } else if (status === 'DOING') {
         displayStatus = 'Doing';
+      } else if (status === 'VERIFIED') {
+        displayStatus = 'Verified';
       } else {
         displayStatus = 'Completed';
       }
@@ -274,16 +300,16 @@ class MyAnnouncement extends React.Component {
             </View>
 
             {renderIf(
-              status === 'PENDING',
+              status === 'PENDING' &&
+                this.state.announcement.announcementStatus !== 'ONGOING',
               <View style={styles.selection}>
                 <TouchableOpacity
                   onPress={() =>
                     this.setState({
-                      modalVisible: true,
+                      reqModalVisible: true,
                       acceptBtnClicked: true,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/check.png')}
                     style={styles.imageContainer}
@@ -292,21 +318,27 @@ class MyAnnouncement extends React.Component {
                 <TouchableOpacity
                   onPress={() =>
                     this.setState({
-                      modalVisible: true,
+                      reqModalVisible: true,
                       acceptBtnClicked: false,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/cross.png')}
                     style={styles.imageContainer}
                   />
                 </TouchableOpacity>
               </View>,
-              <Text style={styles.status}>{displayStatus}</Text>
+              <View
+                style={{
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flex: 1,
+                }}>
+                <Text style={styles.status}>{displayStatus}</Text>
+              </View>
             )}
-            {this.state.modalVisible &&
-              this.setState({selectedRequest: request.requestId})}
+            {this.state.reqModalVisible &&
+              this.setState({selectedRequest: request})}
           </View>
         );
       }
@@ -324,21 +356,22 @@ class MyAnnouncement extends React.Component {
 
                 <Text>{request.description.length > 15 ? `${request.description.substring(0,16)}...`: `${request.description}`}</Text>
                 <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
+
               </TouchableOpacity>
             </View>
 
             {renderIf(
-              status === 'PENDING',
+              status === 'PENDING' &&
+                this.state.announcement.announcementStatus !== 'ONGOING',
               <View style={styles.selection}>
                 <TouchableOpacity
                   onPress={() =>
                     this.setState({
-                      modalVisible: true,
+                      reqModalVisible: true,
                       acceptBtnClicked: true,
-                      selectedRequest: request.requestId,
+                      selectedRequest: request,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/check.png')}
                     style={styles.imageContainer}
@@ -347,12 +380,11 @@ class MyAnnouncement extends React.Component {
                 <TouchableOpacity
                   onPress={() =>
                     this.setState({
-                      modalVisible: true,
+                      reqModalVisible: true,
                       acceptBtnClicked: false,
-                      selectedRequest: request.requestId,
+                      selectedRequest: request,
                     })
-                  }
-                  style={styles.buttonItem}>
+                  }>
                   <Image
                     source={require('../img/cross.png')}
                     style={styles.imageContainer}
@@ -376,16 +408,16 @@ class MyAnnouncement extends React.Component {
     });
   };
 
-  renderModal() {
+  //modal for closing announcements
+  renderCloseAnnModal() {
     return (
-      <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
-        <Card>
+      <Modal
+        backdropStyle={styles.backdrop}
+        visible={this.state.closeAnnModalVisible}>
+        <Card style={{marginLeft: 20, marginRight: 20}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
-            {renderIf(
-              this.state.acceptBtnClicked,
-              'Are you sure you want to accept this request?',
-              'Are you sure you want to reject this request?'
-            )}
+            Are you sure you want to close this announcement? You cannot accept
+            any more requests after this.
           </Text>
           <Layout style={styles.modalButtonsContainer}>
             <Button
@@ -393,7 +425,80 @@ class MyAnnouncement extends React.Component {
               size={'small'}
               onPress={() => {
                 this.setState({
-                  modalVisible: false,
+                  closeAnnModalVisible: false,
+                });
+                this.handleClose();
+              }}>
+              Confirm
+            </Button>
+            <Button
+              appearance={'outline'}
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  closeAnnModalVisible: false,
+                });
+              }}>
+              Dismiss
+            </Button>
+          </Layout>
+        </Card>
+      </Modal>
+    );
+  }
+
+  //modal for accepting/rejecting requests
+  renderReqModal() {
+    return (
+      <Modal
+        backdropStyle={styles.backdrop}
+        visible={this.state.reqModalVisible}>
+        <Card style={{marginLeft: 20, marginRight: 20}}>
+          <Text style={{marginTop: 10, marginBottom: 10}}>
+            {renderIf(
+              this.state.acceptBtnClicked,
+              'Are you sure you want to accept this request? This request will be scheduled after you accept.',
+              'Are you sure you want to reject this request?'
+            )}
+          </Text>
+          <ListItem
+            description={
+              <Text style={styles.label}>
+                {this.state.selectedRequest.title}
+              </Text>
+            }
+            title={<Text>Title</Text>}
+          />
+          <Divider />
+          <ListItem
+            description={
+              <Text style={styles.label}>
+                {this.state.selectedRequest.description
+                  ? this.state.selectedRequest.description
+                  : '-'}
+              </Text>
+            }
+            title={<Text>Description</Text>}
+          />
+          <Divider />
+          <ListItem
+            description={
+              <Text
+                style={[styles.label, {fontWeight: 'bold', color: 'black'}]}>
+                {'SGD $' +
+                  parseFloat(this.state.selectedRequest.amount).toFixed(2)}
+              </Text>
+            }
+            title={<Text>Amount</Text>}
+          />
+          <Layout style={styles.modalButtonsContainer}>
+            <Button
+              style={styles.modalButton}
+              size={'small'}
+              onPress={() => {
+                this.setState({
+                  reqModalVisible: false,
                 });
                 this.handleRequest();
               }}>
@@ -405,7 +510,7 @@ class MyAnnouncement extends React.Component {
               size={'small'}
               onPress={() => {
                 this.setState({
-                  modalVisible: false,
+                  reqModalVisible: false,
                 });
               }}>
               Dismiss
@@ -508,13 +613,19 @@ class MyAnnouncement extends React.Component {
             <Card style={styles.request}>
               <View style={styles.requestHeader}>
                 <Text style={styles.recentRequestsTitle}>
-                  Recent Requests under Jio
+                  Recent requests under Jio
                 </Text>
                 <TouchableOpacity
-                //navigate to see all the requests under the announcement in the page
-                // onPress={() =>
-                //   this.props.navigation.navigate('RequestsUnderAnnoucements')}
-                >
+                  //navigate to see all the requests under the announcement in the page
+                  onPress={() =>
+                    this.props.navigation.navigate(
+                      'RequestsUnderAnnoucements',
+                      {
+                        requests: this.state.requests,
+                        announcement: this.state.announcement,
+                      }
+                    )
+                  }>
                   <Text>Show all</Text>
                 </TouchableOpacity>
               </View>
@@ -528,7 +639,8 @@ class MyAnnouncement extends React.Component {
             </Card>
           </ScrollView>
         </ScrollView>
-        {this.renderModal()}
+        {this.renderReqModal()}
+        {this.renderCloseAnnModal()}
       </Layout>
     );
   }
@@ -595,8 +707,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   imageContainer: {
-    width: 30,
-    height: 30,
+    width: 35,
+    height: 35,
+    marginLeft: 20,
+    marginTop: 15,
   },
   request: {
     marginTop: 20,
