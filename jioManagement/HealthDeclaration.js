@@ -22,7 +22,7 @@ class HealthDeclaration extends React.Component {
       user: this.props.user,
       temp: '',
       hasSymptoms: 0,
-      snhNotice: 0,
+      shnNotice: 0,
       announcementId: this.props.route.params
         ? this.props.route.params.announcementId
         : null,
@@ -42,7 +42,7 @@ class HealthDeclaration extends React.Component {
 
   async handleSubmit() {
     let hasSymptoms;
-    let snhNotice; 
+    let shnNotice; 
     if (
       this.state.temp === 0 ||
       this.state.temp === -1 ||
@@ -59,10 +59,10 @@ class HealthDeclaration extends React.Component {
         hasSymptoms = false;
       }
 
-      if (this.state.snhNotice === 0) {
-        snhNotice = true;
+      if (this.state.shnNotice === 0) {
+        shnNotice = true;
       } else {
-        snhNotice = false;
+        shnNotice = false;
       }
 
       try {
@@ -72,7 +72,7 @@ class HealthDeclaration extends React.Component {
             userId: this.state.user.userId,
             temperature: this.state.temp,
             hasSymptoms: hasSymptoms,
-            snhNotice: snhNotice
+            stayHomeNotice: shnNotice
           }
         );
         this.setState({
@@ -80,10 +80,10 @@ class HealthDeclaration extends React.Component {
           message: '',
         });
 
-
         //check if user is able to proceed to make announcement/request or not
-        //by checking the risk level
-        if (!this.state.user.isHighRisk) {
+        //by checking if the user has symptoms/on shn 
+        //if symptoms/on shn === false, meaning can proceed
+        if (!this.state.user.hasSymptoms && !this.state.user.onSHN) {
           //coming from home page (make announcement)
           if (this.state.startJio) {
             this.props.navigation.navigate('MakeAnnouncement');
@@ -135,7 +135,7 @@ class HealthDeclaration extends React.Component {
                 })}
               }}>
               {renderIf(
-                  this.state.startJio && this.state.user.isHighRisk,
+                  this.state.startJio && (this.state.user.hasSymptoms || this.state.user.onSHN),
                   'Back to Home',
                   'Confirm',
                 )}
@@ -224,8 +224,8 @@ class HealthDeclaration extends React.Component {
               Are you on Stay-Home-Notice?
             </Text>
             <RadioGroup
-              selectedIndex={this.state.snhNotice}
-              onChange={(index) => this.setState({snhNotice: index})}>
+              selectedIndex={this.state.shnNotice}
+              onChange={(index) => this.setState({shnNotice: index})}>
               {/* if yes is selected, value = 0 */}
               <Radio>Yes</Radio>
               {/* if no is selected, value = 1 */}

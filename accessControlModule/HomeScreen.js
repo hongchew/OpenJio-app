@@ -45,7 +45,6 @@ class HomeScreen extends React.Component {
     this.setState({
       refreshing: true,
     });
-
     this.getAnnouncements();
   };
 
@@ -296,7 +295,8 @@ class HomeScreen extends React.Component {
           <Text style={styles.subtitle}>
             Start a jio to help reduce foot traffic in your neighbourhood!
           </Text>
-          <TouchableOpacity
+          {!this.props.user.hasCovid && 
+            <TouchableOpacity
             onPress={() =>
               this.props.navigation.replace('HealthDeclaration', {
                 startJio: 'startJio',
@@ -311,6 +311,7 @@ class HomeScreen extends React.Component {
               source={require('../img/homeImg.png')}
             />
           </TouchableOpacity>
+          }
           <TouchableOpacity
             onPress={() =>
               this.props.user.hasCovid
