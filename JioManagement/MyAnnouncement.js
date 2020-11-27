@@ -257,7 +257,7 @@ class MyAnnouncement extends React.Component {
             onPress={() => {
               this.setState({closeAnnModalVisible: true});
             }}>
-            Close
+            Start
           </Button>
         </View>
       );
@@ -425,7 +425,7 @@ class MyAnnouncement extends React.Component {
         visible={this.state.closeAnnModalVisible}>
         <Card style={{marginLeft: 20, marginRight: 20}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
-            Are you sure you want to close this announcement? You cannot accept
+            Are you sure you want to start this announcement? You cannot accept
             any more requests after this.
           </Text>
           <Layout style={styles.modalButtonsContainer}>

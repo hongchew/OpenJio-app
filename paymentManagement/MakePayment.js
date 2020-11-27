@@ -6,7 +6,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   TextInput,
-  StatusBar,
+  StatusBar
 } from 'react-native';
 import {
   Text,
@@ -49,7 +49,7 @@ class MakePayment extends React.Component {
       this.props.navigation.navigate('SuccessfulScreen', {
         amount: this.state.amountPayable,
         recipientName: this.state.recipient.name,
-        previousScreen: 'MakePayment',
+        previousScreen: 'MakePayment'
       });
     } catch (error) {
       console.log(error);
@@ -58,6 +58,7 @@ class MakePayment extends React.Component {
       });
     }
   }
+
 
   //check whether all the fields are correct,
   //if it is, the modal will pop up
@@ -70,10 +71,10 @@ class MakePayment extends React.Component {
       this.setState({
         message: 'Invalid amount.',
       });
-      // } else if (this.state.amountPayable > this.state.user.Wallet.walletLimit) {
-      //   this.setState({
-      //     message: 'Amount exceeded wallet limit.',
-      //   });
+    // } else if (this.state.amountPayable > this.state.user.Wallet.walletLimit) {
+    //   this.setState({
+    //     message: 'Amount exceeded wallet limit.',
+    //   });
     } else if (this.state.amountPayable > this.state.user.Wallet.balance) {
       this.setState({
         message: 'Amount exceeded balance.',
@@ -104,13 +105,14 @@ class MakePayment extends React.Component {
         });
       }
     }
+    
   }
 
-  //this method prevents returning NaN when Input has empty text
-  safeParseFloat = (str) => {
+   //this method prevents returning NaN when Input has empty text
+   safeParseFloat = (str) => {
     const value = Number.parseFloat(str);
-    return Number.isNaN(value) ? 0 : value;
-  };
+    return Number.isNaN(value) ? 0 : value;    
+  }
 
   //when user clicks confirm, should trigger the handlePayment method
   renderPaymentModal() {
@@ -128,7 +130,8 @@ class MakePayment extends React.Component {
     return (
       <Modal
         backdropStyle={styles.backdrop}
-        visible={this.state.paymentModalVisible}>
+        visible={this.state.paymentModalVisible}
+      >
         <Card>
           <Text style={{fontWeight: 'bold', marginTop: 10, marginBottom: 10}}>
             Review Payment
@@ -139,7 +142,11 @@ class MakePayment extends React.Component {
                 {this.state.recipient && this.state.recipient.name}
               </Text>
             }
-            title={<Text style={styles.label}>Recipient</Text>}
+            title={
+              <Text style={styles.label}>
+                Recipient
+              </Text>
+            }
             accessoryRight={avatar}
           />
           <Divider />
@@ -149,7 +156,11 @@ class MakePayment extends React.Component {
                 {amountToDisplay}
               </Text>
             }
-            title={<Text style={styles.label}>Pay Amount</Text>}
+            title={
+              <Text style={styles.label}>
+                Pay Amount
+              </Text>
+            }
           />
           <Layout style={styles.modalButtonsContainer}>
             <Button
@@ -166,10 +177,7 @@ class MakePayment extends React.Component {
               style={styles.modalButton}
               size={'small'}
               onPress={() => {
-                this.setState({
-                  paymentModalVisible: false,
-                  message: 'Payment was Cancelled',
-                });
+                this.setState({paymentModalVisible: false, message: 'Payment was Cancelled'});
               }}>
               Dismiss
             </Button>
@@ -225,10 +233,7 @@ class MakePayment extends React.Component {
             />
 
             <Text style={styles.balance}>
-              Balance: SGD $
-              {this.props.user.Wallet.balance
-                ? this.props.user.Wallet.balance.toFixed(2)
-                : '-'}
+              Balance: SGD ${this.props.user.Wallet.balance.toFixed(2)}
             </Text>
             <Button style={styles.button} onPress={() => this.getRecipient()}>
               Next
@@ -292,7 +297,7 @@ const styles = StyleSheet.create({
     color: '#3366FF',
     fontSize: 14,
     marginBottom: 3,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   money: {
     flexGrow: 1,
