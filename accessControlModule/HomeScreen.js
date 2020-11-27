@@ -263,7 +263,7 @@ class HomeScreen extends React.Component {
               justifyContent: 'space-between',
             }}>
             <Text category="h4" style={styles.header}>
-              Hey, {this.state.user.name}
+              Hey, {this.props.user.name}
             </Text>
             <TouchableOpacity
               onPress={() => this.props.navigation.replace('Notification')}>
