@@ -114,7 +114,7 @@ class HealthDeclaration extends React.Component {
             {renderIf(
               this.state.startJio,
               'It seems like you are unwell or on stay home notice, you should stay home and try making requests instead. ',
-              'It seems like you are unwell or on stay home notice, hope you get better soon.'
+              'It seems like you are unwell or on stay home notice, this information will be relayed to the announcer.'
             )}
           </Text>
           <Layout style={styles.modalButtonsContainer}>
