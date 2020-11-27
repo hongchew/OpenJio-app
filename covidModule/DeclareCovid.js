@@ -156,7 +156,7 @@ class DeclareCovid extends React.Component {
         <Text style={styles.header} category="h4">
           {this.state.declareCovid
             ? 'Declare COVID-19'
-            : 'Declare Free from COVID'}
+            : 'Declare Free from COVID-19'}
         </Text>
         <Text style={styles.subtitle}>
           {this.state.declareCovid
