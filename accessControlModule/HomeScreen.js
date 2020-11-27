@@ -152,7 +152,7 @@ class HomeScreen extends React.Component {
 
   renderContent = () => {
     return renderIf(
-      this.state.announcements.length === 0,
+      this.state.announcements.length === 0 && !this.props.user.hasCovid,
       <Text style={styles.message}>There are no announcements yet.</Text>,
       this.renderAnnouncements()
     );
@@ -292,103 +292,145 @@ class HomeScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
+
           <Text style={styles.subtitle}>
-            Start a jio to help reduce foot traffic in your neighbourhood!
+            {this.props.user.hasCovid
+              ? 'Declare yourself discharged from COVID-19 to continue using OpenJio!'
+              : 'Start a jio to help reduce foot traffic in your neighbourhood!'}
           </Text>
-          {!this.props.user.hasCovid && 
+
+          {!this.props.user.hasCovid && (
             <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.replace('HealthDeclaration', {
-                startJio: 'startJio',
-              })
-            }>
-            <Image
-              style={{
-                width: 400,
-                height: 120,
-                alignSelf: 'center',
-              }}
-              source={require('../img/homeImg.png')}
-            />
-          </TouchableOpacity>
-          }
-          <TouchableOpacity
-            onPress={() =>
-              this.props.user.hasCovid
-                ? this.props.navigation.replace('DeclareCovid', {
+              onPress={() =>
+                this.props.navigation.replace('HealthDeclaration', {
+                  startJio: 'startJio',
+                })
+              }>
+              <Image
+                style={{
+                  width: 395,
+                  height: 120,
+                  alignSelf: 'center',
+                }}
+                source={require('../img/homeImg.png')}
+              />
+            </TouchableOpacity>
+          )}
+
+          {renderIf(
+            this.props.user.hasCovid,
+            <View style={{marginTop: 30}}>
+              <Image
+                style={{
+                  width: 350,
+                  height: 290,
+                  alignSelf: 'center',
+                }}
+                source={require('../img/hasCovidHome.png')}
+              />
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.replace('DeclareCovid', {
                     declareCovid: false,
                   })
-                : this.props.navigation.replace('DeclareCovid', {
-                    declareCovid: true,
-                  })
-            }>
-            <Image
-              style={{
-                width: 400,
-                height: 120,
-                alignSelf: 'center',
-              }}
-              source={
-                this.props.user.hasCovid
-                  ? require('../img/declareHealthy.png')
-                  : require('../img/declareCovid.png')
-              }
-            />
-          </TouchableOpacity>
-
-          <Text style={styles.subheader} category="h6">
-            Jios near
-          </Text>
-          <Card
-            style={styles.locationCard}
-            onPress={() =>
-              this.props.navigation.navigate('Address', {
-                screen: 'Home',
-              })
-            }>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={{fontFamily: 'Karla-Bold'}}>
-                {this.state.startLocationStr}
-              </Text>
-              <View>
-                <Icon
-                  name="arrow-ios-forward"
-                  style={{width: 19, height: 19}}
-                  fill="#222222"
+                }>
+                <Image
+                  style={{
+                    width: 395,
+                    height: 120,
+                    alignSelf: 'center',
+                  }}
+                  source={require('../img/hasCovidButton.png')}
                 />
+              </TouchableOpacity>
+            </View>,
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.replace('DeclareCovid', {
+                  declareCovid: true,
+                })
+              }>
+              <Image
+                style={{
+                  width: 395,
+                  height: 120,
+                  alignSelf: 'center',
+                }}
+                source={
+                  !this.props.user.hasCovid
+                    ? require('../img/declareCovid.png')
+                    : null
+                }
+              />
+            </TouchableOpacity>
+          )}
+
+          {renderIf(
+            !this.props.user.hasCovid,
+            <React.Fragment>
+              <Text style={styles.subheader} category="h6">
+                Jios near
+              </Text>
+              <Card
+                style={styles.locationCard}
+                onPress={() =>
+                  this.props.navigation.navigate('Address', {
+                    screen: 'Home',
+                  })
+                }>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={{fontFamily: 'Karla-Bold'}}>
+                    {this.state.startLocationStr}
+                  </Text>
+                  <View>
+                    <Icon
+                      name="arrow-ios-forward"
+                      style={{width: 19, height: 19}}
+                      fill="#222222"
+                    />
+                  </View>
+                </View>
+              </Card>
+              <View style={styles.filterrow}>
+                <Text style={styles.filterheader} category="h6">
+                  Filter
+                </Text>
+                <Icon
+                  style={styles.icon}
+                  fill="#8F9BB3"
+                  name="options-2-outline"
+                />
+                <Layout
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#F5F5F5',
+                    marginLeft: 10,
+                    marginRight: 20,
+                  }}
+                  level="1">
+                  <Select
+                    placeholder="Default"
+                    value={this.state.displayValue}
+                    selectedIndex={this.state.selectedIndex}
+                    onSelect={(index) => {
+                      this.setState(
+                        {selectedIndex: index},
+                        this.setState({
+                          displayValue: this.state.filterdata[index - 1],
+                        })
+                      );
+                    }}>
+                    {this.state.filterdata.map(this.renderOption)}
+                  </Select>
+                </Layout>
               </View>
-            </View>
-          </Card>
-          <View style={styles.filterrow}>
-            <Text style={styles.filterheader} category="h6">
-              Filter
-            </Text>
-            <Icon style={styles.icon} fill="#8F9BB3" name="options-2-outline" />
-            <Layout
-              style={{
-                flex: 1,
-                backgroundColor: '#F5F5F5',
-                marginLeft: 10,
-                marginRight: 20,
-              }}
-              level="1">
-              <Select
-                placeholder="Default"
-                value={this.state.displayValue}
-                selectedIndex={this.state.selectedIndex}
-                onSelect={(index) => {
-                  this.setState(
-                    {selectedIndex: index},
-                    this.setState({
-                      displayValue: this.state.filterdata[index - 1],
-                    })
-                  );
-                }}>
-                {this.state.filterdata.map(this.renderOption)}
-              </Select>
-            </Layout>
-          </View>
+            </React.Fragment>
+          )}
+
           {this.renderContent()}
         </ScrollView>
       </Layout>

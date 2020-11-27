@@ -613,7 +613,7 @@ class MyAnnouncement extends React.Component {
             <Button
               style={{marginLeft: 15, marginRight: 15}}
               onPress={() => {}}
-              size="small">
+              >
               Contact Support
             </Button>
           )}
