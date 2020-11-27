@@ -305,7 +305,7 @@ class MyAnnouncement extends React.Component {
 
             {renderIf(
               status === 'PENDING' &&
-                this.state.announcement.announcementStatus !== 'ONGOING',
+                this.state.announcement.announcementStatus === 'ACTIVE',
               <View style={styles.selection}>
                 <TouchableOpacity
                   onPress={() =>
@@ -371,7 +371,7 @@ class MyAnnouncement extends React.Component {
 
             {renderIf(
               status === 'PENDING' &&
-                this.state.announcement.announcementStatus !== 'ONGOING',
+                this.state.announcement.announcementStatus == 'ACTIVE',
               <View style={styles.selection}>
                 <TouchableOpacity
                   onPress={() =>
