@@ -340,13 +340,7 @@ class RequestDetails extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }>
+        <ScrollView>
           <StatusBar
             barStyle="dark-content"
             hidden={false}
@@ -444,10 +438,10 @@ class RequestDetails extends React.Component {
               </View>
               <View style={{marginTop: 10}}>
                 {
-                  (renderIf(
+                  renderIf(
                     this.state.requestUser.hasSymptoms ||
                       this.state.requestUser.onSHN
-                  ),
+                  ,
                   (
                     <Text category="label" style={styles.label}>
                       {this.state.requestUser.name}'s' COVID-19 Risk Level
