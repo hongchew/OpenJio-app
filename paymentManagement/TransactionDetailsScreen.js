@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    marginLeft: 15,
+    paddingLeft: 15,
     backgroundColor: '#F5F5F5',
     fontFamily: 'Karla-Bold',
   },
