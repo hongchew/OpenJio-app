@@ -54,7 +54,7 @@ class NotificationDetails extends React.Component {
       <Modal
         backdropStyle={styles.backdrop}
         visible={this.state.deleteModalVisible}>
-        <Card>
+        <Card style={{marginLeft: 15, marginRight: 15}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
             Are you sure you want to delete this notification?
           </Text>
@@ -109,14 +109,6 @@ class NotificationDetails extends React.Component {
             <Text style={styles.header} category="h4">
               Notification Details
             </Text>
-            <Button
-              status="basic"
-              style={styles.button}
-              onPress={() => {
-                this.setState({deleteModalVisible: true});
-              }}>
-              Delete
-            </Button>
           </View>
           <Card style={styles.card}>
             <View style={styles.moreinfosubbox}>
@@ -134,6 +126,14 @@ class NotificationDetails extends React.Component {
               <Text>{formattedDate + ', ' + formattedTime}</Text>
             </View>
           </Card>
+          <Button
+            status="basic"
+            style={styles.button}
+            onPress={() => {
+              this.setState({deleteModalVisible: true});
+            }}>
+            Delete
+          </Button>
           {this.renderDeleteModal()}
         </ScrollView>
       </Layout>
@@ -179,8 +179,9 @@ const styles = StyleSheet.create({
     color: 'grey',
   },
   button: {
-    width: 100,
-    height: 10,
+    marginTop: 20,
+    marginLeft: 15,
+    marginRight: 15,
   },
   backdrop: {
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
