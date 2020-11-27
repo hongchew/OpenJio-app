@@ -207,15 +207,22 @@ class MyRequest extends React.Component {
         `${globalVariable.announcementApi}all-requests/${this.state.announcement.announcementId}`
       );
 
+      const acceptedRequests = allRequests.data.filter(
+        (request) => 
+          request.requestStatus === 'DOING' ||
+          request.requestStatus === 'COMPLETED' || 
+          request.requestStatus === 'VERIFIED'
+      );
+
       //retrieve all the verified requests under
       //this announcement
-      const completedRequests = allRequests.data.filter(
+      const verifiedRequests = allRequests.data.filter(
         (request) => request.requestStatus === 'VERIFIED'
       );
 
       //if all the requests are verified meaning this announcement IS PAST (completely closed),
       //set the announcement to PAST
-      if (completedRequests.length === allRequests.data.length) {
+      if (acceptedRequests.length === verifiedRequests.length) {
         await axios.put(
           `${globalVariable.announcementApi}past-announcement/${this.state.announcement.announcementId}`
         );

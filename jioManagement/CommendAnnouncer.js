@@ -81,6 +81,7 @@ class CommendAnnouncer extends React.Component {
               ? {backgroundColor: '#ededed'}
               : '',
           ]}
+          key={badge.badgeType}
           onPress={() => this.addBadge(badge.badgeType)}
           title={(evaProps) => (
             <Text
@@ -127,7 +128,7 @@ class CommendAnnouncer extends React.Component {
           <Text style={{marginTop: 10, marginBottom: 10}}>
             {renderIf(
               this.state.commendBtn && this.state.badgesGivenArr.length !== 0,
-              `You are about to close this request and commend ${this.state.announcer.name} with these badges. Do you want to proceed?`,
+              `Verify this request as successfully completed?`,
               `Close this request without commending ${this.state.announcer.name}? You will not be able to return to this page to award these badges.`
             )}
           </Text>
