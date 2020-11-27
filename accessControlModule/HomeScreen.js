@@ -157,7 +157,7 @@ class HomeScreen extends React.Component {
 
   renderContent = () => {
     return renderIf(
-      this.state.announcements.length === 0 && !this.props.user.hasCovid,
+      this.state.announcements.length === 0,
       <Text style={styles.message}>There are no announcements yet.</Text>,
       this.renderAnnouncements()
     );
@@ -436,7 +436,7 @@ class HomeScreen extends React.Component {
             </React.Fragment>
           )}
 
-          {this.renderContent()}
+          {renderIf(!this.props.user.hasCovid, this.renderContent())}
         </ScrollView>
       </Layout>
     );
