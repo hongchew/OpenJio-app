@@ -38,7 +38,6 @@ class HomeScreen extends React.Component {
       displayValue: 'Distance',
       unreadNotifications: 0,
     };
-    console.log(this.props.user.hasCovid);
   }
 
   onRefresh = () => {
@@ -64,6 +63,9 @@ class HomeScreen extends React.Component {
     if (this.props.user.defaultAddressId !== null) {
       this.getDefaultAddress();
     }
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.getNotifications()
+    })
     this.getAnnouncements();
     this.getNotifications();
   }
@@ -103,8 +105,11 @@ class HomeScreen extends React.Component {
       this.setState({
         announcements: sortedAnnouncements,
       });
-      console.log(sortedAnnouncements);
     }
+  }
+
+  componentWillUnmount () {
+    this.focusListener()
   }
 
   getDefaultAddress = () =>
@@ -263,7 +268,7 @@ class HomeScreen extends React.Component {
               justifyContent: 'space-between',
             }}>
             <Text category="h4" style={styles.header}>
-              Hey, {this.state.user.name}
+              Hey, {this.props.user.name}
             </Text>
             <TouchableOpacity
               onPress={() => this.props.navigation.replace('Notification')}>
@@ -292,104 +297,146 @@ class HomeScreen extends React.Component {
               />
             </TouchableOpacity>
           </View>
+
           <Text style={styles.subtitle}>
-            Start a jio to help reduce foot traffic in your neighbourhood!
+            {this.props.user.hasCovid
+              ? 'Declare yourself discharged from COVID-19 to continue using OpenJio!'
+              : 'Start a jio to help reduce foot traffic in your neighbourhood!'}
           </Text>
-          {!this.props.user.hasCovid && 
+
+          {!this.props.user.hasCovid && (
             <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.replace('HealthDeclaration', {
-                startJio: 'startJio',
-              })
-            }>
-            <Image
-              style={{
-                width: 400,
-                height: 120,
-                alignSelf: 'center',
-              }}
-              source={require('../img/homeImg.png')}
-            />
-          </TouchableOpacity>
-          }
-          <TouchableOpacity
-            onPress={() =>
-              this.props.user.hasCovid
-                ? this.props.navigation.replace('DeclareCovid', {
+              onPress={() =>
+                this.props.navigation.replace('HealthDeclaration', {
+                  startJio: 'startJio',
+                })
+              }>
+              <Image
+                style={{
+                  width: 395,
+                  height: 120,
+                  alignSelf: 'center',
+                }}
+                source={require('../img/homeImg.png')}
+              />
+            </TouchableOpacity>
+          )}
+
+          {renderIf(
+            this.props.user.hasCovid,
+            <View style={{marginTop: 30}}>
+              <Image
+                style={{
+                  width: 350,
+                  height: 290,
+                  alignSelf: 'center',
+                }}
+                source={require('../img/hasCovidHome.png')}
+              />
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.replace('DeclareCovid', {
                     declareCovid: false,
                   })
-                : this.props.navigation.replace('DeclareCovid', {
-                    declareCovid: true,
-                  })
-            }>
-            <Image
-              style={{
-                width: 400,
-                height: 120,
-                alignSelf: 'center',
-              }}
-              source={
-                this.props.user.hasCovid
-                  ? require('../img/declareHealthy.png')
-                  : require('../img/declareCovid.png')
-              }
-            />
-          </TouchableOpacity>
-
-          <Text style={styles.subheader} category="h6">
-            Jios near
-          </Text>
-          <Card
-            style={styles.locationCard}
-            onPress={() =>
-              this.props.navigation.navigate('Address', {
-                screen: 'Home',
-              })
-            }>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text style={{fontFamily: 'Karla-Bold'}}>
-                {this.state.startLocationStr}
-              </Text>
-              <View>
-                <Icon
-                  name="arrow-ios-forward"
-                  style={{width: 19, height: 19}}
-                  fill="#222222"
+                }>
+                <Image
+                  style={{
+                    width: 395,
+                    height: 120,
+                    alignSelf: 'center',
+                  }}
+                  source={require('../img/hasCovidButton.png')}
                 />
+              </TouchableOpacity>
+            </View>,
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.replace('DeclareCovid', {
+                  declareCovid: true,
+                })
+              }>
+              <Image
+                style={{
+                  width: 395,
+                  height: 120,
+                  alignSelf: 'center',
+                }}
+                source={
+                  !this.props.user.hasCovid
+                    ? require('../img/declareCovid.png')
+                    : null
+                }
+              />
+            </TouchableOpacity>
+          )}
+
+          {renderIf(
+            !this.props.user.hasCovid,
+            <React.Fragment>
+              <Text style={styles.subheader} category="h6">
+                Jios near
+              </Text>
+              <Card
+                style={styles.locationCard}
+                onPress={() =>
+                  this.props.navigation.navigate('Address', {
+                    screen: 'Home',
+                  })
+                }>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  }}>
+                  <Text style={{fontFamily: 'Karla-Bold'}}>
+                    {this.state.startLocationStr}
+                  </Text>
+                  <View>
+                    <Icon
+                      name="arrow-ios-forward"
+                      style={{width: 19, height: 19}}
+                      fill="#222222"
+                    />
+                  </View>
+                </View>
+              </Card>
+              <View style={styles.filterrow}>
+                <Text style={styles.filterheader} category="h6">
+                  Filter
+                </Text>
+                <Icon
+                  style={styles.icon}
+                  fill="#8F9BB3"
+                  name="options-2-outline"
+                />
+                <Layout
+                  style={{
+                    flex: 1,
+                    backgroundColor: '#F5F5F5',
+                    marginLeft: 10,
+                    marginRight: 20,
+                  }}
+                  level="1">
+                  <Select
+                    placeholder="Default"
+                    value={this.state.displayValue}
+                    selectedIndex={this.state.selectedIndex}
+                    onSelect={(index) => {
+                      this.setState(
+                        {selectedIndex: index},
+                        this.setState({
+                          displayValue: this.state.filterdata[index - 1],
+                        })
+                      );
+                    }}>
+                    {this.state.filterdata.map(this.renderOption)}
+                  </Select>
+                </Layout>
               </View>
-            </View>
-          </Card>
-          <View style={styles.filterrow}>
-            <Text style={styles.filterheader} category="h6">
-              Filter
-            </Text>
-            <Icon style={styles.icon} fill="#8F9BB3" name="options-2-outline" />
-            <Layout
-              style={{
-                flex: 1,
-                backgroundColor: '#F5F5F5',
-                marginLeft: 10,
-                marginRight: 20,
-              }}
-              level="1">
-              <Select
-                placeholder="Default"
-                value={this.state.displayValue}
-                selectedIndex={this.state.selectedIndex}
-                onSelect={(index) => {
-                  this.setState(
-                    {selectedIndex: index},
-                    this.setState({
-                      displayValue: this.state.filterdata[index - 1],
-                    })
-                  );
-                }}>
-                {this.state.filterdata.map(this.renderOption)}
-              </Select>
-            </Layout>
-          </View>
-          {this.renderContent()}
+            </React.Fragment>
+          )}
+
+          {renderIf(!this.props.user.hasCovid, this.renderContent())}
         </ScrollView>
       </Layout>
     );

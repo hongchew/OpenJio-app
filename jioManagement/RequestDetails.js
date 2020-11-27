@@ -45,6 +45,13 @@ class RequestDetails extends React.Component {
   componentDidMount() {
     const requestId = this.props.route.params.requestId;
     this.getRequest(requestId);
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.getRequest(requestId)
+    })
+  }
+
+  componentWillUnmount () {
+    this.focusListener()
   }
 
   formatDate(inputDate) {
@@ -114,6 +121,12 @@ class RequestDetails extends React.Component {
         `${globalVariable.announcementApi}all-requests/${this.state.announcement.announcementId}`
       );
 
+      const acceptedRequests = allRequests.data.filter(
+        (request) =>
+          request.requestStatus === 'DOING' ||
+          request.requestStatus === 'COMPLETED'
+      );
+
       //retrieve all the accepted requests under
       //this announcement that are completed
       const completedRequests = allRequests.data.filter(
@@ -122,7 +135,7 @@ class RequestDetails extends React.Component {
 
       //if the announcer has completed all the requests,
       //set the announcement to COMPLETED
-      if (completedRequests.length === allRequests.data.length) {
+      if (acceptedRequests.length === completedRequests.length) {
         await axios.put(
           `${globalVariable.announcementApi}complete-announcement/${this.state.announcement.announcementId}`
         );
@@ -334,13 +347,7 @@ class RequestDetails extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={this.state.refreshing}
-              onRefresh={this.onRefresh}
-            />
-          }>
+        <ScrollView>
           <StatusBar
             barStyle="dark-content"
             hidden={false}
@@ -437,22 +444,24 @@ class RequestDetails extends React.Component {
                 </TouchableOpacity>
               </View>
               <View style={{marginTop: 10}}>
-                <Text category="label" style={styles.label}>
-                  {this.state.requestUser.name}'s' COVID-19 Risk Level
-                </Text>
+                {
+                  renderIf(
+                    this.state.requestUser.hasSymptoms ||
+                      this.state.requestUser.onSHN
+                  ,
+                  (
+                    <Text category="label" style={styles.label}>
+                      {this.state.requestUser.name}'s' COVID-19 Risk Level
+                    </Text>
+                  ))
+                }
                 <View style={{flexDirection: 'row', marginTop: 10}}>
-                  {!this.state.requestUser.hasSymptoms &&
-                    !this.state.requestUser.onSNH && (
-                      <View style={styles.lowRisk}>
-                        <Text style={{color: 'white'}}>Low-risk</Text>
-                      </View>
-                    )}
                   {this.state.requestUser.hasSymptoms && (
                     <View style={styles.highRisk}>
                       <Text style={{color: 'white'}}>Has symptoms</Text>
                     </View>
                   )}
-                  {this.state.requestUser.onSNH && (
+                  {this.state.requestUser.onSHN && (
                     <View style={styles.snh}>
                       <Text style={{color: 'white'}}>SNH Notice</Text>
                     </View>
