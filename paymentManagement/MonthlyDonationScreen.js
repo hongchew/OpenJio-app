@@ -20,26 +20,28 @@ class MonthlyDonationScreen extends React.Component {
   }
 
   onRefresh = () => {
-    this.setState({
-      refreshing: true,
-    });
-
-    axios
-      .get(
-        `${globalVariable.paypalApi}refresh-subscription/${this.props.user.userId}/${this.props.agreement.paypalSubscriptionId}`
-      )
-      .then((resp) => {
-        this.setState({
-          refreshing: false,
-        });
-        this.props.setUser(resp.data);
-      })
-      .catch((e) => {
-        this.setState({
-          refreshing: false,
-        });
-        console.log(e);
+    if (this.props.agreement) {
+      this.setState({
+        refreshing: true,
       });
+
+      axios
+        .get(
+          `${globalVariable.paypalApi}refresh-subscription/${this.props.user.userId}/${this.props.agreement.paypalSubscriptionId}`
+        )
+        .then((resp) => {
+          this.setState({
+            refreshing: false,
+          });
+          this.props.setUser(resp.data);
+        })
+        .catch((e) => {
+          this.setState({
+            refreshing: false,
+          });
+          console.log(e);
+        });
+    }
   };
 
   async handleCancelTopUp() {
@@ -138,8 +140,7 @@ class MonthlyDonationScreen extends React.Component {
             <Text>
               OpenJio is a non-profit platform that depends on your donations to
               function.{`\n`}
-              Set up an automatic monthly donation to help us make this platform
-              possible!
+              Set up a monthly Paypal donation to help us keep OpenJio going!
             </Text>
           </View>
           {renderIf(
