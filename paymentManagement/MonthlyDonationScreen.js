@@ -114,81 +114,79 @@ class MonthlyDonationScreen extends React.Component {
   render() {
     return (
       <Layout style={styles.layout}>
+        <StatusBar
+          barStyle="dark-content"
+          hidden={false}
+          backgroundColor="#ffffff"
+          translucent={true}
+        />
+
+        <View style={styles.headerRow}>
+          <Text style={styles.header} category="h4">
+            Monthly Donation
+          </Text>
+        </View>
         <ScrollView
+          style={styles.container}
           refreshControl={
             <RefreshControl
               refreshing={this.state.refreshing}
               onRefresh={this.onRefresh}
             />
           }>
-          <StatusBar
-            barStyle="dark-content"
-            hidden={false}
-            backgroundColor="#ffffff"
-            translucent={true}
-          />
-          <View style={styles.headerRow}>
-            <Text style={styles.header} category="h4">
-              Monthly Donation
+          <View style={styles.descriptionText}>
+            <Text>
+              OpenJio is a non-profit platform that depends on your donations to
+              function.{`\n`}
+              Set up an automatic monthly donation to help us make this platform
+              possible!
             </Text>
           </View>
-          <ScrollView style={styles.container}>
-            <View style={styles.descriptionText}>
-              <Text>
-                OpenJio is a non-profit platform that depends on your donations
-                to function.{`\n`}
-              </Text>
-              <Text>
-                Set up an automatic monthly donation to help us make this
-                platform possible!
-              </Text>
-            </View>
-            {renderIf(
-              this.props.agreement,
-              <Card style={styles.card}>
-                <Text style={styles.label}>Monthly Donation Amount</Text>
-                <View style={{flexDirection: 'row'}}>
-                  <Text style={{marginTop: 5}}>SGD</Text>
-                  <Text style={styles.money}>
-                    {this.props.agreement
-                      ? this.props.agreement.amount.toFixed(2)
-                      : null}
-                  </Text>
-                </View>
-                <Text style={styles.label}>{'\n'}Paypal Subscription ID:</Text>
-                <Text>
+          {renderIf(
+            this.props.agreement,
+            <Card style={styles.card}>
+              <Text style={styles.label}>Monthly Donation Amount</Text>
+              <View style={{flexDirection: 'row'}}>
+                <Text style={{marginTop: 5}}>SGD</Text>
+                <Text style={styles.money}>
                   {this.props.agreement
-                    ? this.props.agreement.paypalSubscriptionId
+                    ? this.props.agreement.amount.toFixed(2)
                     : null}
                 </Text>
-                <Text style={styles.label}>{'\n'}Next Donation:</Text>
-                <Text>
-                  {this.props.nextPaymentDate !== this.props.lastPaymentDate
-                    ? this.props.nextPaymentDate
-                    : 'Currently Unavailable'}
-                </Text>
-                <Text style={styles.label}>{'\n'}Last Donation:</Text>
-                <Text>
-                  {this.props.agreement && this.props.agreement.lastPaymentDate
-                    ? new Date(
-                        this.props.agreement.lastPaymentDate
-                      ).toDateString()
-                    : '-'}
-                </Text>
-              </Card>
-            )}
-            {renderIf(
-              !this.props.agreement,
-              <Card style={styles.card}>
-                <Text>No monthly donation set up yet</Text>
-              </Card>
-            )}
-            {this.renderButtons()}
+              </View>
+              <Text style={styles.label}>{'\n'}Paypal Subscription ID:</Text>
+              <Text>
+                {this.props.agreement
+                  ? this.props.agreement.paypalSubscriptionId
+                  : null}
+              </Text>
+              <Text style={styles.label}>{'\n'}Next Donation:</Text>
+              <Text>
+                {this.props.nextPaymentDate !== this.props.lastPaymentDate
+                  ? this.props.nextPaymentDate
+                  : 'Currently Unavailable'}
+              </Text>
+              <Text style={styles.label}>{'\n'}Last Donation:</Text>
+              <Text>
+                {this.props.agreement && this.props.agreement.lastPaymentDate
+                  ? new Date(
+                      this.props.agreement.lastPaymentDate
+                    ).toDateString()
+                  : '-'}
+              </Text>
+            </Card>
+          )}
+          {renderIf(
+            !this.props.agreement,
+            <Card style={styles.card}>
+              <Text>No monthly donation set up yet</Text>
+            </Card>
+          )}
+          {this.renderButtons()}
 
-            <Text style={loginStyle.message} status={this.state.status}>
-              {this.state.message}
-            </Text>
-          </ScrollView>
+          <Text style={loginStyle.message} status={this.state.status}>
+            {this.state.message}
+          </Text>
         </ScrollView>
       </Layout>
     );
