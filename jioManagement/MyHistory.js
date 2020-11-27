@@ -43,7 +43,7 @@ class MyHistory extends React.Component {
       );
       const sortedAnnouncements = await pastAnnouncements.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      )
+      );
       this.setState({
         announcements: sortedAnnouncements,
       });
@@ -52,15 +52,24 @@ class MyHistory extends React.Component {
     }
   }
 
+  //get requests with statuses COMPLETED, VERIFIED and REJECTED
   async getPastRequests(userId) {
     try {
       const response = await axios.get(
         `${globalVariable.requestApi}past/${userId}`
       );
+      const rejected = await axios.get(
+        `${globalVariable.requestApi}rejected/${userId}`
+      );
       const pastRequests = response.data;
-      const sortedRequests = await pastRequests.sort(
+      const rejectedRequests = rejected.data;
+
+      const allPastRequests = pastRequests.concat(rejectedRequests);
+      console.log(allPastRequests);
+
+      const sortedRequests = await allPastRequests.sort(
         (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-      )
+      );
       this.setState({
         requests: sortedRequests,
       });
@@ -96,22 +105,20 @@ class MyHistory extends React.Component {
         />
       );
     } else {
-      console.log('printing a past announcement')
+      console.log('printing a past announcement');
       return (
         <ListItem
-        style={styles.listItem}
-        onPress={() =>
-          this.props.navigation.replace('MyAnnouncement', {
-            announcementId: item.announcementId,
-          })
-        }
-        title={
-          <Text style={styles.amount}>{item.destination}</Text>
-        }
-        description={
-          <Text style={styles.description}>{item.description}</Text>
-        }
-      />
+          style={styles.listItem}
+          onPress={() =>
+            this.props.navigation.replace('MyAnnouncement', {
+              announcementId: item.announcementId,
+            })
+          }
+          title={<Text style={styles.amount}>{item.destination}</Text>}
+          description={
+            <Text style={styles.description}>{item.description}</Text>
+          }
+        />
       );
     }
   };
@@ -121,28 +128,24 @@ class MyHistory extends React.Component {
       return (
         <ListItem
           style={styles.listItem}
-          title={
-            <Text style={styles.amount}>There are no past requests.</Text>
-          }
+          title={<Text style={styles.amount}>There are no past requests.</Text>}
         />
       );
     } else {
-      console.log('printing a past request')
+      console.log('printing a past request');
       return (
         <ListItem
-        style={styles.listItem}
-        onPress={() =>
-          this.props.navigation.replace('MyRequest', {
-            requestId: item.requestId,
-          })
-        }
-        title={
-          <Text style={styles.amount}>{item.title}</Text>
-        }
-        description={
-          <Text style={styles.description}>{item.description}</Text>
-        }
-      />
+          style={styles.listItem}
+          onPress={() =>
+            this.props.navigation.replace('MyRequest', {
+              requestId: item.requestId,
+            })
+          }
+          title={<Text style={styles.amount}>{item.title}</Text>}
+          description={
+            <Text style={styles.description}>{item.description}</Text>
+          }
+        />
       );
     }
   };
@@ -174,9 +177,7 @@ class MyHistory extends React.Component {
               transactionId: item.transactionId,
             })
           }
-          title={
-            <Text style={styles.amount}>{item.amount.toFixed(2)}</Text>
-          }
+          title={<Text style={styles.amount}>{item.amount.toFixed(2)}</Text>}
           description={
             <Text style={styles.description}>{item.description}</Text>
           }

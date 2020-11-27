@@ -26,7 +26,7 @@ class MyActivity extends React.Component {
     this.state = {
       //populate state.user because after logging out, this.props.user will cause error
       user: this.props.user,
-      //check which route the user is coming from, either from Announcement/Request 
+      //check which route the user is coming from, either from Announcement/Request
       filter: this.props.route.params
         ? this.props.route.params.filter
         : 'announcement',
@@ -244,19 +244,19 @@ class MyActivity extends React.Component {
                 {renderIf(
                   request.requestStatus === 'SCHEDULED',
                   <View style={styles.status}>
-                    <Text style={{color: 'white'}}>Accepted</Text>
+                    <Text style={{color: 'white'}}>Scheduled</Text>
                   </View>
                 )}
                 {renderIf(
                   request.requestStatus === 'DOING',
                   <View style={styles.status}>
-                    <Text style={{color: 'white'}}>Executing</Text>
+                    <Text style={{color: 'white'}}>Doing</Text>
                   </View>
                 )}
                 {renderIf(
                   request.requestStatus === 'COMPLETED',
                   <View style={styles.status}>
-                    <Text style={{color: 'white'}}>Done</Text>
+                    <Text style={{color: 'white'}}>Completed</Text>
                   </View>
                 )}
               </View>
