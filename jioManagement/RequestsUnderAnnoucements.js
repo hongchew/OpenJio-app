@@ -173,7 +173,7 @@ class RequestsUnderAnnoucements extends React.Component {
           accessoryRight={() => {
             return renderIf(
               item.requestStatus === 'PENDING' &&
-                this.state.announcement.announcementStatus !== 'ONGOING',
+                this.state.announcement.announcementStatus === 'ACTIVE',
               <View style={{flexDirection: 'row'}}>
                 <TouchableOpacity
                   onPress={() => {
