@@ -26,13 +26,13 @@ class HealthDeclaration extends React.Component {
       announcementId: this.props.route.params
         ? this.props.route.params.announcementId
         : null,
-      startJio: this.props.route.params 
-        ? this.props.route.params.startJio : null,
+      startJio: this.props.route.params
+        ? this.props.route.params.startJio
+        : null,
       message: '',
       temperatureLog: '',
     };
     console.log(this.props.route.params);
-    
   }
 
   safeParseFloat = (str) => {
@@ -42,7 +42,7 @@ class HealthDeclaration extends React.Component {
 
   async handleSubmit() {
     let hasSymptoms;
-    let shnNotice; 
+    let shnNotice;
     if (
       this.state.temp === 0 ||
       this.state.temp === -1 ||
@@ -72,7 +72,7 @@ class HealthDeclaration extends React.Component {
             userId: this.state.user.userId,
             temperature: this.state.temp,
             hasSymptoms: hasSymptoms,
-            stayHomeNotice: shnNotice
+            stayHomeNotice: shnNotice,
           }
         );
         this.setState({
@@ -81,21 +81,21 @@ class HealthDeclaration extends React.Component {
         });
 
         //check if user is able to proceed to make announcement/request or not
-        //by checking if the user has symptoms/on shn 
+        //by checking if the user has symptoms/on shn
         //if symptoms/on shn === false, meaning can proceed
         if (!this.state.user.hasSymptoms && !this.state.user.onSHN) {
           //coming from home page (make announcement)
           if (this.state.startJio) {
             this.props.navigation.navigate('MakeAnnouncement');
-          } else if (this.state.announcementId) {  
+          } else if (this.state.announcementId) {
             //params passed over from AnnouncementDetails page to make request
             this.props.navigation.navigate('MakeRequest', {
               announcementId: this.state.announcementId,
             });
-          } 
+          }
         } else {
           this.setState({
-            modalVisible: true
+            modalVisible: true,
           });
         }
       } catch (error) {
@@ -113,8 +113,8 @@ class HealthDeclaration extends React.Component {
           <Text style={{marginTop: 10, marginBottom: 10}}>
             {renderIf(
               this.state.startJio,
-              'It seems like your risk level is high and you should stay at home and make requests instead!',
-              'Take note that your risk level is high and you should stay at home.'
+              'It seems like you are unwell or on stay home notice, you should stay home and try making requests instead. ',
+              'It seems like you are unwell or on stay home notice, hope you get better soon.'
             )}
           </Text>
           <Layout style={styles.modalButtonsContainer}>
@@ -125,32 +125,44 @@ class HealthDeclaration extends React.Component {
                 this.setState({
                   modalVisible: false,
                 });
-                {renderIf(
-                  this.state.startJio && !this.state.user.isHighRisk,
-                  this.props.navigation.navigate('MakeAnnouncement'),
-                  this.props.navigation.replace('Tabs', {screen: 'Home'}),
-                )}
-                {this.state.announcementId && this.props.navigation.navigate('MakeRequest', {
-                  announcementId: this.state.announcementId,
-                })}
+                {
+                  renderIf(
+                    this.state.startJio &&
+                      !this.state.user.hasSymptoms &&
+                      !this.state.user.onSHN,
+                    this.props.navigation.navigate('MakeAnnouncement'),
+                    this.props.navigation.replace('Tabs', {screen: 'Home'})
+                  );
+                }
+                {
+                  this.state.announcementId &&
+                    this.props.navigation.navigate('MakeRequest', {
+                      announcementId: this.state.announcementId,
+                    });
+                }
               }}>
               {renderIf(
-                  this.state.startJio && (this.state.user.hasSymptoms || this.state.user.onSHN),
-                  'Back to Home',
-                  'Confirm',
-                )}
+                this.state.startJio &&
+                  (this.state.user.hasSymptoms || this.state.user.onSHN),
+                'Back to Home',
+                'Confirm'
+              )}
             </Button>
-            <Button
-              appearance={'outline'}
-              style={styles.modalButton}
-              size={'small'}
-              onPress={() => {
-                this.setState({
-                  modalVisible: false,
-                });
-              }}>
-              Dismiss
-            </Button>
+            {renderIf(
+              this.state.startJio &&
+                (!this.state.user.hasSymptoms && !this.state.user.onSHN),
+              <Button
+                appearance={'outline'}
+                style={styles.modalButton}
+                size={'small'}
+                onPress={() => {
+                  this.setState({
+                    modalVisible: false,
+                  });
+                }}>
+                Dismiss
+              </Button>
+            )}
           </Layout>
         </Card>
       </Modal>
@@ -179,8 +191,8 @@ class HealthDeclaration extends React.Component {
           Health Declaration
         </Text>
         <Text style={styles.subtitle}>
-          For covid-19 prevention purpose, it is necessary to declare
-          that you are fit!
+          For covid-19 prevention purpose, it is necessary to declare that you
+          are fit!
         </Text>
         <ScrollView style={styles.container}>
           <Card style={styles.card}>
@@ -207,8 +219,8 @@ class HealthDeclaration extends React.Component {
           </Card>
           <Card style={styles.card}>
             <Text style={{marginTop: 8, marginBottom: 10}}>
-              Do you have any flu-like symptoms (e.g. fever, coughing
-              or breathing difficulties)?
+              Do you have any flu-like symptoms (e.g. fever, coughing or
+              breathing difficulties)?
             </Text>
             <RadioGroup
               selectedIndex={this.state.hasSymptoms}
@@ -232,7 +244,7 @@ class HealthDeclaration extends React.Component {
               <Radio>No</Radio>
             </RadioGroup>
           </Card>
-          
+
           <Text style={styles.description} status="danger">
             {this.state.message}
           </Text>
@@ -284,7 +296,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: 'white',
     marginBottom: 20,
-    marginLeft: 20, 
+    marginLeft: 20,
     marginRight: 20,
     marginTop: 10,
     borderRadius: 15,
@@ -326,8 +338,8 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 30,
     marginLeft: 20,
-    marginRight: 20, 
-    marginBottom: 20
+    marginRight: 20,
+    marginBottom: 20,
   },
   description: {
     textAlign: 'center',
