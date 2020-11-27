@@ -51,7 +51,6 @@ class MyActivity extends React.Component {
     this.setState({
       refreshing: true,
     });
-    console.log('refreshing');
     this.getAnnouncements(this.props.user.userId);
     this.getRequests(this.props.user.userId);
     this.setState({
@@ -208,7 +207,6 @@ class MyActivity extends React.Component {
       return <Text style={styles.message}>There are no requests made.</Text>;
     } else {
       return this.state.requests.map((request) => {
-        console.log(request);
         return (
           <Card
             style={styles.cardlisting}
