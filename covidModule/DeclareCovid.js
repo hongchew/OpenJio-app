@@ -36,7 +36,7 @@ class DeclareCovid extends React.Component {
   }
 
   handleSubmit() {
-    //got covid 
+    //got covid
     console.log(this.state.hasCovid);
     if (this.state.declareCovid) {
       if (!this.state.hasCovid) {
@@ -64,7 +64,6 @@ class DeclareCovid extends React.Component {
         });
       }
     }
-
   }
 
   async handleDeclareCovid() {
@@ -72,7 +71,7 @@ class DeclareCovid extends React.Component {
     if (this.state.hasCovid) {
       hasCovid = true;
     } else if (this.state.hasNoCovid) {
-      hasCovid = false; 
+      hasCovid = false;
     }
 
     try {
@@ -84,27 +83,33 @@ class DeclareCovid extends React.Component {
           hasCovid: hasCovid,
         }
       );
-      
       this.props.setUser(userResponse.data);
-
-      if (hasCovid) {
-          const response = await axios.post(
-            globalVariable.outbreakZoneApi + 'create-outbreakzone',
-            {
-              postalCode: this.state.postalCode,
-            }
-          );
-          this.props.navigation.replace('Tabs', {screen: 'Home'})
-      } else {
-        this.props.navigation.replace('Tabs', {screen: 'Home'})
-      }
-      
     } catch (error) {
       this.console.log(error);
       this.setState({
-        message: 'Failed.',
+        message: 'User cannot be updated.',
       });
     }
+
+    if (hasCovid) {
+      try {
+        const response = await axios.post(
+          globalVariable.outbreakZoneApi + 'create-outbreakzone',
+          {
+            postalCode: this.state.postalCode,
+          }
+        );
+        this.props.navigation.replace('Tabs', {screen: 'Home'});
+      } catch (error) {
+        this.console.log(error);
+        this.setState({
+        message: 'Outbreak Zone cannot be created.',
+      });
+      }
+    } else {
+      this.props.navigation.replace('Tabs', {screen: 'Home'})
+    }
+    
   }
 
   renderModal() {
@@ -112,8 +117,10 @@ class DeclareCovid extends React.Component {
       <Modal backdropStyle={styles.backdrop} visible={this.state.modalVisible}>
         <Card style={{marginLeft: 20, marginRight: 20}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
-            {this.state.hasCovid && `This information will be handed over to the related authorities for contact tracing purposes. By clicking on the 'Confirm' button, you are declaring that you have been diagnosed with COVID-19 and allow OpenJio to pass this information to the relevant authorities.`}
-            {this.state.hasNoCovid && `By clicking on the 'Confirm' button below, you are acknowledging that you have been discharged from COVID-19 implications by a certified medical practitioner.`}
+            {this.state.hasCovid &&
+              `This information will be handed over to the related authorities for contact tracing purposes. By clicking on the 'Confirm' button, you are declaring that you have been diagnosed with COVID-19 and allow OpenJio to pass this information to the relevant authorities.`}
+            {this.state.hasNoCovid &&
+              `By clicking on the 'Confirm' button below, you are acknowledging that you have been discharged from COVID-19 implications by a certified medical practitioner.`}
           </Text>
           <Layout style={styles.modalButtonsContainer}>
             <Button
@@ -169,19 +176,27 @@ class DeclareCovid extends React.Component {
             <Card style={styles.card}>
               <CheckBox
                 checked={this.state.hasCovid}
-                onChange={(nextChecked) => this.setState({hasCovid: nextChecked})}>
-                  <Text style={{fontSize: 15}}>I had been diagnosed with COVID-19</Text>
+                onChange={(nextChecked) =>
+                  this.setState({hasCovid: nextChecked})
+                }>
+                <Text style={{fontSize: 15}}>
+                  I had been diagnosed with COVID-19
+                </Text>
               </CheckBox>
             </Card>,
             <Card style={styles.card}>
-            <CheckBox
-              checked={this.state.hasNoCovid}
-              onChange={(nextChecked) => this.setState({hasNoCovid: nextChecked})}>
-                <Text style={{fontSize: 15}}>I had recovered from COVID-19</Text>
-            </CheckBox>
-          </Card>
+              <CheckBox
+                checked={this.state.hasNoCovid}
+                onChange={(nextChecked) =>
+                  this.setState({hasNoCovid: nextChecked})
+                }>
+                <Text style={{fontSize: 15}}>
+                  I had recovered from COVID-19
+                </Text>
+              </CheckBox>
+            </Card>
           )}
-          
+
           {this.state.declareCovid && (
             <View style={{marginLeft: 20, marginRight: 20}}>
               <Input
@@ -197,15 +212,14 @@ class DeclareCovid extends React.Component {
             </View>
           )}
 
-          
           <Button style={styles.button} onPress={() => this.handleSubmit()}>
-          Next
-        </Button>
-        <Text style={styles.description} status="danger">
+            Next
+          </Button>
+          <Text style={styles.description} status="danger">
             {this.state.message}
           </Text>
         </ScrollView>
-        
+
         {this.renderModal()}
       </Layout>
     );
