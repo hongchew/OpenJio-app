@@ -74,8 +74,19 @@ class DeclareCovid extends React.Component {
     } else if (this.state.hasNoCovid) {
       hasCovid = false; 
     }
-    
+
     try {
+      console.log(this.props.user.userId);
+      const userResponse = await axios.put(
+        globalVariable.userApi + 'update-user-details',
+        {
+          userId: this.props.user.userId,
+          hasCovid: hasCovid,
+        }
+      );
+      
+      this.props.setUser(userResponse.data);
+
       if (hasCovid) {
           const response = await axios.post(
             globalVariable.outbreakZoneApi + 'create-outbreakzone',
@@ -83,18 +94,13 @@ class DeclareCovid extends React.Component {
               postalCode: this.state.postalCode,
             }
           );
+          this.props.navigation.replace('Tabs', {screen: 'Home'})
+      } else {
+        this.props.navigation.replace('Tabs', {screen: 'Home'})
       }
-      const userResponse = await axios.put(
-        globalVariable.userApi + 'update-user-details',
-        {
-          userId: this.state.user.userId,
-          hasCovid: hasCovid,
-        }
-      );
-
-      this.props.setUser(userResponse.data);
-      this.props.navigation.replace('Tabs', {screen: 'Home'})
+      
     } catch (error) {
+      this.console.log(error);
       this.setState({
         message: 'Failed.',
       });
