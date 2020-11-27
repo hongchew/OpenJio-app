@@ -472,7 +472,7 @@ class RequestDetails extends React.Component {
 
             {renderIf(
               this.state.request.requestStatus === 'PENDING' &&
-                this.state.announcement.announcementStatus !== 'ONGOING',
+                this.state.announcement.announcementStatus === 'ACTIVE',
               <View style={styles.buttons}>
                 <Button
                   size="small"
