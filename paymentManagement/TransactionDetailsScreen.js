@@ -56,9 +56,11 @@ class TransactionDetailsScreen extends React.Component {
           hidden={false}
           backgroundColor="transparent"
         />
-        <Text style={styles.header} category="h4">
-          Transaction Details
-        </Text>
+        <View style={{backgroundColor: '#F5F5F5'}}>
+          <Text style={styles.header} category="h4">
+            Transaction Details
+          </Text>
+        </View>
         <View style={styles.moreinfobox}>
           <Card style={styles.card}>
             <Text style={styles.amountlabel}>Amount</Text>
@@ -134,14 +136,12 @@ class TransactionDetailsScreen extends React.Component {
               )}
             </ScrollView>
           </Card>
-          <MenuItem
+          {/* <MenuItem
             style={styles.report}
             title="Report an issue"
             accessoryRight={ForwardIcon}
-            onPress={() =>
-              this.props.navigation.replace('Tabs', {screen: 'Wallet'})
-            }
-          />
+            onPress={() => this.props.navigation.replace('AddSupportTicket')}
+          /> */}
         </View>
       </Layout>
     );
@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
   },
   header: {
     marginLeft: 15,
-    backgroundColor: '#F5F5F5',
     fontFamily: 'Karla-Bold',
   },
   card: {
