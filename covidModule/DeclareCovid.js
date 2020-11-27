@@ -113,7 +113,7 @@ class DeclareCovid extends React.Component {
         <Card style={{marginLeft: 20, marginRight: 20}}>
           <Text style={{marginTop: 10, marginBottom: 10}}>
             {this.state.hasCovid && `This information will be handed over to the related authorities for contact tracing purposes. By clicking on the 'Confirm' button, you are declaring that you have been diagnosed with COVID-19 and allow OpenJio to pass this information to the relevant authorities.`}
-            {this.state.hasNoCovid && `By clicking on the 'Confirm' button below, you are acknowledging that you have been discharged from COVID-19 implications by a certified medicial practitioner.`}
+            {this.state.hasNoCovid && `By clicking on the 'Confirm' button below, you are acknowledging that you have been discharged from COVID-19 implications by a certified medical practitioner.`}
           </Text>
           <Layout style={styles.modalButtonsContainer}>
             <Button
