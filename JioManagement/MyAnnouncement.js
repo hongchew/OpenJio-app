@@ -208,8 +208,8 @@ class MyAnnouncement extends React.Component {
     const acceptedRequests = this.state.requests.filter(
       (request) =>
         request.requestStatus === 'SCHEDULED' ||
-        request.requestStatus === 'DOING' || 
-        request.requestStatus === 'COMPLETED' || 
+        request.requestStatus === 'DOING' ||
+        request.requestStatus === 'COMPLETED' ||
         request.requestStatus === 'VERIFIED'
     );
     let totalAmount = 0;
@@ -294,8 +294,12 @@ class MyAnnouncement extends React.Component {
                   })
                 }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
-                <Text style={{flexShrink: 1}}>{request.description.length > 15 ? `${request.description.substring(0,16)}...`: `${request.description}`}</Text>
-                <Text>${request.amount}</Text>
+                <Text style={{flexShrink: 1}}>
+                  {request.description.length > 30
+                    ? `${request.description.substring(0, 31)}...`
+                    : `${request.description}`}
+                </Text>
+                <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
               </TouchableOpacity>
             </View>
 
@@ -308,6 +312,7 @@ class MyAnnouncement extends React.Component {
                     this.setState({
                       reqModalVisible: true,
                       acceptBtnClicked: true,
+                      selectedRequest: request,
                     })
                   }>
                   <Image
@@ -320,6 +325,7 @@ class MyAnnouncement extends React.Component {
                     this.setState({
                       reqModalVisible: true,
                       acceptBtnClicked: false,
+                      selectedRequest: request,
                     })
                   }>
                   <Image
@@ -354,9 +360,12 @@ class MyAnnouncement extends React.Component {
                 }>
                 <Text style={{fontWeight: 'bold'}}>{request.title}</Text>
 
-                <Text>{request.description.length > 15 ? `${request.description.substring(0,16)}...`: `${request.description}`}</Text>
+                <Text>
+                  {request.description.length > 30
+                    ? `${request.description.substring(0, 31)}...`
+                    : `${request.description}`}
+                </Text>
                 <Text>SGD {parseFloat(request.amount).toFixed(2)}</Text>
-
               </TouchableOpacity>
             </View>
 
