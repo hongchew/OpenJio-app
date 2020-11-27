@@ -60,8 +60,8 @@ class Notification extends React.Component {
             <View style={{marginLeft: 20, marginTop: 5, marginBottom: 5}}>
               <Text>{notification.title}</Text>
               <Text style={styles.description}>
-                {notification.content.length > 50
-                  ? `${notification.content.substring(0, 51)}...`
+                {notification.content.length > 35
+                  ? `${notification.content.substring(0, 36)}...`
                   : `${notification.content}`}
               </Text>
             </View>
