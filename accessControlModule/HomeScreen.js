@@ -38,7 +38,6 @@ class HomeScreen extends React.Component {
       displayValue: 'Distance',
       unreadNotifications: 0,
     };
-    console.log(this.props.user.hasCovid);
   }
 
   onRefresh = () => {
@@ -64,6 +63,9 @@ class HomeScreen extends React.Component {
     if (this.props.user.defaultAddressId !== null) {
       this.getDefaultAddress();
     }
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.getNotifications()
+    })
     this.getAnnouncements();
     this.getNotifications();
   }
@@ -103,8 +105,11 @@ class HomeScreen extends React.Component {
       this.setState({
         announcements: sortedAnnouncements,
       });
-      console.log(sortedAnnouncements);
     }
+  }
+
+  componentWillUnmount () {
+    this.focusListener()
   }
 
   getDefaultAddress = () =>

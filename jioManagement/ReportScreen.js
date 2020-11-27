@@ -105,7 +105,11 @@ class ReportScreen extends React.Component {
               size={'small'}
               onPress={() => {
                 this.setState({successModalVisible: false});
-                this.props.navigation.replace('MyRequest', {
+                this.state.request.userId === this.props.user.userId ?
+                this.props.navigation.navigate('MyRequest', {
+                  requestId: this.state.request.requestId,
+                }):
+                this.props.navigation.navigate('RequestDetails', {
                   requestId: this.state.request.requestId,
                 });
               }}>

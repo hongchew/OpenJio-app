@@ -45,6 +45,13 @@ class RequestDetails extends React.Component {
   componentDidMount() {
     const requestId = this.props.route.params.requestId;
     this.getRequest(requestId);
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.getRequest(requestId)
+    })
+  }
+
+  componentWillUnmount () {
+    this.focusListener()
   }
 
   formatDate(inputDate) {
