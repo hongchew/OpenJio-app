@@ -451,7 +451,7 @@ class RequestDetails extends React.Component {
                   ,
                   (
                     <Text category="label" style={styles.label}>
-                      {this.state.requestUser.name}'s' COVID-19 Risk Level
+                      {this.state.requestUser.name}'s' COVID-19 Risk Indicators
                     </Text>
                   ))
                 }
@@ -463,7 +463,7 @@ class RequestDetails extends React.Component {
                   )}
                   {this.state.requestUser.onSHN && (
                     <View style={styles.snh}>
-                      <Text style={{color: 'white'}}>SNH Notice</Text>
+                      <Text style={{color: 'white'}}>Stay-Home-Notice</Text>
                     </View>
                   )}
                 </View>
