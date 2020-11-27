@@ -71,6 +71,13 @@ class LoginScreen extends React.Component {
           errorMessage:
             'Your account is not verified, please verify your account first.',
         });
+      } else if (response.data.isBlackListed === true){
+        this.setState({
+          email: '',
+          password: '',
+          errorMessage:
+            'Your account has been blacklisted. Please email to support to remove it from blacklist.',
+        });
       }
       // subsequent logins, check if user had just reset their password
       // (isPasswordReset: true, isValidated: true)
