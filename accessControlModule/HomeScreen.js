@@ -193,7 +193,7 @@ class HomeScreen extends React.Component {
           style={styles.card}
           key={announcement.announcementId}
           onPress={() =>
-            this.props.navigation.replace('AnnouncementDetails', {
+            this.props.navigation.navigate('AnnouncementDetails', {
               announcementId: announcement.announcementId,
               announcementDetails: announcement,
             })

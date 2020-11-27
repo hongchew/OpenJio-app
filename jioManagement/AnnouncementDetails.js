@@ -24,6 +24,11 @@ class AnnouncementDetails extends React.Component {
   componentDidMount() {
     this.retrieveAnnouncementById(this.props.route.params.announcementId);
     this.getUserRequest();
+
+    this.focusListener = this.props.navigation.addListener('focus', () => {
+      this.retrieveAnnouncementById(this.props.route.params.announcementId);
+      this.getUserRequest();
+    });
   }
 
   checkmarkIfVerified = (user) => {
