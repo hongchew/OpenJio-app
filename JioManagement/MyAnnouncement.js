@@ -609,14 +609,14 @@ class MyAnnouncement extends React.Component {
           </Card>
 
           {this.renderActiveButton()}
-          {this.state.announcement.announcementStatus === 'PAST' && (
+          {/* {this.state.announcement.announcementStatus === 'PAST' && (
             <Button
               style={{marginLeft: 15, marginRight: 15}}
               onPress={() => {}}
               >
               Contact Support
             </Button>
-          )}
+          )} */}
 
           <ScrollView style={styles.container}>
             <Card style={styles.request}>
